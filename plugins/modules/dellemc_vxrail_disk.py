@@ -43,10 +43,16 @@ options:
 EXAMPLES = """
   - name: Collect Disk Info from VxRail Cluster
     vxrail-disk-info:
-      vxmip: " {{vxm }}"
+      vxmip: " {{ vxm }}"
       vcadmin: "{{ vcadmin }}"
       vcpasswd: "{{ vcpasswd }}"
 
+  - name: Collect Specific Disk Info
+    vxrail-disk-info:
+      vxmip: " {{ vxm }}"
+      vcadmin: "{{ vcadmin }}"
+      vcpasswd: "{{ vcpasswd }}"
+      disk_sn: "{{ disk_sn }}"
 """
 
 RETURN = """
@@ -119,7 +125,7 @@ def byte_to_json(body):
     return json.loads(body.decode(chardet.detect(body)["encoding"]))
 
 # Configurations
-LOG_FILE_NAME = "telemetry.log"
+LOG_FILE_NAME = "/tmp/vxraildisk.log"
 LOG_FORMAT = CustomLogFormatter()
 
 LOGGER = logging.getLogger()
@@ -133,7 +139,7 @@ LOGGER.addHandler(FILE_HANDLER)
 
 class VxrailDiskUrls():
     disks_url = 'https://{}/rest/vxm/v1/disks'
-    specific_disk_url = 'https://{}/rest/vxm/v1/disks/{disk_sn}'
+    specific_disk_url = 'https://{}/rest/vxm/v1/disks/{}'
 
     def __init__(self, vxm_ip, disk_sn):
         self.vxm_ip = vxm_ip
@@ -147,7 +153,7 @@ class VxrailDiskUrls():
 
 class VxRailDisk():
     def __init__(self):
-        self.vxm_ip = module.params.get('ip')
+        self.vxm_ip = module.params.get('vxmip')
         self.timeout = module.params.get('timeout')
         self.admin = module.params.get('vcadmin')
         self.password = module.params.get('vcpasswd')
@@ -206,17 +212,7 @@ class VxRailDisk():
             data = byte_to_json(response.content)
             if not data:
                 return "No available hosts"
-            for i in range(len(data)):
-                disks['sn'] = data[i].get('sn')
-                disks['disk_type'] = data[i].get('disk_type')
-                disks['enclosure'] = data[i].get('enclosure')
-                disks['bay'] = data[i].get('bay')
-                disks['slot'] = data[i].get('slot')
-                disks['missing'] = data[i].get('missing')
-                disks['capacity'] = data[i].get('capacity')
-                disklist.append(dict(disks.items()))
-            return disklist
-
+            return data
 
 def main():
     ''' Entry point into execution flow '''
@@ -228,7 +224,7 @@ def main():
             vxmip=dict(required=True),
             vcadmin=dict(required=True),
             vcpasswd=dict(required=True, no_log=True),
-            disk_sn=dict(type='str', default="None"),
+            disk_sn=dict(type='str', default="all"),
             timeout=dict(type='int', default=10),
             )
     module = AnsibleModule(
@@ -236,7 +232,7 @@ def main():
         supports_check_mode=True,
     )
 
-    if (module.params.get('disk_sn')) != "None":
+    if (module.params.get('disk_sn')) == "all":
         result = VxRailDisk().get_disks()
     else:
         result = VxRailDisk().get_specific_disk()
