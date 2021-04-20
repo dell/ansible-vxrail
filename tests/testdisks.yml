@@ -1,6 +1,6 @@
 ---
 - name: Get disk info for all hosts in a cluster
-- hosts: localhost
+  hosts: localhost
   tasks:
     - name: Get list of disks from all hosts in a cluster
       dellemc_vxrail_disk:
