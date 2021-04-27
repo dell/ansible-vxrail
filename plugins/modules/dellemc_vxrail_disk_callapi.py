@@ -35,7 +35,7 @@ options:
     required: false
   Timeout:
     description:
-      Time out value for the HTTP session to connect to the REST API, the default value is 10 seconds
+      Time out value for the HTTP session to connect to the REST API
     required: false
 
 '''
@@ -88,7 +88,6 @@ host_disk_info:
     }
   ]	
 """
-
 import json
 import logging
 import requests
@@ -96,11 +95,6 @@ import chardet
 import urllib3
 from requests.exceptions import HTTPError
 from ansible.module_utils.basic import AnsibleModule
-import time
-import swagger_client
-from swagger_client.rest import ApiException
-from pprint import pprint
-import ssl
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -126,8 +120,12 @@ class CustomLogFormatter(logging.Formatter):
         result = logging.Formatter.format(self, record)
         return result
 
+def byte_to_json(body):
+    ''' conversion of http content to json format '''
+    return json.loads(body.decode(chardet.detect(body)["encoding"]))
+
 # Configurations
-LOG_FILE_NAME = "/tmp/vxrail_ansible.log"
+LOG_FILE_NAME = "/tmp/vxraildisk.log"
 LOG_FORMAT = CustomLogFormatter()
 
 LOGGER = logging.getLogger()
@@ -140,13 +138,18 @@ FILE_HANDLER.setFormatter(LOG_FORMAT)
 LOGGER.addHandler(FILE_HANDLER)
 
 class VxrailDiskUrls():
-    disks_url = 'https://{}/rest/vxm'
+    disks_url = 'https://{}/rest/vxm/v1/disks'
+    specific_disk_url = 'https://{}/rest/vxm/v1/disks/{}'
 
-    def __init__(self, vxm_ip):
+    def __init__(self, vxm_ip, disk_sn):
         self.vxm_ip = vxm_ip
+        self.disk_sn = disk_sn
 
-    def set_host(self):
+    def get_disks(self):
         return VxrailDiskUrls.disks_url.format(self.vxm_ip)
+
+    def get_specific_disk(self):
+        return VxrailDiskUrls.specific_disk_url.format(self.vxm_ip, self.disk_sn)
 
 class VxRailDisk():
     def __init__(self):
@@ -155,69 +158,64 @@ class VxRailDisk():
         self.admin = module.params.get('vcadmin')
         self.password = module.params.get('vcpasswd')
         self.disk_sn = module.params.get('disk_sn')
-        self.disk_url = VxrailDiskUrls(self.vxm_ip)
-        # Configure HTTP basic authorization: basicAuth
-        self.configuration = swagger_client.Configuration()
-        self.configuration.username = self.admin
-        self.configuration.password = self.password
-        self.configuration.verify_ssl = False
-        self.configuration.host = self.disk_url.set_host()
-        LOGGER.info("host url: %s", self.configuration.host)
+        self.disk_url = VxrailDiskUrls(self.vxm_ip, self.disk_sn)
         response = ''
 
     def get_disks(self):
         disks = {}
         disklist = []
-        # create an instance of the API class
-        api_instance = swagger_client.DiskDriveInformationApi(swagger_client.ApiClient(self.configuration))
         try:
-            # get all disks information in a cluster
-            response = api_instance.v1_disks_get()
-            LOGGER.info("Response: %s", response)
-        except ApiException as e:
-            LOGGER.error("Exception when calling DiskDriveInformationApi->v1_disks_get: %s\n" % e)
+            response = requests.get(url=self.disk_url.get_disks(),
+                                    verify=False,
+                                    auth=(self.admin, self.password),
+                                    )
+            LOGGER.info("Response: %s", response.content)
+            response.raise_for_status()
+        except HTTPError as http_err:
+            LOGGER.error("HTTP error %s request to VxRail Manager %s", http_err, self.vxm_ip)
             return 'error'
-        data = response
-        LOGGER.info("disks len: %s", len(data))
-        if not data:
-            return "No available hosts"
-        for i in range(len(data)):
-            disks['sn'] = data[i].sn
-            disks['disk_type'] = data[i].disk_type
-            disks['enclosure'] = data[i].enclosure
-        #    disks['bay'] = data[i].bay
-            disks['slot'] = data[i].slot
-            disks['missing'] = data[i].missing
-            disks['capacity'] = data[i].capacity
-            disks['id'] = data[i].id
-            disklist.append(dict(disks.items()))
-        return disklist
+        except Exception as ERR:
+            LOGGER.error(' %s Cannot connect to VxRail Manager %s', ERR, self.vxm_ip)
+            return 'error'
+
+        if response.status_code == 200:
+            data = byte_to_json(response.content)
+            LOGGER.info("DATA: %s", data)
+            if not data:
+                return "No available hosts"
+            for i in range(len(data)):
+                disks['sn'] = data[i].get('sn')
+                disks['disk_type'] = data[i].get('disk_type')
+                disks['enclosure'] = data[i].get('enclosure')
+                disks['bay'] = data[i].get('bay')
+                disks['slot'] = data[i].get('slot')
+                disks['missing'] = data[i].get('missing')
+                disks['capacity'] = data[i].get('capacity')
+                disklist.append(dict(disks.items()))
+            LOGGER.info("disklist: %s", disklist)
+            return disklist
 
     def get_specific_disk(self):
         disks = {}
         disklist = []
-        # create an instance of the API class
-        api_instance = swagger_client.DiskDriveInformationApi(swagger_client.ApiClient(self.configuration))
         try:
-            # get specific disk information by serial number in a cluster
-            response = api_instance.v1_disks_disk_sn_get(self.disk_sn)
-            LOGGER.info("Response: %s", response)
-        except ApiException as e:
-            LOGGER.error("Exception when calling DiskDriveInformationApi->v1_disks_get: %s\n" % e)
+            response = requests.get(url=self.disk_url.get_specific_disk(),
+                                    verify=False,
+                                    auth=(self.admin, self.password),
+                                    )
+            response.raise_for_status()
+        except HTTPError as http_err:
+            LOGGER.error("HTTP error %s request to VxRail Manager %s", http_err, self.vxm_ip)
             return 'error'
-        data = response
-        if not data:
-            return "No available hosts"
-        disks['sn'] = data.sn
-        disks['disk_type'] = data.disk_type
-        disks['enclosure'] = data.enclosure
-        # disks['bay'] = data[i].bay
-        disks['slot'] = data.slot
-        disks['missing'] = data.missing
-        disks['capacity'] = data.capacity
-        disks['id'] = data.id
-        disklist.append(dict(disks.items()))
-        return disklist
+        except Exception as ERR:
+            LOGGER.error(' %s Cannot connect to VxRail Manager %s', ERR, self.vxm_ip)
+            return 'error'
+
+        if response.status_code == 200:
+            data = byte_to_json(response.content)
+            if not data:
+                return "No available hosts"
+            return data
 
 def main():
     ''' Entry point into execution flow '''
@@ -225,6 +223,7 @@ def main():
     global module
     # define available arguments/parameters a user can pass to the module
     module_args = dict(
+            name=dict(required=False),
             vxmip=dict(required=True),
             vcadmin=dict(required=True),
             vcpasswd=dict(required=True, no_log=True),
@@ -238,12 +237,11 @@ def main():
 
     if (module.params.get('disk_sn')) == "all":
         result = VxRailDisk().get_disks()
-        LOGGER.info("Result:%s", result)
     else:
         result = VxRailDisk().get_specific_disk()
-        LOGGER.info("Result:%s", result)
+        LOGGER.info(result)
     if result == 'error':
-        module.fail_json(msg="Call disk API failed")
+        module.fail_json(msg="VxRail Manager is unreachable")
 
     vx_facts = {'disks': result}
     vx_facts_result = dict(changed=False, ansible_facts=vx_facts)
