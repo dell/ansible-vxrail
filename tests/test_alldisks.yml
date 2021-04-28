@@ -1,8 +1,8 @@
 ---
-- name: Get disk info for all hosts in a cluster
+- name: Get disk info of all disks in the cluster
   hosts: localhost
   tasks:
-    - name: Get list of disks from all hosts in a cluster
+    - name: Get information of all disks in the cluster
       dellemc_vxrail_disk:
         vxmip: "{{vxm}}"
         vcadmin: "{{ vcenter_username }}"

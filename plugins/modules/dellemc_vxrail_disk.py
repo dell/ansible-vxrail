@@ -12,7 +12,7 @@ author:  Dell EMC VxRail Ansible Team (@gaohongmei) <s.gao@dell.com>
 module: dell_vxrail_disk
 short_description: Gathers information about disks attached to given cluster
 description: 
-This module will collect VxRail Node disk details at cluster level, as well as can retrieve information about a specific disk.
+This module will  get information of all disks in the cluster or one disk specified by serial number.
 options:
 
   vxmip:
