@@ -243,7 +243,7 @@ def main():
         result = VxRailDisk().get_specific_disk()
         LOGGER.info("Result:%s", result)
     if result == 'error':
-        module.fail_json(msg="Call disk API failed")
+        module.fail_json(msg="Call disk API failed,please see log file for more error details")
 
     vx_facts = {'disks': result}
     vx_facts_result = dict(changed=False, ansible_facts=vx_facts)
