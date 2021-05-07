@@ -11,7 +11,7 @@ from unittest.mock import patch, Mock
 
 from ansible.module_utils import basic
 from plugins.modules import my_test
-from utils import set_module_args, exit_json, AnsibleExitJson, fail_json
+from utils import set_module_args, exit_json, fail_json, AnsibleExitJson
 
 
 class MyTest(unittest.TestCase):
@@ -20,7 +20,6 @@ class MyTest(unittest.TestCase):
         pass
 
     def test_run_module(self):
-        m = mock.mock_open()
         with patch.multiple(basic.AnsibleModule, exit_json=exit_json, fail_json=fail_json):
             set_module_args(
                 {
@@ -29,10 +28,11 @@ class MyTest(unittest.TestCase):
                 }
             )
 
-            with pytest.raises(AnsibleExitJson) as result:
+            with self.assertRaises(AnsibleExitJson) as result:
                 my_test.main()
-            print('-------------------------')
-            print(result)
-            print('-------------------------')
+            self.assertTrue(result.exception.args[0]['changed'])
+            self.assertEqual(result.exception.args[0]['message'],'goodbye')
+
+
 if __name__ == "__main__":
     unittest.main()

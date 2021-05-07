@@ -26,7 +26,6 @@ class AnsibleFailJson(Exception):
 
 
 def exit_json(*args, **kwargs):
-    print('***********************')
     if 'changed' not in kwargs:
         kwargs['changed'] = False
     raise AnsibleExitJson(kwargs)
