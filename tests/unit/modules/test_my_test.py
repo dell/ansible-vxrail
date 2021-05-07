@@ -3,11 +3,8 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 import json
-import pytest
 import unittest
-import mock
-from unittest import mock
-from unittest.mock import patch, Mock
+from unittest.mock import patch
 
 from ansible.module_utils import basic
 from ansible_collections.dellemc.vxrail.plugins.modules import my_test
