@@ -12,3 +12,8 @@ pytest-mock
 pytest-xdist
 pyyaml
 resolvelib
+pylint
+pycodestyle
+rstcheck
+voluptuous
+yamllint
