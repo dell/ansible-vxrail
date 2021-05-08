@@ -10,6 +10,7 @@ from ansible.module_utils import basic
 from ansible_collections.dellemc.vxrail.plugins.modules import my_test
 from ansible_collections.dellemc.vxrail.tests.unit.modules.utils import set_module_args, exit_json, fail_json, AnsibleExitJson
 
+
 class MyTest(unittest.TestCase):
 
     def setUp(self):
@@ -27,7 +28,7 @@ class MyTest(unittest.TestCase):
             with self.assertRaises(AnsibleExitJson) as result:
                 my_test.main()
             self.assertTrue(result.exception.args[0]['changed'])
-            self.assertEqual(result.exception.args[0]['message'],'goodbye')
+            self.assertEqual(result.exception.args[0]['message'], 'goodbye')
 
 
 if __name__ == "__main__":
