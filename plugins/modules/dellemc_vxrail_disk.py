@@ -65,7 +65,6 @@ host_disk_info:
     {
         "id": "S47VNA0M300380",
         "sn": "S47VNA0M300380",
-        "guid": "NVMe____Dell_Express_Flash_PM1725b_1.6TB_SFF____032C009123382500",
         "disk_type": "SSD",
         "protocol": "PCIe",
         "enclosure": 0,
@@ -77,7 +76,6 @@ host_disk_info:
     {
         "id": "Y9T0A06BTNUF",
         "sn": "Y9T0A06BTNUF",
-        "guid": "58ce38ee20c98849",
         "disk_type": "SSD",
         "protocol": "SAS",
         "enclosure": 0,
@@ -89,55 +87,16 @@ host_disk_info:
   ]	
 """
 
-import json
+
 import logging
-import requests
-import chardet
 import urllib3
-from requests.exceptions import HTTPError
 from ansible.module_utils.basic import AnsibleModule
-import time
 import vxrail_ansible_utility
 from vxrail_ansible_utility.rest import ApiException
-from pprint import pprint
-import ssl
+
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-class CustomLogFormatter(logging.Formatter):
-    ''' Logging class for method '''
-    info_fmt = "%(asctime)s [%(levelname)s]\t%(message)s"
-    debug_fmt = "%(asctime)s [%(levelname)s]\t%(pathname)s:%(lineno)d\t%(message)s"
-
-    def __init__(self, fmt="%(asctime)s [%(levelname)s]\t%(pathname)s:%(lineno)d\t%(message)s"):
-        logging.Formatter.__init__(self, fmt)
-
-    def format(self, record):
-        if record.levelno == logging.INFO:
-            self._fmt = CustomLogFormatter.info_fmt
-            # python 3 compatibility
-            if hasattr(self, '_style'):
-                self._style._fmt = CustomLogFormatter.info_fmt
-        else:
-            self._fmt = CustomLogFormatter.debug_fmt
-            # python 3 compatibility
-            if hasattr(self, '_style'):
-                self._style._fmt = CustomLogFormatter.debug_fmt
-        result = logging.Formatter.format(self, record)
-        return result
-
-# Configurations
-LOG_FILE_NAME = "/tmp/vxrail_ansible.log"
-LOG_FORMAT = CustomLogFormatter()
-
-LOGGER = logging.getLogger()
-LOGGER.setLevel(logging.DEBUG)
-
-# file output
-FILE_HANDLER = logging.FileHandler(LOG_FILE_NAME)
-FILE_HANDLER.setLevel(logging.DEBUG)
-FILE_HANDLER.setFormatter(LOG_FORMAT)
-LOGGER.addHandler(FILE_HANDLER)
 
 class VxrailDiskUrls():
     disks_url = 'https://{}/rest/vxm'
@@ -162,7 +121,8 @@ class VxRailDisk():
         self.configuration.password = self.password
         self.configuration.verify_ssl = False
         self.configuration.host = self.disk_url.set_host()
-        LOGGER.info("host url: %s", self.configuration.host)
+        self.configuration.logger_file = "/tmp/vxrail_ansible.log"
+        self.configuration.debug = True
         response = ''
 
     def get_disks(self):
@@ -173,12 +133,11 @@ class VxRailDisk():
         try:
             # get all disks information in a cluster
             response = api_instance.v1_disks_get()
-            LOGGER.info("Response: %s", response)
         except ApiException as e:
-            LOGGER.error("Exception when calling DiskDriveInformationApi->v1_disks_get: %s\n" % e)
+            logging.error("Exception when calling DiskDriveInformationApi->v1_disks_get: %s\n" % e)
             return 'error'
         data = response
-        LOGGER.info("disks len: %s", len(data))
+        logging.info("disks len: %s", len(data))
         if not data:
             return "No available hosts"
         for i in range(len(data)):
@@ -190,6 +149,7 @@ class VxRailDisk():
             disks['missing'] = data[i].missing
             disks['capacity'] = data[i].capacity
             disks['id'] = data[i].id
+            disks['protocol'] = data[i].protocol
             disklist.append(dict(disks.items()))
         return disklist
 
@@ -201,9 +161,8 @@ class VxRailDisk():
         try:
             # get specific disk information by serial number in a cluster
             response = api_instance.v1_disks_disk_sn_get(self.disk_sn)
-            LOGGER.info("Response: %s", response)
         except ApiException as e:
-            LOGGER.error("Exception when calling DiskDriveInformationApi->v1_disks_get: %s\n" % e)
+            logging.error("Exception when calling DiskDriveInformationApi->v1_disks_get: %s\n" % e)
             return 'error'
         data = response
         if not data:
@@ -216,6 +175,7 @@ class VxRailDisk():
         disks['missing'] = data.missing
         disks['capacity'] = data.capacity
         disks['id'] = data.id
+        disks['protocol'] = data.protocol
         disklist.append(dict(disks.items()))
         return disklist
 
@@ -238,10 +198,8 @@ def main():
 
     if (module.params.get('disk_sn')) == "all":
         result = VxRailDisk().get_disks()
-        LOGGER.info("Result:%s", result)
     else:
         result = VxRailDisk().get_specific_disk()
-        LOGGER.info("Result:%s", result)
     if result == 'error':
         module.fail_json(msg="Call disk API failed,please see log file for more error details")
 
