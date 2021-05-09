@@ -97,8 +97,8 @@ import urllib3
 from requests.exceptions import HTTPError
 from ansible.module_utils.basic import AnsibleModule
 import time
-import swagger_client
-from swagger_client.rest import ApiException
+import vxrail_ansible_utility
+from vxrail_ansible_utility.rest import ApiException
 from pprint import pprint
 import ssl
 
@@ -157,7 +157,7 @@ class VxRailDisk():
         self.disk_sn = module.params.get('disk_sn')
         self.disk_url = VxrailDiskUrls(self.vxm_ip)
         # Configure HTTP basic authorization: basicAuth
-        self.configuration = swagger_client.Configuration()
+        self.configuration = vxrail_ansible_utility.Configuration()
         self.configuration.username = self.admin
         self.configuration.password = self.password
         self.configuration.verify_ssl = False
@@ -169,7 +169,7 @@ class VxRailDisk():
         disks = {}
         disklist = []
         # create an instance of the API class
-        api_instance = swagger_client.DiskDriveInformationApi(swagger_client.ApiClient(self.configuration))
+        api_instance = vxrail_ansible_utility.DiskDriveInformationApi(vxrail_ansible_utility.ApiClient(self.configuration))
         try:
             # get all disks information in a cluster
             response = api_instance.v1_disks_get()
@@ -197,7 +197,7 @@ class VxRailDisk():
         disks = {}
         disklist = []
         # create an instance of the API class
-        api_instance = swagger_client.DiskDriveInformationApi(swagger_client.ApiClient(self.configuration))
+        api_instance = vxrail_ansible_utility.DiskDriveInformationApi(vxrail_ansible_utility.ApiClient(self.configuration))
         try:
             # get specific disk information by serial number in a cluster
             response = api_instance.v1_disks_disk_sn_get(self.disk_sn)
