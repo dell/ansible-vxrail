@@ -1,0 +1,16 @@
+---
+- name: Get disk info of one disk specified by serial number
+  hosts: localhost
+  tasks:
+    - name: Get the information of one disk specified by serial number
+      dellemc_vxrail_disk:
+        vxmip: "{{vxm}}"
+        vcadmin: "{{ vcenter_username }}"
+        vcpasswd: "{{ vcenter_password }}"
+        disk_sn: "{{disk_sn}}"
+      register: host_disk_info
+
+    - name: Display Disk Information
+      debug:
+        msg:  "{{host_disk_info}}"
+
