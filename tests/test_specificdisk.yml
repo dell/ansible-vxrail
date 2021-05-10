@@ -9,7 +9,9 @@
         vcpasswd: "{{ vcenter_password }}"
         disk_sn: "{{disk_sn}}"
       register: host_disk_info
-
+    - name: Display disk sn
+      debug:
+        msg: "This disk sn is {{host_disk_info.ansible_facts.disks[0]['sn']}}"
     - name: Display Disk Information
       debug:
         msg:  "{{host_disk_info}}"
