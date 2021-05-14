@@ -1,13 +1,16 @@
 #!/usr/bin/python3
 # Copyright: (c) 2021, Gao Hongmei <s.gao@dell.com>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+from __future__ import (absolute_import, division, print_function)
 
-
+__metaclass__ = type
 ANSIBLE_METADATA = {'metadata_version': '1.1',
                     'status': ['preview'],
-                    'supported_by': 'community'}
+                    'supported_by': 'community'
+                    }
 
-DOCUMENTATION = '''
+DOCUMENTATION = r'''
+---
 author:  Dell EMC VxRail Ansible Team (@gaohongmei) <s.gao@dell.com>
 module: dell_vxrail_disk
 short_description: Gathers information about disks attached to given cluster
