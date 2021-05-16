@@ -1,0 +1,28 @@
+---
+- name: Get disk info of one disk specified by serial number
+  hosts: localhost
+  tasks:
+    - name: Add node
+      dellemc_vxrail_cluster:
+        vxmip: "20.13.11.200"
+        vcadmin: "administrator@vsphere.local"
+        vcpasswd: "Testvxrail123!"
+        vxm_version: "7.0.240"
+        host_psnt: "8WZ0W330000000"
+        hostname: "c1-esx09"
+        mgt_account: "management"
+        mgt_passwd: "Testesx123!"
+        root_passwd: "Testesx123!"
+        mgt_ip: "20.13.11.109"
+        vsan_ip: "20.13.11.149"
+        vmotion_ip: "20.13.11.169"
+        rack_name: "H03-01"
+        order_number: "1"
+      register: host_disk_info
+#    - name: Display disk sn
+#      debug:
+#        msg: "This disk sn is {{host_disk_info.ansible_facts.disks[0]['sn']}}"
+    - name: Display Disk Information
+      debug:
+        msg:  "{{host_disk_info}}"
+
