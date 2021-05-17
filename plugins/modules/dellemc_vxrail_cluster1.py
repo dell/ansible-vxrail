@@ -127,7 +127,7 @@ class CustomLogFormatter(logging.Formatter):
         return result
 
 # Configurations
-LOG_FILE_NAME = "/tmp/vxrail_ansible_nodevalidation.log"
+LOG_FILE_NAME = "/tmp/vxrail_ansible_nodeexpansion.log"
 LOG_FORMAT = CustomLogFormatter()
 
 LOGGER = logging.getLogger()
@@ -174,7 +174,7 @@ class VxRailCluster():
         self.configuration.password = self.vc_password
         self.configuration.verify_ssl = False
         self.configuration.host = self.cluster_url.set_host()
-        self.configuration.logger_file = "/tmp/vxrail_ansible_addnode1.log"
+        self.configuration.logger_file = "/tmp/vxrail_ansible_addnode2.log"
         self.configuration.debug = True
         response = ''
 
@@ -188,7 +188,21 @@ class VxRailCluster():
         except ApiException as e:
             logging.error("Exception when calling ClusterExpansionApi->v1_cluster_expansion_validate_post: %s\n" % e)
             return 'error'
-        self.configuration.logger.debug("Response: %s", response)
+        logger.debug("Response: %s", response)
+        job_id = response.request_id
+        return job_id
+
+    def start_expansion(self, expansion_json):
+        request_body = expansion_json
+        # create an instance of the API class
+        api_instance = vxrail_ansible_utility.ClusterExpansionApi(vxrail_ansible_utility.ApiClient(self.configuration))
+        try:
+            # get all disks information in a cluster
+            response = api_instance.v1_cluster_expansion_post(request_body)
+        except ApiException as e:
+            logging.error("Exception when calling ClusterExpansionApi->v1_cluster_expansion_post: %s\n" % e)
+            return 'error'
+        logger.debug("Response: %s", response)
         job_id = response.request_id
         return job_id
 
@@ -299,6 +313,7 @@ def main():
         supports_check_mode=True,
     )
     validation_status = 0
+    expansion_status = 0
     validation_json = VxRailCluster().create_validation_json()
     #request_body = json.dumps(validation_json)
     request_body = validation_json
@@ -314,25 +329,31 @@ def main():
     while validation_status not in ('COMPLETED', 'FAILED'):
         validation_status = VxRailCluster().get_request_status(validation_request_id)
         LOGGER.info('validation_status: status: %s.', validation_status)
-        LOGGER.info("Validation Task: Sleeping 30 seconds...")
-        time.sleep(30)
+        LOGGER.info("Validation Task: Sleeping 20 seconds...")
+        time.sleep(20)
 
     if validation_status == 'COMPLETED':
-        #expansion_json = VxRailCluster().create_validation_json()
-        # hexp_json = json.dumps(expansion_json)
+
         LOGGER.info("Validation Completed")
-        #expansion_requst_id = VxRailCluster().start_expansion(expansion_json)
-        #LOGGER.info('Cluster_expansion: VxRail task_ID: %s.', task_id)
-        # while expansion_status not in ('COMPLETED', 'FAILED'):
-        #     LOGGER.info("cluster_expansion: sleeping 60 seconds...")
-        #     time.sleep(60)
-        #expansion_status = VxRailCluster().get_request_status()(expansion_requst_id)
-            #LOGGER.info('cluster_expansion: track_expansion status: %s', expansion_status)
+        expansion_json = VxRailCluster().create_validation_json()
+        expansion_requst_id = VxRailCluster().start_expansion(expansion_json)
+        LOGGER.info('Cluster_expansion: VxRail task_ID: %s.', expansion_requst_id)
+        while expansion_status not in ('COMPLETED', 'FAILED'):
+            expansion_status = VxRailCluster().get_request_status(expansion_requst_id)
+            LOGGER.info("cluster_expansion: sleeping 20 seconds...")
+            time.sleep(20)
+        if expansion_status == 'COMPLETED':
+            LOGGER.info("Expansion Completed")
+        else:
+            module.fail_json(
+                msg="The node expansion has failed. Please see the /tmp/vxrail_ansilbe.log for more details")
+
+        LOGGER.info('cluster_expansion: track_expansion status: %s', expansion_status)
     else:
         module.fail_json(
             msg="The node validaiton has failed. Please see the /tmp/vxrail_ansilbe.log for more details")
 
-    vx_facts = {'expansion_status': validation_status}
+    vx_facts = {'validate_status': validation_status ,'expansion_status':expansion_status}
     vx_facts_result = dict(changed=False, ansible_facts=vx_facts)
     module.exit_json(**vx_facts_result)
 
