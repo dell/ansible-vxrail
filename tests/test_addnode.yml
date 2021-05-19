@@ -1,28 +1,30 @@
 ---
-- name: Get disk info of one disk specified by serial number
+- name: Add new node by LoudMouth
   hosts: localhost
+  vars:
+    host_psnt: "{{ host_psnt }}"
   tasks:
-    - name: Add node
+    - name: Start a cluster expansion
       dellemc_vxrail_cluster:
-        vxmip: "20.13.11.200"
-        vcadmin: "administrator@vsphere.local"
-        vcpasswd: "Testvxrail123!"
-        vxm_version: "7.0.240"
-        host_psnt: "8WZ0W330000000"
-        hostname: "c1-esx09"
-        mgt_account: "management"
-        mgt_passwd: "Testesx123!"
-        root_passwd: "Testesx123!"
-        mgt_ip: "20.13.11.109"
-        vsan_ip: "20.13.11.149"
-        vmotion_ip: "20.13.11.169"
-        rack_name: "H03-01"
-        order_number: "1"
-      register: host_disk_info
-#    - name: Display disk sn
-#      debug:
-#        msg: "This disk sn is {{host_disk_info.ansible_facts.disks[0]['sn']}}"
-    - name: Display Disk Information
+        vxmip: "{{ vxm_ip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        vxm_version: "{{ vxm_version }}"
+        host_psnt: "{{ host_psnt }}"
+        hostname: "{{ hostname }}"
+        mgt_account: "{{ mgt_account }}"
+        mgt_passwd: "{{ mgt_passwd }}"
+        root_passwd: "{{ root_passwd }}"
+        mgt_ip: "{{ mgt_ip }}"
+        vsan_ip: "{{ vsan_ip }}"
+        vmotion_ip: "{{ vmotion_ip }}"
+        rack_name: "{{ rack_name }}"
+        order_number: "{{ order_number }}"
+      register: expansion_status
+    - name: Display added node host_psnt
       debug:
-        msg:  "{{host_disk_info}}"
+        var: host_psnt
+    - name: Get Cluster Expansion Result
+      debug:
+        msg:  "{{expansion_status}}"
 
