@@ -19,10 +19,13 @@ module: dell_vxrail_cluster
 short_description: Add a node to an existing VxRail Cluster
 description: 
 This module will validate a L2 cluster expansion, perform a L2 cluster expansion based on the provided 
-expansion specification and cancel a failed L2 cluster expansion.
+expansion specification.
 
 options:
-
+  vxm_version:
+    description:
+      The version of the VxRail Manager System
+    required: true
   vxmip:
     description:
       The IP address of the VxRail Manager System
@@ -63,58 +66,87 @@ options:
       Management account the VxRail Manager is registered to
     required: true
     
-  Timeout:
+  mgt_passwd:
     description:
-      Time out value for the HTTP session to connect to the REST API, the default value is 10 seconds
-    required: false
+      The password for the Management account
+    required: true
+  
+  root_passwd:
+    description:
+      The password for the root account
+    required: true
+  
+  rackname:
+    description:
+      The rack name of this cluster
+    required: true
+  
+  order_number:
+    description:
+      The order number of added node in this cluster
+    required: true
 
+  nic_profile:
+    description:
+       The nic profile of this cluster, the default value is "FOUR_HIGH_SPEED"
+    required: false       
+  
+  vds_name:
+    description:
+       The vds name of this cluster, the default value is "VMware HCIA Distributed Switch"
+    required: false  
+  
+  maintenance_mode:
+    description:
+       the configuration for maintenance mode, the default value is false
+    required: false 
+    
+  timeout:
+    description:
+      Time out value for cluster expansion, the default value is 1800 seconds
+    required: false
+  
 '''
 
 EXAMPLES = """
-  - name: Collect Disk Info from VxRail Cluster
-    vxrail-disk-info:
-      vxmip: " {{ vxm }}"
-      vcadmin: "{{ vcadmin }}"
-      vcpasswd: "{{ vcpasswd }}"
-
-  - name: Collect Specific Disk Info
-    vxrail-disk-info:
-      vxmip: " {{ vxm }}"
-      vcadmin: "{{ vcadmin }}"
-      vcpasswd: "{{ vcpasswd }}"
-      disk_sn: "{{ disk_sn }}"
+  - name: Start a cluster expansion
+    dellemc-vxrail-cluster:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        vxm_version: "{{ vxm_version }}"
+        host_psnt: "{{ host_psnt }}"
+        hostname: "{{ hostname }}"
+        mgt_account: "{{ mgt_account }}"
+        mgt_passwd: "{{ mgt_passwd }}"
+        root_passwd: "{{ root_passwd }}"
+        mgt_ip: "{{ mgt_ip }}"
+        vsan_ip: "{{ vsan_ip }}"
+        vmotion_ip: "{{ vmotion_ip }}"
+        rack_name: "{{ rack_name }}"
+        order_number: "{{ order_number }}"
+        nic_profile : "{{ nic_profile }}"
+        maintenance_mode : "{{ maintenance_mode }}"
+        vds_name : "{{ vds_name }}"
+        timeout : "{{ timeout }}"
 """
 
 RETURN = """
-host_disk_info:
-  description: list of information for all disks attached to each ESXi host
+expansion_status:
+  description: cluser expansion status summary
   returned: always
-  type: list
+  type: dict
   sample: >-
-  [
-    {
-        "id": "S47VNA0M300380",
-        "sn": "S47VNA0M300380",
-        "disk_type": "SSD",
-        "protocol": "PCIe",
-        "enclosure": 0,
-        "bay": 1,
-        "slot": 20,
-        "missing": false,
-        "capacity": "1.46TB"
+   {
+    "NodeCompatiblityValidation": {
+        "request_id": "2ce09bde-d987-4fff-8f90-6fc430e2bfc3",
+        "status": "COMPLETED"
     },
-    {
-        "id": "Y9T0A06BTNUF",
-        "sn": "Y9T0A06BTNUF",
-        "disk_type": "SSD",
-        "protocol": "SAS",
-        "enclosure": 0,
-        "bay": 1,
-        "slot": 0,
-        "missing": false,
-        "capacity": "1.75TB"
+    "NodeExpansion": {
+        "request_id": "433d0a61-06e7-4cb8-a1eb-985ab9a8b5dd",
+        "status": "COMPLETED"
     }
-  ]	
+   }
 """
 
 
@@ -127,43 +159,10 @@ import time
 import json
 
 
+from vxrail_ansible_utility import configuration as utils
+LOGGER = utils.get_logger("dell_vxrail_cluster", "/tmp/vxrail_ansible_cluster.log", log_devel=logging.DEBUG)
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-class CustomLogFormatter(logging.Formatter):
-    ''' Logging class for method '''
-    info_fmt = "%(asctime)s [%(levelname)s]\t%(message)s"
-    debug_fmt = "%(asctime)s [%(levelname)s]\t%(pathname)s:%(lineno)d\t%(message)s"
 
-    def __init__(self, fmt="%(asctime)s [%(levelname)s]\t%(pathname)s:%(lineno)d\t%(message)s"):
-        logging.Formatter.__init__(self, fmt)
-
-    def format(self, record):
-        if record.levelno == logging.INFO:
-            self._fmt = CustomLogFormatter.info_fmt
-            # python 3 compatibility
-            if hasattr(self, '_style'):
-                self._style._fmt = CustomLogFormatter.info_fmt
-        else:
-            self._fmt = CustomLogFormatter.debug_fmt
-            # python 3 compatibility
-            if hasattr(self, '_style'):
-                self._style._fmt = CustomLogFormatter.debug_fmt
-        result = logging.Formatter.format(self, record)
-        return result
-
-# Configurations
-LOG_FILE_NAME = "/tmp/vxrail_ansible_nodeexpansion19.log"
-LOG_FORMAT = CustomLogFormatter()
-
-LOGGER = logging.getLogger()
-LOGGER.setLevel(logging.DEBUG)
-
-# file output
-FILE_HANDLER = logging.FileHandler(LOG_FILE_NAME)
-FILE_HANDLER.setLevel(logging.DEBUG)
-FILE_HANDLER.setFormatter(LOG_FORMAT)
-LOGGER.addHandler(FILE_HANDLER)
-
-logger = logging.getLogger(__name__)
 class VxrailClusterUrls():
     cluster_url = 'https://{}/rest/vxm'
 
@@ -191,6 +190,8 @@ class VxRailCluster():
         self.order_number = module.params.get('order_number')
         self.root_passwd = module.params.get('root_passwd')
         self.nic_profile = module.params.get('nic_profile')
+        self.mm = module.params.get('maintenance_mode')
+        self.vds_name = module.params.get('vds_name')
         self.cluster_url = VxrailClusterUrls(self.vxm_ip)
         # Configure HTTP basic authorization: basicAuth
         self.configuration = vxrail_ansible_utility.Configuration()
@@ -198,8 +199,6 @@ class VxRailCluster():
         self.configuration.password = self.vc_password
         self.configuration.verify_ssl = False
         self.configuration.host = self.cluster_url.set_host()
-        self.configuration.logger_file = "/tmp/vxrail_ansible_addnode19.log"
-        self.configuration.debug = True
         response = ''
 
     def start_validation(self, validate_json):
@@ -207,12 +206,11 @@ class VxRailCluster():
         # create an instance of the API class
         api_instance = vxrail_ansible_utility.ClusterExpansionApi(vxrail_ansible_utility.ApiClient(self.configuration))
         try:
-            # start validation cluster expansion
+            # start cluster expansion validation
             response = api_instance.v1_cluster_expansion_validate_post(request_body)
         except ApiException as e:
-            logging.error("Exception when calling ClusterExpansionApi->v1_cluster_expansion_validate_post: %s\n" % e)
+            LOGGER.error("Exception when calling ClusterExpansionApi->v1_cluster_expansion_validate_post: %s\n" % e)
             return 'error'
-        logger.debug("Response: %s", response)
         job_id = response.request_id
         return job_id
 
@@ -221,12 +219,11 @@ class VxRailCluster():
         # create an instance of the API class
         api_instance = vxrail_ansible_utility.ClusterExpansionApi(vxrail_ansible_utility.ApiClient(self.configuration))
         try:
-            # get all disks information in a cluster
+            # start cluster expansion
             response = api_instance.v1_cluster_expansion_post(request_body)
         except ApiException as e:
-            logging.error("Exception when calling ClusterExpansionApi->v1_cluster_expansion_post: %s\n" % e)
+            LOGGER.error("Exception when calling ClusterExpansionApi->v1_cluster_expansion_post: %s\n" % e)
             return 'error'
-        logger.debug("Response: %s", response)
         job_id = response.request_id
         return job_id
 
@@ -236,9 +233,8 @@ class VxRailCluster():
         api_instance = vxrail_ansible_utility.ClusterShutdownApi(vxrail_ansible_utility.ApiClient(self.configuration))
         try:
             response = api_instance.v1_requests_id_get(job_id)
-            LOGGER.info('get request_id status response: %s.', response)
         except ApiException as e:
-            logging.error("Exception when calling v1_requests_id_get: %s\n" % e)
+            LOGGER.error("Exception when calling v1_requests_id_get: %s\n" % e)
             return 'error'
         return response
 
@@ -276,6 +272,7 @@ class VxRailCluster():
         host['accounts'] = accounts
         network = self._create_network_section()
         host['network'] = network
+        host['maintenance_mode'] = self.mm
         host['geo_location'] = {}
         host['geo_location'] = {"rack_name" : self.rackname, "order_number" : self.order_number}
         nic_mapping = self._create_nicmapping_section()
@@ -304,7 +301,7 @@ class VxRailCluster():
         return network
 
     def _create_nicmapping_section(self):
-        vds_name = "VMware HCIA Distributed Switch"
+        vds_name = self.vds_name
         if self.nic_profile == "FOUR_HIGH_SPEED":
             nic_mappings = [{"vds_name": vds_name, "name": "uplink1", "physical_nic": "vmnic0"},
                             {"vds_name": vds_name, "name": "uplink2", "physical_nic": "vmnic1"},
@@ -340,10 +337,10 @@ def main():
             rack_name=dict(required=True),
             order_number=dict(required=True),
             nic_profile=dict(type='str', default="FOUR_HIGH_SPEED"),
+            vds_name=dict(type='str', default="VMware HCIA Distributed Switch"),
             maintenance_mode=dict(type='bool', default=False),
-            timeout=dict(type='int', default=10),
+            timeout=dict(type='int', default=30*60)
             )
-
     module = AnsibleModule(
         argument_spec=module_args,
         supports_check_mode=True,
@@ -352,51 +349,63 @@ def main():
     expansion_status = 0
     validation_result = 0
     expansion_result = 0
+    initial_timeout = module.params.get('timeout')
+    time_out = 0
+    LOGGER.info('----Start cluster expansion validation for host: %s.----', module.params.get('host_psnt'))
     validation_json = VxRailCluster().create_validation_json()
-    #request_body = json.dumps(validation_json)
     request_body = validation_json
     LOGGER.info('validation_json: %s.', request_body)
     validation_request_id = VxRailCluster().start_validation(request_body)
-    LOGGER.info('node_check: VxRail request id: %s.', validation_request_id)
+    LOGGER.info('Node_validation: VxRail task_ID: %s.', validation_request_id)
     if validation_request_id == "error":
         module.fail_json(
-            msg="validation request id is not returned. Please see the /tmp/vxrail_ansilbe.log for more details")
-    #validation_request_id= "d08ac804-60b3-410f-8308-ab134388ada8"
-    # validation_status = VxRailCluster().get_request_status(validation_request_id)
-    # LOGGER.info('validation_status: status: %s.', validation_status)
-    while validation_status not in ('COMPLETED', 'FAILED'):
+            msg="validation request id is not returned. Please see the /tmp/vxrail_ansible_cluster.log for more details")
+
+    while validation_status not in ('COMPLETED', 'FAILED') and time_out < initial_timeout:
         validation_response = VxRailCluster().get_request_status(validation_request_id)
         validation_status = validation_response.state
-        LOGGER.info('validation_status: status: %s.', validation_status)
+        validation_result = VxRailCluster().get_request_info(validation_response)
+        LOGGER.info('Validation_Task: status: %s.', validation_status)
+        LOGGER.info('Validation_Task: details: %s.', validation_result)
         LOGGER.info("Validation Task: Sleeping 30 seconds...")
         time.sleep(30)
+        time_out = time_out+30
 
     if validation_status == 'COMPLETED':
 
-        LOGGER.info("Validation Completed")
-        validation_result=VxRailCluster().get_request_info(validation_response)
-        expansion_json = VxRailCluster().create_validation_json()
-        expansion_requst_id = VxRailCluster().start_expansion(expansion_json)
-        LOGGER.info('Cluster_expansion: VxRail task_ID: %s.', expansion_requst_id)
-        while expansion_status not in ('COMPLETED', 'FAILED'):
-            expansion_response = VxRailCluster().get_request_status(expansion_requst_id)
+        LOGGER.info("-------Validation Completed------")
+        LOGGER.info('----Start cluster expansion for host: %s.----', module.params.get('host_psnt'))
+        expansion_json = validation_json
+        LOGGER.info('expansion_json: %s.', expansion_json)
+        expansion_request_id = VxRailCluster().start_expansion(expansion_json)
+        LOGGER.info('Cluster_expansion: VxRail task_ID: %s.', expansion_request_id)
+        while expansion_status not in ('COMPLETED', 'FAILED') and time_out < initial_timeout:
+            expansion_response = VxRailCluster().get_request_status(expansion_request_id)
             expansion_status = expansion_response.state
-            LOGGER.info("cluster_expansion: sleeping 30 seconds...")
-            time.sleep(30)
-        if expansion_status == 'COMPLETED':
-            LOGGER.info("Expansion Completed")
             expansion_result = VxRailCluster().get_request_info(expansion_response)
+            LOGGER.info('Expansion_Task: status: %s.', expansion_status)
+            LOGGER.info('Expansion_Task: details: %s.', expansion_result)
+            LOGGER.info("Expansion Task: sleeping 30 seconds...")
+            time.sleep(30)
+            time_out = time_out + 30
+        if expansion_status == 'COMPLETED':
+            LOGGER.info("-----Expansion Completed-----")
         else:
-            module.fail_json(
-                msg="The node expansion has failed. Please see the /tmp/vxrail_ansilbe.log for more details")
-
-        LOGGER.info('cluster_expansion: track_expansion status: %s', expansion_status)
+            LOGGER.info("------Expansion Failed-----")
+            vx_expansion = {'expansion_status': expansion_status, 'request_id': '0'}
+            vx_facts_result = dict(failed=True, NodeExpansion=vx_expansion,
+            msg ='The node expansion has failed. Please see the /tmp/vxrail_ansible_cluster.log for more details')
+            module.exit_json(**vx_facts_result)
     else:
-        module.fail_json(
-            msg="The node validaiton has failed. Please see the /tmp/vxrail_ansilbe.log for more details")
-    vx_validation = {'validation_status': validation_result}
-    vx_expansion = {'expansion_status': expansion_result}
-    vx_facts_result= dict(validation=vx_validation, expansion=vx_expansion)
+        LOGGER.info("------Validation Failed-----")
+        vx_validation = {'validation_status': 'Failed', 'request_id': validation_request_id}
+        vx_facts_result = dict(failed=True, NodeCompatiblityValidation=vx_validation,
+         msg='The node validaiton has failed. Please see the /tmp/vxrail_ansible_cluster.log for more details')
+        module.exit_json(**vx_facts_result)
+
+    vx_validation = {'status': validation_status, 'request_id': validation_request_id}
+    vx_expansion = {'status': expansion_status, 'request_id': expansion_request_id}
+    vx_facts_result= dict(changed=True, NodeExpansion=vx_expansion, NodeCompatiblityValidation=vx_validation)
     module.exit_json(**vx_facts_result)
 
 
