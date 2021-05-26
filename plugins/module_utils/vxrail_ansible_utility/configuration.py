@@ -23,10 +23,6 @@ from six.moves import http_client as httplib
 
 def get_logger(module_name, log_file_name='/tmp/vxrail_ansible.log',
                log_devel=logging.INFO):
-    # FORMAT = CustomLogFormatter()
-    # logging.basicConfig(filename=log_file_name, format=FORMAT)
-    # LOG = logging.getLogger(module_name)
-    # LOG.setLevel(log_devel)
     LOG_FILE_NAME = log_file_name
     LOG_FORMAT = CustomLogFormatter()
     LOGGER = logging.getLogger()

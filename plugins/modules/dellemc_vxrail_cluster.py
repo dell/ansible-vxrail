@@ -1,6 +1,5 @@
 #!/usr/bin/python3
-# Copyright: (c) 2021, Gao Hongmei <s.gao@dell.com>
-# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+# Copyright: (c) 2021, DellEMC
 from __future__ import (absolute_import, division, print_function)
 
 __metaclass__ = type
@@ -14,97 +13,119 @@ ANSIBLE_METADATA = {'metadata_version': '1.1',
 
 DOCUMENTATION = r'''
 ---
-author:  Dell EMC VxRail Ansible Team (@gaohongmei) <s.gao@dell.com>
 module: dell_vxrail_cluster
+version_added: '1.0.0'
 short_description: Add a node to an existing VxRail Cluster
 description: 
 This module will validate a L2 cluster expansion, perform a L2 cluster expansion based on the provided 
 expansion specification.
+author:
+- Hongmei Gao(@gaohongmei) <s.gao@dell.com>
 
 options:
   vxm_version:
     description:
       The version of the VxRail Manager System
     required: true
+    type: str
+    
   vxmip:
     description:
       The IP address of the VxRail Manager System
     required: true
+    type: str
 
   vcadmin:
     description:
       Administrative account of the vCenter Server the VxRail Manager is registered to
     required: true
+    type: str
 
   vcpasswd:
     description:
       The password for the administrator account provided in vcadmin
     required: true
+    type: str
     
   host_psnt:
     description:
       The psnt number for the ESX Host.
-    required: true  
+    required: true
+    type: str  
   
   mgt_ip:
     description:
       The management IP address for the ESX Host.
     required: true
+    type: str
 
   vsan_ip:
     description:
       The vsan IP address for the ESX Host.
     required: true
+    type: str
 
   vmotion_ip:
     description:
       The vmotion IP address for the ESX Host.
     required: true
+    type: str
 
   mgt_account:
     description:
       Management account the VxRail Manager is registered to
     required: true
+    type: str
     
   mgt_passwd:
     description:
       The password for the Management account
     required: true
+    type: str
   
   root_passwd:
     description:
       The password for the root account
     required: true
+    type: str
   
   rackname:
     description:
       The rack name of this cluster
     required: true
+    type: str
   
   order_number:
     description:
       The order number of added node in this cluster
     required: true
+    type: str
 
   nic_profile:
     description:
        The nic profile of this cluster, the default value is "FOUR_HIGH_SPEED"
-    required: false       
+    required: false
+    choices: [FOUR_HIGH_SPEED, TWO_LOW_TWO_HIGH_SPEED]
+    type: str        
   
   vds_name:
     description:
        The vds name of this cluster, the default value is "VMware HCIA Distributed Switch"
-    required: false  
+    required: false 
+    type: str 
   
   maintenance_mode:
     description:
        the configuration for maintenance mode, the default value is false
-    required: false 
+    required: false
+    choices: [FALSE, TRUE]
+    type: str 
     
   timeout:
     description:
       Time out value for cluster expansion, the default value is 1800 seconds
     required: false
+    type: int 
   
 '''
 
@@ -132,8 +153,12 @@ EXAMPLES = """
 """
 
 RETURN = """
+changed:
+    description: Whether or not the resource has changed.
+    returned: always
+    type: bool
 expansion_status:
-  description: cluser expansion status summary
+  description: cluster expansion status summary
   returned: always
   type: dict
   sample: >-
@@ -349,34 +374,36 @@ def main():
     expansion_status = 0
     validation_result = 0
     expansion_result = 0
-    initial_timeout = module.params.get('timeout')
+    error = 0
     time_out = 0
+    validation_request_id = 0
+    expansion_request_id = 0
+    initial_timeout = module.params.get('timeout')
     LOGGER.info('----Start cluster expansion validation for host: %s.----', module.params.get('host_psnt'))
     validation_json = VxRailCluster().create_validation_json()
     request_body = validation_json
-    LOGGER.info('validation_json: %s.', request_body)
     validation_request_id = VxRailCluster().start_validation(request_body)
     LOGGER.info('Node_validation: VxRail task_ID: %s.', validation_request_id)
     if validation_request_id == "error":
         module.fail_json(
             msg="validation request id is not returned. Please see the /tmp/vxrail_ansible_cluster.log for more details")
 
-    while validation_status not in ('COMPLETED', 'FAILED') and time_out < initial_timeout:
+    while validation_status not in ('COMPLETED', 'FAILED') and time_out < initial_timeout and not error:
         validation_response = VxRailCluster().get_request_status(validation_request_id)
         validation_status = validation_response.state
         validation_result = VxRailCluster().get_request_info(validation_response)
+        hosts = eval(validation_result[0].get('extension')).get('hosts')
+        error = hosts[0].get('errors')
         LOGGER.info('Validation_Task: status: %s.', validation_status)
         LOGGER.info('Validation_Task: details: %s.', validation_result)
         LOGGER.info("Validation Task: Sleeping 30 seconds...")
         time.sleep(30)
         time_out = time_out+30
 
-    if validation_status == 'COMPLETED':
-
+    if validation_status == 'COMPLETED' and not error:
         LOGGER.info("-------Validation Completed------")
         LOGGER.info('----Start cluster expansion for host: %s.----', module.params.get('host_psnt'))
         expansion_json = validation_json
-        LOGGER.info('expansion_json: %s.', expansion_json)
         expansion_request_id = VxRailCluster().start_expansion(expansion_json)
         LOGGER.info('Cluster_expansion: VxRail task_ID: %s.', expansion_request_id)
         while expansion_status not in ('COMPLETED', 'FAILED') and time_out < initial_timeout:
@@ -392,20 +419,22 @@ def main():
             LOGGER.info("-----Expansion Completed-----")
         else:
             LOGGER.info("------Expansion Failed-----")
-            vx_expansion = {'expansion_status': expansion_status, 'request_id': '0'}
+            hosts = eval(expansion_result[0].get('extension')).get('hosts')
+            error = hosts[0].get('errors')
+            vx_expansion = {'request_id': expansion_request_id, 'response_error': error}
             vx_facts_result = dict(failed=True, NodeExpansion=vx_expansion,
             msg ='The node expansion has failed. Please see the /tmp/vxrail_ansible_cluster.log for more details')
             module.exit_json(**vx_facts_result)
     else:
         LOGGER.info("------Validation Failed-----")
-        vx_validation = {'validation_status': 'Failed', 'request_id': validation_request_id}
+        vx_validation = {'request_id': validation_request_id, 'response_error': error}
         vx_facts_result = dict(failed=True, NodeCompatiblityValidation=vx_validation,
-         msg='The node validaiton has failed. Please see the /tmp/vxrail_ansible_cluster.log for more details')
+         msg="The node validaiton has failed. Please see the /tmp/vxrail_ansible_cluster.log for more details")
         module.exit_json(**vx_facts_result)
-
     vx_validation = {'status': validation_status, 'request_id': validation_request_id}
     vx_expansion = {'status': expansion_status, 'request_id': expansion_request_id}
-    vx_facts_result= dict(changed=True, NodeExpansion=vx_expansion, NodeCompatiblityValidation=vx_validation)
+    vx_facts_result= dict(changed=True, NodeExpansion=vx_expansion, NodeCompatiblityValidation=vx_validation,
+         msg="The cluster expansion is successful. Please see the /tmp/vxrail_ansible_cluster.log for more details")
     module.exit_json(**vx_facts_result)
 
 
