@@ -388,17 +388,17 @@ def main():
         module.fail_json(
             msg="validation request id is not returned. Please see the /tmp/vxrail_ansible_cluster.log for more details")
 
-    while validation_status not in ('COMPLETED', 'FAILED') and time_out < initial_timeout and not error:
+    while validation_status not in ('COMPLETED', 'FAILED') and time_out < initial_timeout:
         validation_response = VxRailCluster().get_request_status(validation_request_id)
         validation_status = validation_response.state
         validation_result = VxRailCluster().get_request_info(validation_response)
-        hosts = eval(validation_result[0].get('extension')).get('hosts')
-        error = hosts[0].get('errors')
         LOGGER.info('Validation_Task: status: %s.', validation_status)
         LOGGER.info('Validation_Task: details: %s.', validation_result)
         LOGGER.info("Validation Task: Sleeping 30 seconds...")
         time.sleep(30)
         time_out = time_out+30
+    hosts = eval(validation_result[0].get('extension')).get('hosts')
+    error = hosts[0].get('errors')
 
     if validation_status == 'COMPLETED' and not error:
         LOGGER.info("-------Validation Completed------")
