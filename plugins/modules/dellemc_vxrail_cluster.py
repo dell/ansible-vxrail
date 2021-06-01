@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/python
 # Copyright: (c) 2021, DellEMC
 from __future__ import (absolute_import, division, print_function)
 
@@ -14,8 +14,8 @@ DOCUMENTATION = r'''
 module: dell_vxrail_cluster
 version_added: '1.0.0'
 short_description: Add a node to an existing VxRail Cluster
-description: 
-This module will validate a L2 cluster expansion, perform a L2 cluster expansion based on the provided 
+description:
+This module will validate a L2 cluster expansion, perform a L2 cluster expansion based on the provided
 expansion specification.
 author:
 - Hongmei Gao(@gaohongmei) <s.gao@dell.com>
@@ -49,7 +49,7 @@ options:
     description:
       The psnt number for the ESX Host.
     required: true
-    type: str  
+    type: str
 
   mgt_ip:
     description:
@@ -104,26 +104,26 @@ options:
        The nic profile of this cluster, the default value is "FOUR_HIGH_SPEED"
     required: false
     choices: [FOUR_HIGH_SPEED, TWO_LOW_TWO_HIGH_SPEED]
-    type: str        
+    type: str       
 
   vds_name:
     description:
        The vds name of this cluster, the default value is "VMware HCIA Distributed Switch"
-    required: false 
-    type: str 
+    required: false
+    type: str
 
   maintenance_mode:
     description:
        the configuration for maintenance mode, the default value is false
     required: false
     choices: [FALSE, TRUE]
-    type: str 
+    type: str
 
   timeout:
     description:
       Time out value for cluster expansion, the default value is 1800 seconds
     required: false
-    type: int 
+    type: int
 
 '''
 
@@ -233,7 +233,7 @@ class VxRailCluster():
             # start cluster expansion validation
             response = api_instance.v1_cluster_expansion_validate_post(request_body)
         except ApiException as e:
-            LOGGER.error("Exception when calling ClusterExpansionApi->v1_cluster_expansion_validate_post: %s\n" % e)
+            LOGGER.error("Exception when calling ClusterExpansionApi->v1_cluster_expansion_validate_post: %s" % e)
             return 'error'
         job_id = response.request_id
         return job_id
@@ -246,7 +246,7 @@ class VxRailCluster():
             # start cluster expansion
             response = api_instance.v1_cluster_expansion_post(request_body)
         except ApiException as e:
-            LOGGER.error("Exception when calling ClusterExpansionApi->v1_cluster_expansion_post: %s\n" % e)
+            LOGGER.error("Exception when calling ClusterExpansionApi->v1_cluster_expansion_post: %s" % e)
             return 'error'
         job_id = response.request_id
         return job_id
@@ -258,7 +258,7 @@ class VxRailCluster():
         try:
             response = api_instance.v1_requests_id_get(job_id)
         except ApiException as e:
-            LOGGER.error("Exception when calling v1_requests_id_get: %s\n" % e)
+            LOGGER.error("Exception when calling v1_requests_id_get: %s" % e)
             return 'error'
         return response
 
