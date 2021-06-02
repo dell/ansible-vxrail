@@ -104,7 +104,7 @@ options:
        The nic profile of this cluster, the default value is "FOUR_HIGH_SPEED"
     required: false
     choices: [FOUR_HIGH_SPEED, TWO_LOW_TWO_HIGH_SPEED]
-    type: str     
+    type: str 
 
   vds_name:
     description:
@@ -127,7 +127,7 @@ options:
 
 '''
 
-EXAMPLES = """
+EXAMPLES = r'''
   - name: Start a cluster expansion
     dellemc-vxrail-cluster:
         vxmip: "{{ vxmip }}"
@@ -148,9 +148,9 @@ EXAMPLES = """
         maintenance_mode : "{{ maintenance_mode }}"
         vds_name : "{{ vds_name }}"
         timeout : "{{ timeout }}"
-"""
+'''
 
-RETURN = """
+RETURN = r'''
 changed:
     description: Whether or not the resource has changed.
     returned: always
@@ -170,7 +170,7 @@ expansion_status:
         "status": "COMPLETED"
     }
    }
-"""
+'''
 
 import logging
 import urllib3
