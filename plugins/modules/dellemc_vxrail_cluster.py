@@ -7,7 +7,7 @@ __metaclass__ = type
 
 DOCUMENTATION = r'''
 ---
-module: dell_vxrail_cluster
+module: dellemc_vxrail_cluster
 
 short_description: Add a node to an existing VxRail Cluster by Loudmouth
 
@@ -15,13 +15,14 @@ short_description: Add a node to an existing VxRail Cluster by Loudmouth
 # i.e. the version is of the form "2.5.0" and not "2.4".
 version_added: "1.0.0"
 
-description: This module will validate a L2 cluster expansion, perform a L2 cluster expansion based on the provided expansion specification.
-
+description:
+- This module will validate a L2 cluster expansion, perform a L2 cluster expansion
+  based on the provided expansion specification.
 options:
-    vxm_version:
-        description: The version of the VxRail Manager System.
-        required: true
-        type: str
+  vxm_version:
+    description: The version of the VxRail Manager System.
+    required: true
+    type: str
 
   vxmip:
     description:
@@ -44,6 +45,12 @@ options:
   host_psnt:
     description:
       The psnt number for the ESX Host.
+    required: True
+    type: str
+
+  hostname:
+    description:
+      The name for the ESX Host.
     required: True
     type: str
 
@@ -83,7 +90,7 @@ options:
     required: true
     type: str
 
-  rackname:
+  rack_name:
     description:
       The rack name of this cluster
     required: true
@@ -100,6 +107,7 @@ options:
        The nic profile of this cluster, the default value is "FOUR_HIGH_SPEED"
     required: false
     default: FOUR_HIGH_SPEED
+    choices: [FOUR_HIGH_SPEED, TWO_HIGH_TWO_SPEED]
     type: str
 
   vds_name:
@@ -115,7 +123,6 @@ options:
     required: false
     type: bool
     default: FALSE
-    
 
   timeout:
     description:
@@ -123,7 +130,7 @@ options:
     required: false
     type: int
     default: 1800
-    
+
 author:
     - Hongmei Gao(@gaohongmei) <s.gao@dell.com>
 
@@ -362,7 +369,7 @@ def main():
         vmotion_ip=dict(required=True),
         rack_name=dict(required=True),
         order_number=dict(required=True),
-        nic_profile=dict(type='str', default="FOUR_HIGH_SPEED"),
+        nic_profile=dict(type='str', default="FOUR_HIGH_SPEED", choices=['FOUR_HIGH_SPEED', 'TWO_HIGH_TWO_SPEED']),
         vds_name=dict(type='str', default="VMware HCIA Distributed Switch"),
         maintenance_mode=dict(type='bool', default=False),
         timeout=dict(type='int', default=30 * 60)
