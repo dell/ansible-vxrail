@@ -104,7 +104,7 @@ options:
        The nic profile of this cluster, the default value is "FOUR_HIGH_SPEED"
     required: false
     choices: [FOUR_HIGH_SPEED, TWO_LOW_TWO_HIGH_SPEED]
-    type: str       
+    type: str     
 
   vds_name:
     description:
@@ -233,7 +233,7 @@ class VxRailCluster():
             # start cluster expansion validation
             response = api_instance.v1_cluster_expansion_validate_post(request_body)
         except ApiException as e:
-            LOGGER.error("Exception when calling ClusterExpansionApi->v1_cluster_expansion_validate_post: %s" % e)
+            LOGGER.error("Exception when calling ClusterExpansionApi->v1_cluster_expansion_validate_post: %s\n", e)
             return 'error'
         job_id = response.request_id
         return job_id
@@ -246,7 +246,7 @@ class VxRailCluster():
             # start cluster expansion
             response = api_instance.v1_cluster_expansion_post(request_body)
         except ApiException as e:
-            LOGGER.error("Exception when calling ClusterExpansionApi->v1_cluster_expansion_post: %s" % e)
+            LOGGER.error("Exception when calling ClusterExpansionApi->v1_cluster_expansion_post: %s\n", e)
             return 'error'
         job_id = response.request_id
         return job_id
@@ -258,7 +258,7 @@ class VxRailCluster():
         try:
             response = api_instance.v1_requests_id_get(job_id)
         except ApiException as e:
-            LOGGER.error("Exception when calling v1_requests_id_get: %s" % e)
+            LOGGER.error("Exception when calling v1_requests_id_get: %s\n", e)
             return 'error'
         return response
 
