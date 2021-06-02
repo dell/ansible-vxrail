@@ -1,19 +1,21 @@
 #!/usr/bin/python
-# Copyright: (c) 2021, DellEMC
-from __future__ import (absolute_import, division, print_function)
 
+# Copyright: (c) 2018, Terry Jones <terry.jones@example.org>
+# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
 DOCUMENTATION = r'''
 ---
 module: dell_vxrail_cluster
-version_added: '1.0.0'
-short_description: Add a node to an existing VxRail Cluster
-description:
-This module will validate a L2 cluster expansion, perform a L2 cluster expansion based on the provided
-expansion specification.
-author:
-- Hongmei Gao(@gaohongmei) <s.gao@dell.com>
+
+short_description: Add a node to an existing VxRail Cluster by Loudmouth
+
+# If this is part of a collection, you need to use semantic versioning,
+# i.e. the version is of the form "2.5.0" and not "2.4".
+version_added: "1.0.0"
+
+description: This module will validate a L2 cluster expansion, perform a L2 cluster expansion based on the provided expansion specification.
 
 options:
     vxm_version:
@@ -110,16 +112,20 @@ options:
   maintenance_mode:
     description:
        the configuration for maintenance mode, the default value is false
-    required: False
+    required: false
+    type: bool
     default: FALSE
-    type: str
+    
 
   timeout:
     description:
       Time out value for cluster expansion, the default value is 1800 seconds
     required: false
-    default: 1800
     type: int
+    default: 1800
+    
+author:
+    - Hongmei Gao(@gaohongmei) <s.gao@dell.com>
 
 '''
 
