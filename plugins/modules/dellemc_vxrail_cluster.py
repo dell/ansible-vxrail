@@ -4,11 +4,6 @@ from __future__ import (absolute_import, division, print_function)
 
 __metaclass__ = type
 
-ANSIBLE_METADATA = {'metadata_version': '1.1',
-                    'status': ['preview'],
-                    'supported_by': 'community'
-                    }
-
 DOCUMENTATION = r'''
 ---
 module: dell_vxrail_cluster
@@ -21,52 +16,51 @@ author:
 - Hongmei Gao(@gaohongmei) <s.gao@dell.com>
 
 options:
-  vxm_version:
-    description:
-      The version of the VxRail Manager System
-    required: true
-    type: str
+    vxm_version:
+        description: The version of the VxRail Manager System.
+        required: true
+        type: str
 
   vxmip:
     description:
       The IP address of the VxRail Manager System
-    required: true
+    required: True
     type: str
 
   vcadmin:
     description:
       Administrative account of the vCenter Server the VxRail Manager is registered to
-    required: true
+    required: True
     type: str
 
   vcpasswd:
     description:
       The password for the administrator account provided in vcadmin
-    required: true
+    required: True
     type: str
 
   host_psnt:
     description:
       The psnt number for the ESX Host.
-    required: true
+    required: True
     type: str
 
   mgt_ip:
     description:
       The management IP address for the ESX Host.
-    required: true
+    required: True
     type: str
 
   vsan_ip:
     description:
       The vsan IP address for the ESX Host.
-    required: true
+    required: True
     type: str
 
   vmotion_ip:
     description:
       The vmotion IP address for the ESX Host.
-    required: true
+    required: True
     type: str
 
   mgt_account:
@@ -103,26 +97,28 @@ options:
     description:
        The nic profile of this cluster, the default value is "FOUR_HIGH_SPEED"
     required: false
-    choices: [FOUR_HIGH_SPEED, TWO_LOW_TWO_HIGH_SPEED]
-    type: str 
+    default: FOUR_HIGH_SPEED
+    type: str
 
   vds_name:
     description:
        The vds name of this cluster, the default value is "VMware HCIA Distributed Switch"
     required: false
+    default: VMware HCIA Distributed Switch
     type: str
 
   maintenance_mode:
     description:
        the configuration for maintenance mode, the default value is false
-    required: false
-    choices: [FALSE, TRUE]
+    required: False
+    default: FALSE
     type: str
 
   timeout:
     description:
       Time out value for cluster expansion, the default value is 1800 seconds
     required: false
+    default: 1800
     type: int
 
 '''
