@@ -1,0 +1,52 @@
+---
+- name: Add new node by LoudMouth
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+    vxm_version: "{{ vxm_version }}"
+    host_psnt: "{{ host_psnt }}"
+    hostname: "{{ hostname }}"
+    mgt_account: "{{ mgt_account }}"
+    mgt_passwd: "{{ mgt_passwd }}"
+    root_passwd: "{{ root_passwd }}"
+    mgt_ip: "{{ mgt_ip }}"
+    vsan_ip: "{{ vsan_ip }}"
+    vmotion_ip: "{{ vmotion_ip }}"
+    rack_name: "{{ rack_name }}"
+    order_number: "{{ order_number }}"
+    nic_profile: "{{ nic_profile }}"
+    maintenance_mode: "{{ maintenance_mode }}"
+    vds_name: "{{ vds_name }}"
+    timeout: "{{ timeout }}"
+
+  tasks:
+    - name: Start a cluster expansion
+      dellemc_vxrail_cluster:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        vxm_version: "{{ vxm_version }}"
+        host_psnt: "{{ host_psnt }}"
+        hostname: "{{ hostname }}"
+        mgt_account: "{{ mgt_account }}"
+        mgt_passwd: "{{ mgt_passwd }}"
+        root_passwd: "{{ root_passwd }}"
+        mgt_ip: "{{ mgt_ip }}"
+        vsan_ip: "{{ vsan_ip }}"
+        vmotion_ip: "{{ vmotion_ip }}"
+        rack_name: "{{ rack_name }}"
+        order_number: "{{ order_number }}"
+        nic_profile : "{{ nic_profile }}"
+        maintenance_mode : "{{ maintenance_mode }}"
+        vds_name : "{{ vds_name }}"
+        timeout : "{{ timeout }}"
+      register: expansion_status
+    - name: Display added node host_psnt
+      debug:
+        var: host_psnt
+    - name: Get Cluster Expansion Result
+      debug:
+        msg:  "{{expansion_status}}"
+
