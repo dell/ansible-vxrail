@@ -1,0 +1,20 @@
+---
+- name: Retrieve VxRail System Information
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+
+  tasks:
+    - name: Get System Information
+      dellemc_vxrail_system:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+      register: system_info
+
+    - name: Display System Information
+      debug:
+        msg:  "{{system_info}}"
+
