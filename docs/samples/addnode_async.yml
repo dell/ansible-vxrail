@@ -37,9 +37,9 @@
         vmotion_ip: "{{ vmotion_ip }}"
         rack_name: "{{ rack_name }}"
         order_number: "{{ order_number }}"
-        nic_profile : "{{ nic_profile }}"
-        maintenance_mode : "{{ maintenance_mode }}"
-        vds_name : "{{ vds_name }}"
+        nic_profile: "{{ nic_profile }}"
+        maintenance_mode: "{{ maintenance_mode }}"
+        vds_name: "{{ vds_name }}"
       async: 1800
       poll: 0
       register: expansion_status
@@ -57,4 +57,3 @@
     - name: Get Cluster Expansion Result
       debug:
         msg:  "{{job_result}}"
-

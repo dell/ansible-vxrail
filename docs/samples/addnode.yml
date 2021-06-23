@@ -38,10 +38,10 @@
         vmotion_ip: "{{ vmotion_ip }}"
         rack_name: "{{ rack_name }}"
         order_number: "{{ order_number }}"
-        nic_profile : "{{ nic_profile }}"
-        maintenance_mode : "{{ maintenance_mode }}"
-        vds_name : "{{ vds_name }}"
-        timeout : "{{ timeout }}"
+        nic_profile: "{{ nic_profile }}"
+        maintenance_mode: "{{ maintenance_mode }}"
+        vds_name: "{{ vds_name }}"
+        timeout: "{{ timeout }}"
       register: expansion_status
     - name: Display added node host_psnt
       debug:
@@ -49,4 +49,3 @@
     - name: Get Cluster Expansion Result
       debug:
         msg:  "{{expansion_status}}"
-

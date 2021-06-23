@@ -17,4 +17,3 @@
     - name: Display System Information
       debug:
         msg:  "{{system_info}}"
-
