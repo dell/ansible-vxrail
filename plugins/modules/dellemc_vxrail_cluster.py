@@ -1,4 +1,5 @@
 #!/usr/bin/python
+# Copyright 2021 Dell Inc. or its subsidiaries. All Rights Reserved
 
 # Copyright: (c) 2018, Terry Jones <terry.jones@example.org>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
