@@ -93,15 +93,15 @@ options:
 
   rack_name:
     description:
-      The rack name of this cluster
+     The name of the rack that houses the host
     required: true
     type: str
 
   order_number:
     description:
-      The order number of added node in this cluster
+      The position of the node in the rack
     required: true
-    type: str
+    type: int
 
   nic_profile:
     description:
@@ -120,7 +120,7 @@ options:
 
   maintenance_mode:
     description:
-       the configuration for maintenance mode, the default value is false
+       Whether the hosts remain in maintenance mode after being added to the cluster, the default value is false
     required: false
     type: bool
     default: FALSE
@@ -133,7 +133,7 @@ options:
     default: 1800
 
 author:
-    - Hongmei Gao(@gaohongmei) <s.gao@dell.com>
+    - Hongmei Gao(@gaohongmei) <ansible.team@dell.com>
 
 '''
 
@@ -179,6 +179,7 @@ expansion_status:
         "request_id": "433d0a61-06e7-4cb8-a1eb-985ab9a8b5dd",
         "status": "COMPLETED"
     }
+    "msg": "The cluster expansion is successful. Please see the /tmp/vxrail_ansible_cluster.log for more details"
    }
 '''
 
@@ -369,7 +370,7 @@ def main():
         vsan_ip=dict(required=True),
         vmotion_ip=dict(required=True),
         rack_name=dict(required=True),
-        order_number=dict(required=True),
+        order_number=dict(required=True, type='int'),
         nic_profile=dict(type='str', default="FOUR_HIGH_SPEED", choices=['FOUR_HIGH_SPEED', 'TWO_HIGH_TWO_SPEED']),
         vds_name=dict(type='str', default="VMware HCIA Distributed Switch"),
         maintenance_mode=dict(type='bool', default=False),

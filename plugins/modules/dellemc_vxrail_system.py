@@ -41,7 +41,7 @@ options:
 
   timeout:
     description:
-      Time out value for cluster expansion, the default value is 60 seconds
+      Time out value for getting system infomation, the default value is 60 seconds
     required: false
     type: int
     default: 60
