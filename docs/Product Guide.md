@@ -15,7 +15,7 @@
     -   [Examples](#examples-1)
     -   [Return Values](#return-values-1)
     -   [Authors](#authors-1)
--   [Host Group Module](#host-group-module)
+-   [System Module](#host-group-module)
     -   [Synopsis](#synopsis-2)
     -   [Parameters](#parameters-2)
     -   [Notes](#notes-2)
