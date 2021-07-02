@@ -16,10 +16,7 @@
     vmotion_ip: "{{ vmotion_ip }}"
     rack_name: "{{ rack_name }}"
     order_number: "{{ order_number }}"
-    nic_profile: "{{ nic_profile }}"
     maintenance_mode: "{{ maintenance_mode }}"
-    vds_name: "{{ vds_name }}"
-    timeout: "{{ timeout }}"
 
   tasks:
     - name: Start a cluster expansion
@@ -38,14 +35,21 @@
         vmotion_ip: "{{ vmotion_ip }}"
         rack_name: "{{ rack_name }}"
         order_number: "{{ order_number }}"
-        nic_profile: "{{ nic_profile }}"
         maintenance_mode: "{{ maintenance_mode }}"
-        vds_name: "{{ vds_name }}"
-        timeout: "{{ timeout }}"
+      async: 1800
+      poll: 0
       register: expansion_status
+    - name: Check if cluster expansion job is completed...The node addition is still ongoing.
+      async_status:
+        jid: "{{ expansion_status.ansible_job_id }}"
+      register: job_result
+      until: job_result.finished
+      retries: 100
+      delay: 30
+
     - name: Display added node host_psnt
       debug:
         var: host_psnt
     - name: Get Cluster Expansion Result
       debug:
-        msg:  "{{expansion_status}}"
+        msg:  "{{job_result}}"
