@@ -10,7 +10,7 @@ DOCUMENTATION = r'''
 ---
 module: dellemc_vxrail_cluster
 
-short_description: Add a node to an existing VxRail Cluster by Loudmouth
+short_description: Add a node discovered by LoudMouth to an existing VxRail Cluster
 
 # If this is part of a collection, you need to use semantic versioning,
 # i.e. the version is of the form "2.5.0" and not "2.4".
@@ -18,7 +18,7 @@ version_added: "1.0.0"
 
 description:
 - This module will validate a L2 cluster expansion, perform a L2 cluster expansion
-  based on the provided expansion specification.
+  based on the provided expansion specification and query status.
 options:
   vxm_version:
     description: The version of the VxRail Manager System.
@@ -93,30 +93,17 @@ options:
 
   rack_name:
     description:
-     The name of the rack that houses the host
-    required: true
+     The name of the rack that houses the host,the default value is default-rack
+    required: false
     type: str
+    default: default-rack
 
   order_number:
     description:
-      The position of the node in the rack
-    required: true
+      The position of the node in the rack,the default value is 5
+    required: false
     type: int
-
-  nic_profile:
-    description:
-       The nic profile of this cluster, the default value is "FOUR_HIGH_SPEED"
-    required: false
-    default: FOUR_HIGH_SPEED
-    choices: [FOUR_HIGH_SPEED, TWO_HIGH_TWO_SPEED]
-    type: str
-
-  vds_name:
-    description:
-       The vds name of this cluster, the default value is "VMware HCIA Distributed Switch"
-    required: false
-    default: VMware HCIA Distributed Switch
-    type: str
+    default: 5
 
   maintenance_mode:
     description:
@@ -154,9 +141,7 @@ EXAMPLES = r'''
         vmotion_ip: "{{ vmotion_ip }}"
         rack_name: "{{ rack_name }}"
         order_number: "{{ order_number }}"
-        nic_profile : "{{ nic_profile }}"
         maintenance_mode : "{{ maintenance_mode }}"
-        vds_name : "{{ vds_name }}"
         timeout : "{{ timeout }}"
 '''
 
@@ -224,9 +209,7 @@ class VxRailCluster():
         self.rackname = module.params.get('rack_name')
         self.order_number = module.params.get('order_number')
         self.root_passwd = module.params.get('root_passwd')
-        self.nic_profile = module.params.get('nic_profile')
         self.mm = module.params.get('maintenance_mode')
-        self.vds_name = module.params.get('vds_name')
         self.cluster_url = VxrailClusterUrls(self.vxm_ip)
         # Configure HTTP basic authorization: basicAuth
         self.configuration = vxrail_ansible_utility.Configuration()
@@ -336,19 +319,23 @@ class VxRailCluster():
         return network
 
     def _create_nicmapping_section(self):
-        vds_name = self.vds_name
-        if self.nic_profile == "FOUR_HIGH_SPEED":
-            nic_mappings = [{"vds_name": vds_name, "name": "uplink1", "physical_nic": "vmnic0"},
-                            {"vds_name": vds_name, "name": "uplink2", "physical_nic": "vmnic1"},
-                            {"vds_name": vds_name, "name": "uplink3", "physical_nic": "vmnic2"},
-                            {"vds_name": vds_name, "name": "uplink4", "physical_nic": "vmnic3"}]
-            return nic_mappings
-
-        else:
-            nic_mappings = [{"vds_name": vds_name, "name": "uplink1", "physical_nic": "vmnic0"},
-                            {"vds_name": vds_name, "name": "uplink2", "physical_nic": "vmnic1"}]
-
-            return nic_mappings
+        nic_mappings = list()
+        api_instance = vxrail_ansible_utility.SystemInformationApi(vxrail_ansible_utility.ApiClient(self.configuration))
+        try:
+            # get nic mapping
+            response = api_instance.query_cluster_configured_host_info()
+        except ApiException as e:
+            LOGGER.error("Exception when calling ClusterExpansionApi->query_cluster_configured_host_info: %s\n", e)
+            return 'error'
+        system_cluster_hosts = response
+        vmnic_name = system_cluster_hosts[0].vmnics
+        for i in range(len(vmnic_name)):
+            nic_mappings.append({
+                "vds_name": vmnic_name[i].vds_name, "name": vmnic_name[i].uplink_name,
+                "physical_nic": vmnic_name[i].vmnic_name
+            })
+        LOGGER.info('nic_mapping: status: %s.', nic_mappings)
+        return nic_mappings
 
 
 def main():
@@ -369,10 +356,8 @@ def main():
         mgt_ip=dict(required=True),
         vsan_ip=dict(required=True),
         vmotion_ip=dict(required=True),
-        rack_name=dict(required=True),
-        order_number=dict(required=True, type='int'),
-        nic_profile=dict(type='str', default="FOUR_HIGH_SPEED", choices=['FOUR_HIGH_SPEED', 'TWO_HIGH_TWO_SPEED']),
-        vds_name=dict(type='str', default="VMware HCIA Distributed Switch"),
+        rack_name=dict(type='str', default="default-rack"),
+        order_number=dict(type='int', default=5),
         maintenance_mode=dict(type='bool', default=False),
         timeout=dict(type='int', default=30 * 60)
     )

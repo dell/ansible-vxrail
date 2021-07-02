@@ -30,14 +30,15 @@ Revision History
 Product Description
 -------------------
 
-The Ansible Modules for Dell EMC VxRail are used for gathering system information and performing Lay2 Node Expansion.
+The Ansible Modules for Dell EMC VxRail are used for gathering system information and performing L2 Node Expansion.
 The modules use playbooks to list, show, create each of the entities.
 
 The Ansible Modules for Dell EMC VxRail supports the following
 features:
 
--   Add a Lay2 Node,including node validation, node configuration and query the status.
--   Get details of VxRail System information
+-   Add a L2 Node discovered by LoudMouth to an existing VxRail Cluster, including node validation, node configuration 
+    and query the status.
+-   Retrieve details of VxRail System information
 
 Known issues
 ------------

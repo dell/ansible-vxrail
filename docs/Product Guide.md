@@ -15,7 +15,7 @@
     -   [Examples](#examples-1)
     -   [Return Values](#return-values-1)
     -   [Authors](#authors-1)
--   [System Module](#host-group-module)
+-   [System Module](#system-module)
     -   [Synopsis](#synopsis-2)
     -   [Parameters](#parameters-2)
     -   [Notes](#notes-2)
@@ -264,13 +264,16 @@ Parameters
                 <div style="font-size: small">
                     <span style="color: purple">type=string</span>
                     <br>
-                    <span style="color: red">required=true</span>                    </div>
+                    <span style="color: red"></span>                    </div>
                                                     </td>
                             <td>
+ <ul style="margin: 0; padding: 0"><b>Default:</b>
+                                                                                                                                                            <li>default-rack</li>
+                                                                                </ul>
                                                                                                                                                         </td>
                                                             <td>
                                         <div></div>
-                                        <div>The name of the rack that houses the host</div>
+                                        <div>The name of the rack that houses the host, default value is default-rack.</div>
                                                     </td>
         </tr>
 <tr>
@@ -281,54 +284,16 @@ Parameters
                 <div style="font-size: small">
                     <span style="color: purple">type=integer</span>
                     <br>
-                    <span style="color: red">required=true</span>                    </div>
+                    <span style="color: red"></span>                    </div>
                                                     </td>
                             <td>
+ <ul style="margin: 0; padding: 0"><b>Default:</b>
+                                                                                                                                                            <li>5</li>
+                                                                                </ul>
                                                                                                                                                         </td>
                                                             <td>
                                         <div></div>
-                                        <div>The position of the node in the rack</div>
-                                                    </td>
-        </tr>
-<tr>
-                                                            <td colspan="1">
-                <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
-                <b>vds_name</b>
-                <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
-                <div style="font-size: small">
-                    <span style="color: purple">type=string</span>
-                                      </div>
-                                                    </td>
-                            <td>
-                                 <ul style="margin: 0; padding: 0"><b>Default:</b>
-                                    <li>VMware HCIA Distributed Switch</li>
-                                  </ul>
-                                   
-</td>
-                                                            <td>
-                                        <div></div>
-                                        <div>The vds name of this cluster, the default value is "VMware HCIA Distributed Switch"</div>
-                                                    </td>
-        </tr>
-<tr>
-                                                            <td colspan="1">
-                <div class="ansibleOptionAnchor" id="parameter-host_type"></div>
-                <b>nic_profile</b>
-                <a class="ansibleOptionLink" href="#parameter-host_type" title="Permalink to this option"></a>
-                <div style="font-size: small">
-                    <span style="color: purple">type=string</span>
-                    <br>
-                    <span style="color: red"></span> 
-                                                                </div>
-                                                    </td>
-                            <td>
-                                                                                                                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                                                                                                                                            <li>FOUR_HIGH_SPEED</li>
-                                                                                                                                                                                            <li>TWO_HIGH_TWO_SPEED</li>
-                                                                                </ul>
-                                                                        </td>
-                                                            <td>
-                                        <div>The nic profile of this cluster, the default value is "FOUR_HIGH_SPEED",you can check this in FirstRun json file</div>
+                                        <div>The position of the node in the rack, default value is 5.</div>
                                                     </td>
         </tr>
                             <tr>
@@ -349,7 +314,7 @@ Parameters
                                                                                 </ul>
                                                                         </td>
                                                             <td>
-                                        <div>	Whether the hosts remain in maintenance mode after being added to the cluster, default value is false</div>
+                                        <div>	Whether the hosts remain in maintenance mode after being added to the cluster, default value is false.</div>
                                                     </td>
         </tr>
                             <tr>
@@ -401,10 +366,8 @@ Examples
         vmotion_ip: "{{ vmotion_ip }}"
         rack_name: "{{ rack_name }}"
         order_number: "{{ order_number }}"
-        nic_profile : "{{ nic_profile }}"
-        maintenance_mode : "{{ maintenance_mode }}"
-        vds_name : "{{ vds_name }}"
-        timeout : "{{ timeout }}"
+        maintenance_mode: "{{ maintenance_mode }}"
+        timeout: "{{ timeout }}"
     
 ```
 
