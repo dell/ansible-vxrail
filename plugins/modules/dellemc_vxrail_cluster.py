@@ -334,7 +334,6 @@ class VxRailCluster():
                 "vds_name": vmnic_name[i].vds_name, "name": vmnic_name[i].uplink_name,
                 "physical_nic": vmnic_name[i].vmnic_name
             })
-        LOGGER.info('nic_mapping: status: %s.', nic_mappings)
         return nic_mappings
 
 
