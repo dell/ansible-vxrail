@@ -17,7 +17,7 @@ This table provides information about the software prerequisites for the Ansible
 |---------------------|----------------|--------------------|----------------------------|-------------|
 | v1.0.0 | 7.0.240 | <br> 3.6.x <br> 3.7.x | 1.0.0| 2.9 and 2.10 | 
 
-  * Please follow VxRail Ansible Utility installation instructions on [VxRail Ansible Utility Documentation](https://github.com/dell/ansible-vxrail-utility)
+  * Please follow VxRail Ansible Utility installation instructions on [VxRail Ansible Utility Documentation](https://eos2git.cec.lab.emc.com/vxrail/ansible-vxrail-utility)
 
 ## Idempotency
 The modules are written in such a way that all requests are idempotent and hence fault-tolerant. This means that the result of a successfully performed request is independent of the number of times it is executed.
@@ -27,7 +27,7 @@ The modules are written in such a way that all requests are idempotent and hence
   * System module
 
 ## Installation of SDK
-Install the python [sdk](https://github.com/dell/ansible-vxrail-utility) named 'VxRail Ansible Utility'. It can be installed using pip, based on the appropriate python version.
+Install the python [sdk](https://eos2git.cec.lab.emc.com/vxrail/ansible-vxrail-utility) named 'VxRail Ansible Utility'. It can be installed using pip, based on the appropriate python version.
 
 ## Installing Collections
 
@@ -49,7 +49,6 @@ Install the python [sdk](https://github.com/dell/ansible-vxrail-utility) named '
 
 ## Running Ansible Modules
 
-The Ansible server must be configured with Python library for VxRail Ansible Utility to run the Ansible playbooks. The [Documents]( https://github.com/dell/ansible-vxrail/tree/1.0.0/docs ) provide information on different Ansible modules along with their functions and syntax. The parameters table in the Product Guide provides information on various parameters which needs to be configured before running the modules.
+The Ansible server must be configured with Python library for VxRail Ansible Utility to run the Ansible playbooks. The [Documents]( https://eos2git.cec.lab.emc.com/vxrail/ansible-vxrail/tree/master/docs ) provide information on different Ansible modules along with their functions and syntax. The parameters table in the Product Guide provides information on various parameters which needs to be configured before running the modules.
 
-## Results
-Each module returns the updated state and details of the entity, for example, if you are using the Volume module, all calls will return the updated details of the volume. A sample result is shown in each module's documentation.
+
