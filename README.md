@@ -49,6 +49,6 @@ Install the python [sdk](https://eos2git.cec.lab.emc.com/vxrail/ansible-vxrail-u
 
 ## Running Ansible Modules
 
-The Ansible server must be configured with Python library for VxRail Ansible Utility to run the Ansible playbooks. The [Documents]( https://eos2git.cec.lab.emc.com/vxrail/ansible-vxrail/tree/master/docs ) provide information on different Ansible modules along with their functions and syntax. The parameters table in the Product Guide provides information on various parameters which needs to be configured before running the modules.
+The Ansible server must be configured with Python library for VxRail Ansible Utility to run the Ansible playbooks. The [Documents]( https://eos2git.cec.lab.emc.com/vxrail/ansible-vxrail/tree/vxrail-asuncion/docs ) provide information on different Ansible modules along with their functions and syntax. The parameters table in the Product Guide provides information on various parameters which needs to be configured before running the modules.
 
 
