@@ -22,11 +22,6 @@ description:
 - This module will validate a L2 cluster expansion, perform a L2 cluster expansion
   based on the provided expansion specification and query status.
 options:
-  vxm_version:
-    description: The version of the VxRail Manager System.
-    required: true
-    type: str
-
   vxmip:
     description:
       The IP address of the VxRail Manager System
@@ -64,24 +59,13 @@ author:
 '''
 
 EXAMPLES = r'''
-  - name: Start a cluster expansion
-    dellemc-vxrail-cluster:
-        vxmip: "{{ vxmip }}"
-        vcadmin: "{{ vcadmin }}"
-        vcpasswd: "{{ vcpasswd }}"
-        vxm_version: "{{ vxm_version }}"
-        host_psnt: "{{ host_psnt }}"
-        hostname: "{{ hostname }}"
-        mgt_account: "{{ mgt_account }}"
-        mgt_passwd: "{{ mgt_passwd }}"
-        root_passwd: "{{ root_passwd }}"
-        mgt_ip: "{{ mgt_ip }}"
-        vsan_ip: "{{ vsan_ip }}"
-        vmotion_ip: "{{ vmotion_ip }}"
-        rack_name: "{{ rack_name }}"
-        order_number: "{{ order_number }}"
-        maintenance_mode : "{{ maintenance_mode }}"
-        timeout : "{{ timeout }}"
+- name: Day1 initialization
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+    day1json_file: "{{ day1json_file }}"
 '''
 
 RETURN = r'''
@@ -95,15 +79,15 @@ installation_status:
   type: dict
   sample: >-
    {
-    "NodeCompatiblityValidation": {
+    "Day1DryRun": {
         "request_id": "2ce09bde-d987-4fff-8f90-6fc430e2bfc3",
         "status": "COMPLETED"
     },
-    "NodeExpansion": {
+    "Day1Initialization": {
         "request_id": "433d0a61-06e7-4cb8-a1eb-985ab9a8b5dd",
         "status": "COMPLETED"
     }
-    "msg": "The cluster expansion is successful. Please see the /tmp/vxrail_ansible_cluster.log for more details"
+    "msg": "Day1 initialization is successful. Please see the /tmp/vxrail_ansible_day1.log for more details"
    }
 '''
 
@@ -134,7 +118,6 @@ class VxrailDay1Urls():
 class VxRailDay1():
     def __init__(self):
         self.vxm_ip = module.params.get('vxmip')
-        self.vxm_version = module.params.get('vxm_version')
         self.timeout = module.params.get('timeout')
         self.vc_admin = module.params.get('vcadmin')
         self.vc_password = module.params.get('vcpasswd')
@@ -207,7 +190,6 @@ def main():
     global module
     # define available arguments/parameters a user can pass to the module
     module_args = dict(
-        vxm_version=dict(required=True),
         vxmip=dict(required=True),
         vcadmin=dict(required=True),
         vcpasswd=dict(required=True, no_log=True),

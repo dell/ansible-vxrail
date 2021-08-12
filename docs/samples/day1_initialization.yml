@@ -5,7 +5,6 @@
     vxmip: "{{ vxmip }}"
     vcadmin: "{{ vcadmin }}"
     vcpasswd: "{{ vcpasswd }}"
-    vxm_version: "{{ vxm_version }}"
     day1json_file: "{{ day1json_file }}"
   tasks:
     - name: Configure and deploy a new VxRail cluster
@@ -13,7 +12,6 @@
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
-        vxm_version: "{{ vxm_version }}"
         day1json_file: "{{ day1json_file }}"
       async: 18000
       poll: 0
