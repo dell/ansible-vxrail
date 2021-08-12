@@ -12,15 +12,15 @@ DOCUMENTATION = r'''
 ---
 module: dellemc_vxrail_day1
 
-short_description: Add a node discovered by LoudMouth to an existing VxRail Cluster
+short_description: Perform the Day1 first run initialization of a VxRail Cluster
 
 # If this is part of a collection, you need to use semantic versioning,
 # i.e. the version is of the form "2.5.0" and not "2.4".
-version_added: "1.0.0"
+version_added: "1.1.0"
 
 description:
-- This module will validate a L2 cluster expansion, perform a L2 cluster expansion
-  based on the provided expansion specification and query status.
+- This module will configure and deploy a new VxRail cluster
+  based on the provided day1 json file.
 options:
   vxmip:
     description:
@@ -74,7 +74,7 @@ changed:
     returned: always
     type: bool
 installation_status:
-  description: cluster expansion status summary
+  description: day1 initialization status summary
   returned: always
   type: dict
   sample: >-
