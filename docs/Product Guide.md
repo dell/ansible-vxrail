@@ -1,14 +1,14 @@
 
 **Ansible Modules for Dell EMC VxRail**
 =========================================
-### Product Guide 1.00.0
+### Product Guide 1.0.0
 
 >© 2021 Dell Inc. or its subsidiaries. All rights reserved. Dell 
 > EMC, and other trademarks are trademarks of Dell Inc. or its 
 > subsidiaries. Other trademarks may be trademarks of their respective 
 
 
--   [Cluster Expansion Module](#cluster-module)
+-   [Cluster Expansion Module](#cluster-expansion-module)
     -   [Synopsis](#synopsis-1)
     -   [Parameters](#parameters-1)
     -   [Notes](#notes-1)
@@ -22,7 +22,7 @@
     -   [Examples](#examples-2)
     -   [Return Values](#return-values-2)
     -   [Authors](#authors-2)
--   [Day1 Initialization Module](#day1-module)
+-   [Day1 Initialization Module](#day1-initialization-module)
     -   [Synopsis](#synopsis-3)
     -   [Parameters](#parameters-3)
     -   [Notes](#notes-3)
@@ -359,7 +359,7 @@ Examples
 
 ``` yaml+jinja
  - name: Start a cluster expansion
-    dellemc_vxrail_cluster:
+    dellemc_vxrail_cluster_expansion:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
