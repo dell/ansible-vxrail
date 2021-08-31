@@ -20,7 +20,7 @@
 
   tasks:
     - name: Start a cluster expansion
-      dellemc_vxrail_cluster:
+      dellemc_vxrail_cluster_expansion:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
