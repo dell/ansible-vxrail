@@ -8,7 +8,7 @@
 > subsidiaries. Other trademarks may be trademarks of their respective 
 
 
--   [Cluster Module](#cluster-module)
+-   [Cluster Expansion Module](#cluster-module)
     -   [Synopsis](#synopsis-1)
     -   [Parameters](#parameters-1)
     -   [Notes](#notes-1)
@@ -22,9 +22,17 @@
     -   [Examples](#examples-2)
     -   [Return Values](#return-values-2)
     -   [Authors](#authors-2)
+-   [Day1 Initialization Module](#day1-module)
+    -   [Synopsis](#synopsis-3)
+    -   [Parameters](#parameters-3)
+    -   [Notes](#notes-3)
+    -   [Examples](#examples-3)
+    -   [Return Values](#return-values-3)
+    -   [Authors](#authors-3)    
+    
 
 
-Cluster Module
+Cluster Expansion Module
 ===========
 
 Synopsis
@@ -351,7 +359,7 @@ Examples
 
 ``` yaml+jinja
  - name: Start a cluster expansion
-    dellemc-vxrail-cluster:
+    dellemc_vxrail_cluster:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
@@ -588,7 +596,7 @@ Examples
 
 ``` yaml+jinja
   - name: Retrives VxRail System Information
-    dellemc-vxrail-system:
+    dellemc_vxrail_system:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
@@ -853,6 +861,251 @@ The following are the fields unique to this module:
                                 </td>
         </tr>
                     </table>
+
+Authors
+-------
+
+-   Hongmei Gao (@gaoh8) &lt;<ansible.team@dell.com>&gt;
+
+
+Day1 Initialization Module
+=================
+
+Synopsis
+--------
+This module will configure and deploy a new VxRail cluster
+  based on the provided day1 json file.
+
+Parameters
+----------
+
+<table  border=0 cellpadding=0 class="documentation-table">
+    <tr>
+        <th colspan="1">Parameter</th>
+        <th>Choices/<font color="blue">Defaults</font></th>
+                    <th width="100%">Comments</th>
+    </tr>
+                            <tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
+                <b>vxmip</b>
+                <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                    <br>
+                    <span style="color: red">required=true</span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div></div>
+                                        <div>The IP address of the VxRail Manager System</div>
+                                                    </td>
+        </tr>
+                            <tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
+                <b>vcadmin</b>
+                <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                    <br>
+                    <span style="color: red">required=true</span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div></div>
+                                        <div>Administrative account of the vCenter Server the VxRail Manager is registered to</div>
+                                                    </td>
+        </tr>
+<tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
+                <b>vcpasswd</b>
+                <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                    <br>
+                    <span style="color: red">required=true</span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div></div>
+                                        <div>The password for the administrator account provided in vcadmin</div>
+                                                    </td>
+        </tr>
+<tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
+                <b>day1json_file</b>
+                <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                    <br>
+                    <span style="color: red">required=true</span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div></div>
+                                        <div>The path of Day1 Json file.</div>
+                                                    </td>
+        </tr>
+<tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-state"></div>
+                <b>timeout</b>
+                <a class="ansibleOptionLink" href="#parameter-state" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=integer</span>
+                    <br>
+                    <span style="color: red"></span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                        <ul style="margin: 0; padding: 0"><b>Default:</b>
+                                                                                                                                                            <li>18000s</li>
+                                                                                </ul>
+                                                                        </td>
+                                                            <td>
+                                        <div></div>
+                                        <div>Time out value for Day1 bring up, the default value is 18000 seconds</div>
+                                        <div></div>
+                                                    </td>
+        </tr>
+                    </table>
+
+Notes
+-----
+- Make sure your cluster with Day0 build only, prepare day1 json file for FirstRun
+- Can check Log file /tmp/vxrail_ansible_day1.log for more details about execution result.
+
+
+Examples
+--------
+
+``` yaml+jinja
+  - name: Configure and deploy a new VxRail cluster
+    dellemc_vxrail_day1:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        day1json_file: "{{ day1json_file }}"
+        timeout : "{{ timeout }}"
+
+```
+
+Return Values
+-------------
+
+The following are the fields unique to this module:
+
+<table border=0 cellpadding=0 class="documentation-table">
+    <tr>
+        <th colspan="2">Key</th>
+        <th>Returned</th>
+        <th width="100%">Description</th>
+    </tr>
+                <tr>
+                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="return-changed"></div>
+                <b>changed</b>
+                <a class="ansibleOptionLink" href="#return-changed" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=boolean</span>
+                                      </div>
+                                </td>
+            <td>always</td>
+            <td>
+                                        <div>Whether or not the resource has changed.</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="return-host_details"></div>
+                <b>Day1DryRun</b>
+                <a class="ansibleOptionLink" href="#return-host_details" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=list</span>
+                                      </div>
+                                </td>
+            <td>When Day1 DryRun Validation completes</td>
+            <td>
+                                        <div>Day1 DryRun Status</div>
+                                    <br/>
+                                </td>
+        </tr>
+                                    <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-host_details/bw_limit"></div>
+                <b>request_id</b>
+                <a class="ansibleOptionLink" href="#return-host_details/bw_limit" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>Day1 DryRun(long-running) request returns a requestId.</div>
+<tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-host_details/bw_limit"></div>
+                <b>status</b>
+                <a class="ansibleOptionLink" href="#return-host_details/bw_limit" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>The current state of the execution</div>
+                            <tr>
+                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="return-host_details"></div>
+                <b>Day1Initialization</b>
+                <a class="ansibleOptionLink" href="#return-host_details" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=list</span>
+                                      </div>
+                                </td>
+            <td>When Day1 Initialization completes</td>
+            <td>
+                                        <div>Day1 Initialization Status</div>
+                                    <br/>
+                                </td>
+        </tr>
+                                    <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-host_details/bw_limit"></div>
+                <b>request_id</b>
+                <a class="ansibleOptionLink" href="#return-host_details/bw_limit" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>Day1 Initialization (long-running) request returns a requestId.</div>
+<tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-host_details/bw_limit"></div>
+                <b>status</b>
+                <a class="ansibleOptionLink" href="#return-host_details/bw_limit" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>The current state of the execution</div>
+
+</table>
 
 Authors
 -------
