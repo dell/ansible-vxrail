@@ -6,7 +6,6 @@
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
-import os
 
 DOCUMENTATION = r'''
 ---
@@ -98,7 +97,7 @@ import vxrail_ansible_utility
 from vxrail_ansible_utility.rest import ApiException
 import time
 import json
-
+import os
 from vxrail_ansible_utility import configuration as utils
 
 LOGGER = utils.get_logger("dell_vxrail_day1", "/tmp/vxrail_ansible_day1.log", log_devel=logging.DEBUG)
@@ -133,12 +132,10 @@ class VxRailDay1():
 
     def start_validation(self, day1_json):
         request_body = day1_json
-        LOGGER.info('Day1_DryRun: request_body: %s.', request_body)
-        #dryrun = True
         # create an instance of the API class
         api_instance = vxrail_ansible_utility.VxRailInstallationApi(vxrail_ansible_utility.ApiClient(self.configuration))
         try:
-            # start cluster expansion validation
+            # start day1 DryRun validation
             response = api_instance.v1_system_initialize_post(request_body, dryrun=True)
         except ApiException as e:
             LOGGER.error("Exception when calling VxRailInstallationApi->v1_system_initialize_post?dryrun=True: %s\n", e)
@@ -151,7 +148,7 @@ class VxRailDay1():
         # create an instance of the API class
         api_instance = vxrail_ansible_utility.VxRailInstallationApi(vxrail_ansible_utility.ApiClient(self.configuration))
         try:
-            # start cluster expansion
+            # start day1 FirstRun
             response = api_instance.v1_system_initialize_post(request_body)
         except ApiException as e:
             LOGGER.error("Exception when calling ClusterExpansionApi->v1_cluster_expansion_post: %s\n", e)
@@ -178,11 +175,11 @@ class VxRailDay1():
         statusInfo['owner'] = data.owner
         statusInfo['progress'] = data.progress
         statusInfo['step'] = data.step
-        #statusInfo['extension'] = data.extension
         statusInfo['start_time'] = data.start_time
         statusInfo['end_time'] = data.end_time
         statusInfolist.append(dict(statusInfo.items()))
         return statusInfolist
+
 
 def main():
     ''' Entry point into execution flow '''
@@ -234,9 +231,14 @@ def main():
         LOGGER.info("Day1_DryRun Task: Sleeping 60 seconds...")
         time.sleep(60)
         time_out = time_out + 60
-    # hosts = eval(validation_result[0].get('extension')).get('hosts')
-    # error = hosts[0].get('errors')
-    if validation_status == 'COMPLETED':
+    errors = validation_response.extension.validation.cursory.errors.fields
+    if len(errors) != 0:
+        error = errors[0].messages
+    else:
+        errors = validation_response.extension.validation.thorough.errors.fields
+        if len(errors) != 0:
+            error = errors[0].messages
+    if validation_status == 'COMPLETED' and not error:
         LOGGER.info("-------DryRun Completed------")
         LOGGER.info("----Configure and deploy a new VxRail cluster----")
         installation_request_id = VxRailDay1().start_initialization(request_body)
@@ -254,14 +256,13 @@ def main():
             LOGGER.info("-----Installation Completed-----")
         else:
             LOGGER.info("------Installation Failed-----")
-            # hosts = eval(installation_result[0].get('extension')).get('hosts')
-            # error = hosts[0].get('errors')
             vx_initialization = {'request_id': installation_request_id, 'response_error': error}
             vx_facts_result = dict(failed=True, Day1Initialization=vx_initialization,
                                    msg='Day1 initialization has failed. Please see the /tmp/vxrail_ansible_day1.log for more details')
             module.exit_json(**vx_facts_result)
     else:
         LOGGER.info("------Validation Failed-----")
+        LOGGER.info('Day1_DryRun Task: errors: %s.', errors)
         vx_validation = {'request_id': validation_request_id, 'response_error': error}
         vx_facts_result = dict(failed=True, Day1DryRun=vx_validation,
                                msg="Day1 DryRun has failed. Please see the /tmp/vxrail_ansible_day1.log for more details")
