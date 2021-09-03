@@ -69,7 +69,6 @@ System_Information:
     {
         "deployment_type": [
                 "STANDARD",
-                "UNAVAILABLE"
         ],
         "description": "A hyperconverged infrastructure appliance that combines VMware compute,
         networking and storage into one single system for ease of deployment and management.",
