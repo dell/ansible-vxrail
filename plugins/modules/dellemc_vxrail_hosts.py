@@ -367,12 +367,15 @@ class VxRailHosts():
         if data.disks is not None:
             host_info['disks'] = self._get_info_list(
                 self._generate_disk_info_from_response_data, data.disks)
-        host_info['firmware_info'] = self._generate_firmware_info_from_response_data(
-            data.firmware_info)
-        host_info['geo_location'] = self._generate_geo_location_info_from_response_data(
-            data.geo_location)
-        host_info['drive_configuration'] = self._generate_drive_configuration_info_from_response_data(
-            data.drive_configuration)
+        if data.firmware_info is not None:
+            host_info['firmware_info'] = self._generate_firmware_info_from_response_data(
+                data.firmware_info)
+        if data.geo_location is not None:
+            host_info['geo_location'] = self._generate_geo_location_info_from_response_data(
+                data.geo_location)
+        if data.drive_configuration is not None:
+            host_info['drive_configuration'] = self._generate_drive_configuration_info_from_response_data(
+                data.drive_configuration)
         return host_info
 
     def _generate_boot_device_info_from_response_data(self, data):
