@@ -1,0 +1,29 @@
+---
+- name: Day1 initialization
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+    day1json_file: "{{ day1json_file }}"
+  tasks:
+    - name: Configure and deploy a new VxRail cluster
+      dellemc_vxrail_day1:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        day1json_file: "{{ day1json_file }}"
+      async: 18000
+      poll: 0
+      register: installation_status
+    - name: Check if Day1 initialization job is completed...The Day1 installation is still ongoing.
+      async_status:
+        jid: "{{ installation_status.ansible_job_id }}"
+      register: job_result
+      until: job_result.finished
+      retries: 180
+      delay: 60
+
+    - name: Get Day1 initialization Result
+      debug:
+        msg:  "{{job_result}}"

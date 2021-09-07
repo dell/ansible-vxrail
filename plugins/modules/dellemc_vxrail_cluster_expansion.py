@@ -8,7 +8,7 @@ __metaclass__ = type
 
 DOCUMENTATION = r'''
 ---
-module: dellemc_vxrail_cluster
+module: dellemc_vxrail_cluster_expansion
 
 short_description: Add a node discovered by LoudMouth to an existing VxRail Cluster
 
