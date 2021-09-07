@@ -2049,7 +2049,8 @@ Authors
 -------
 
 -   Hongmei Gao (@gaoh8) &lt;<ansible.team@dell.com>&gt;
-CallHome Module
+
+Callhome Module
 =================
 
 Synopsis
