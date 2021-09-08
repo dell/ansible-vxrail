@@ -528,7 +528,7 @@ The following are the fields unique to this module:
 Authors
 -------
 
--   Hongmei Gao (@gaoh8) &lt;<ansible.team@dell.com>&gt;
+-   VxRail Development Team &lt;<ansible.team@dell.com>&gt;
 
 System Module
 =================
@@ -905,7 +905,7 @@ The following are the fields unique to this module:
 Authors
 -------
 
--   Hongmei Gao (@gaoh8) &lt;<ansible.team@dell.com>&gt;
+-   VxRail Development Team &lt;<ansible.team@dell.com>&gt;
 
 
 Day1 Initialization Module
@@ -1157,7 +1157,7 @@ The following are the fields unique to this module:
 Authors
 -------
 
--   Hongmei Gao (@gaoh8) &lt;<ansible.team@dell.com>&gt;
+-   VxRail Development Team &lt;<ansible.team@dell.com>&gt;
 
 
 Cluster Information Module
@@ -2085,7 +2085,7 @@ The following are the fields unique to this module:
 Authors
 -------
 
--   Hongmei Gao (@gaoh8) &lt;<ansible.team@dell.com>&gt;
+-   VxRail Development Team &lt;<ansible.team@dell.com>&gt;
 
 Callhome Module
 =================
