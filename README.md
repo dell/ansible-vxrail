@@ -31,11 +31,11 @@ The modules are written in such a way that all requests are idempotent and hence
   * Callhome module
 
 ## Installation of SDK
-Install the python [sdk](https://github.com/dell/ansible-vxrail-utility) named 'VxRail Ansible Utility'. It can be installed using pip, based on the appropriate python version.
+Install the python sdk named ['VxRail Ansible Utility'](https://github.com/dell/ansible-vxrail-utility). It can be installed using pip, based on the appropriate python version.
 
 ## Installing Collections
 
-  * Download the tar build and run the following command to install the collection anywhere in your system:
+  * Download the tar build and install the collection anywhere in your system, e.g.
         
         ansible-galaxy collection install dellemc-vxrail-1.0.0.tar.gz -p <install_path>
   
