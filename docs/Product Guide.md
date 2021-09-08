@@ -10,6 +10,7 @@
 
 -   [Cluster Expansion Module](#cluster-expansion-module)
     -   [Synopsis](#synopsis-1)
+    -   [Supported Endpoints](#supported-endpoints-1)
     -   [Parameters](#parameters-1)
     -   [Notes](#notes-1)
     -   [Examples](#examples-1)
@@ -17,6 +18,7 @@
     -   [Authors](#authors-1)
 -   [System Module](#system-module)
     -   [Synopsis](#synopsis-2)
+    -   [Supported Endpoints](#supported-endpoints-2)
     -   [Parameters](#parameters-2)
     -   [Notes](#notes-2)
     -   [Examples](#examples-2)
@@ -24,6 +26,7 @@
     -   [Authors](#authors-2)
 -   [Day1 Initialization Module](#day1-initialization-module)
     -   [Synopsis](#synopsis-3)
+    -   [Supported Endpoints](#supported-endpoints-3)
     -   [Parameters](#parameters-3)
     -   [Notes](#notes-3)
     -   [Examples](#examples-3)
@@ -31,6 +34,7 @@
     -   [Authors](#authors-3)
 -   [Cluster Information Module](#cluster-information-module)
     -   [Synopsis](#synopsis-4)
+    -   [Supported Endpoints](#supported-endpoints-4)
     -   [Parameters](#parameters-4)
     -   [Notes](#notes-4)
     -   [Examples](#examples-4)
@@ -38,6 +42,7 @@
     -   [Authors](#authors-4)
 -   [Hosts Module](#hosts-module)
     -   [Synopsis](#synopsis-5)
+    -   [Supported Endpoints](#supported-endpoints-5)
     -   [Parameters](#parameters-5)
     -   [Notes](#notes-5)
     -   [Examples](#examples-5)
@@ -45,6 +50,7 @@
     -   [Authors](#authors-5)
 -   [CallHome Module](#callhome-module)
     -   [Synopsis](#synopsis-6)
+    -   [Supported Endpoints](#supported-endpoints-6)
     -   [Parameters](#parameters-6)
     -   [Notes](#notes-6)
     -   [Examples](#examples-6)
@@ -61,6 +67,14 @@ Synopsis
 
 This module will validate a L2 node expansion, perform a L2 node expansion
 based on the provided expansion specification and query the status.
+
+Supported Endpoints
+--------
+
+POST /v1/cluster/expansion/validate
+POST /v1/cluster/expansion
+GET /v1/requests/{id}
+
 
 Parameters
 ----------
@@ -523,6 +537,11 @@ Synopsis
 --------
 This module will retrieve VxRail System Information.
 
+Supported Endpoints
+--------
+
+GET /v3/system
+
 Parameters
 ----------
 
@@ -896,6 +915,13 @@ Synopsis
 --------
 This module will configure and deploy a new VxRail cluster
   based on the provided day1 json file.
+  
+Supported Endpoints
+--------
+
+POST /v1/system/initialize
+GET /v1/system/initialize/status
+  
 
 Parameters
 ----------
@@ -1140,6 +1166,11 @@ Cluster Information Module
 Synopsis
 --------
 This module will retrieve VxRail Cluster Information.
+
+Supported Endpoints
+--------
+
+GET /v1/cluster
 
 Parameters
 ----------
@@ -1585,6 +1616,12 @@ Hosts Module
 Synopsis
 --------
 This module will retrieve VxRail hosts Information.
+
+Supported Endpoints
+--------
+
+GET /v4/hosts
+GET /v4/hosts/{sn}
 
 Parameters
 ----------
@@ -2056,6 +2093,11 @@ Callhome Module
 Synopsis
 --------
 This module will retrieve VxRail CallHome Information.
+
+Supported Endpoints
+--------
+
+GET /v2/callhome/info
 
 Parameters
 ----------
