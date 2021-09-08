@@ -1,0 +1,19 @@
+---
+- name: Retrieve call home server information
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+
+  tasks:
+    - name: Get callhome Information
+      dellemc_vxrail_callhome:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+      register: callhome_info
+
+    - name: Display Callhome Information
+      debug:
+        msg:  "{{callhome_info}}"

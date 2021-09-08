@@ -41,7 +41,7 @@ options:
 
   timeout:
     description:
-      Time out value for getting system infomation, the default value is 60 seconds
+      Time out value for getting system information, the default value is 60 seconds
     required: false
     type: int
     default: 60
@@ -69,7 +69,6 @@ System_Information:
     {
         "deployment_type": [
                 "STANDARD",
-                "UNAVAILABLE"
         ],
         "description": "A hyperconverged infrastructure appliance that combines VMware compute,
         networking and storage into one single system for ease of deployment and management.",
@@ -213,12 +212,6 @@ class VxRailSystem():
                     installed_components['installed_time'] = installed_components_list[i].installed_time
                 installed_components['baseline_drifted'] = installed_components_list[i].baseline_drifted
                 installed_components['multiple_version'] = installed_components_list[i].multiple_version
-                if installed_components_list[i].baseline is not None:
-                    installed_components['baseline'] = installed_components_list[i].baseline
-                if installed_components_list[i].incompatibilities is not None:
-                    installed_components['incompatibilities'] = installed_components_list[i].incompatibilities
-                if installed_components_list[i].upgrade_status is not None:
-                    installed_components['upgrade_status'] = installed_components_list[i].upgrade_status
                 systemInfo_installed_components_list.append(dict(installed_components.items()))
             systemInfos['installed_components'] = systemInfo_installed_components_list
         systemInfos['deployment_type'] = data.deployment_type
