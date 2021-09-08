@@ -9,7 +9,7 @@
 
 
 -   [Cluster Expansion Module](#cluster-expansion-module)
-    -   [Synopsis](#synopsis-0)
+    -   [Synopsis](#synopsis)
     -   [Supported Endpoints](#supported-endpoints-0)
     -   [Parameters](#parameters-0)
     -   [Notes](#notes-0)
