@@ -2314,4 +2314,4 @@ The following are the fields unique to this module:
 Authors
 -------
 
--   Hongmei Gao (@gaoh8) &lt;<ansible.team@dell.com>&gt;
+-   VxRail Development Team &lt;<ansible.team@dell.com>&gt;
