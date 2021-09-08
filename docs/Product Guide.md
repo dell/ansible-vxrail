@@ -71,9 +71,9 @@ based on the provided expansion specification and query the status.
 Supported Endpoints
 --------
 
-POST /v1/cluster/expansion/validate
-POST /v1/cluster/expansion
-GET /v1/requests/{id}
+* POST /v1/cluster/expansion/validate
+* POST /v1/cluster/expansion
+* GET /v1/requests/{id}
 
 
 Parameters
@@ -540,7 +540,7 @@ This module will retrieve VxRail System Information.
 Supported Endpoints
 --------
 
-GET /v3/system
+* GET /v3/system
 
 Parameters
 ----------
@@ -919,8 +919,8 @@ This module will configure and deploy a new VxRail cluster
 Supported Endpoints
 --------
 
-POST /v1/system/initialize
-GET /v1/system/initialize/status
+* POST /v1/system/initialize
+* GET /v1/system/initialize/status
   
 
 Parameters
@@ -1170,7 +1170,7 @@ This module will retrieve VxRail Cluster Information.
 Supported Endpoints
 --------
 
-GET /v1/cluster
+* GET /v1/cluster
 
 Parameters
 ----------
@@ -1620,8 +1620,8 @@ This module will retrieve VxRail hosts Information.
 Supported Endpoints
 --------
 
-GET /v4/hosts
-GET /v4/hosts/{sn}
+* GET /v4/hosts
+* GET /v4/hosts/{sn}
 
 Parameters
 ----------
@@ -2097,7 +2097,7 @@ This module will retrieve VxRail CallHome Information.
 Supported Endpoints
 --------
 
-GET /v2/callhome/info
+* GET /v2/callhome/info
 
 Parameters
 ----------
