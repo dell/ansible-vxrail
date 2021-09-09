@@ -23,15 +23,20 @@ This table provides information about the software prerequisites for the Ansible
 The modules are written in such a way that all requests are idempotent and hence fault-tolerant. This means that the result of a successfully performed request is independent of the number of times it is executed.
 
 ## List of Ansible Modules for Dell EMC VxRail
-  * Cluster module
+  * Cluster expansion module
   * System module
+  * Day1 Initialization module
+  * Cluster information module
+  * Hosts module
+  * Callhome module
 
 ## Installation of SDK
-Install the python [sdk](https://eos2git.cec.lab.emc.com/vxrail/ansible-vxrail-utility) named 'VxRail Ansible Utility'. It can be installed using pip, based on the appropriate python version.
+
+Install the python sdk named ['VxRail Ansible Utility'](https://github.com/dell/ansible-vxrail-utility). It can be installed using pip, based on the appropriate python version.
 
 ## Installing Collections
 
-  * Download the tar build and run the following command to install the collection anywhere in your system:
+  * Download the tar build and install the collection anywhere in your system, e.g.
         
         ansible-galaxy collection install dellemc-vxrail-1.0.0.tar.gz -p <install_path>
   
@@ -49,6 +54,4 @@ Install the python [sdk](https://eos2git.cec.lab.emc.com/vxrail/ansible-vxrail-u
 
 ## Running Ansible Modules
 
-The Ansible server must be configured with Python library for VxRail Ansible Utility to run the Ansible playbooks. The [Documents]( https://eos2git.cec.lab.emc.com/vxrail/ansible-vxrail/tree/master/docs ) provide information on different Ansible modules along with their functions and syntax. The parameters table in the Product Guide provides information on various parameters which needs to be configured before running the modules.
-
-
+The Ansible server must be configured with Python library for VxRail Ansible Utility to run the Ansible playbooks. The [Documents]( https://github.com/dell/ansible-vxrail/tree/master/docs ) provide information on different Ansible modules along with their functions and syntax. The parameters table in the Product Guide provides information on various parameters which needs to be configured before running the modules.
