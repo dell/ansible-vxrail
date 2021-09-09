@@ -17,7 +17,7 @@ This table provides information about the software prerequisites for the Ansible
 |---------------------|----------------|--------------------|----------------------------|-------------|
 | v1.0.0 | 7.0.240 | <br> 3.6.x <br> 3.7.x | 1.0.0| 2.9 and 2.10 | 
 
-  * Please follow VxRail Ansible Utility installation instructions on [VxRail Ansible Utility Documentation](https://eos2git.cec.lab.emc.com/vxrail/ansible-vxrail-utility)
+  * Please follow VxRail Ansible Utility installation instructions on [VxRail Ansible Utility Documentation](https://github.com/dell/ansible-vxrail-utility)
 
 ## Idempotency
 The modules are written in such a way that all requests are idempotent and hence fault-tolerant. This means that the result of a successfully performed request is independent of the number of times it is executed.
