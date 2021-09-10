@@ -25,7 +25,7 @@ Revision History
 
 | **Date** | **Document revision** | **Description of changes** |
 |----------|-----------------------|----------------------------|
-| July 2021 | 01 | Ansible Modules for Dell EMC VxRail release 1.0.0 |
+| September 2021 | 01 | Ansible Modules for Dell EMC VxRail release 7.0.240 |
 
 Product Description
 -------------------
@@ -36,8 +36,7 @@ The modules use playbooks to list, show, create each of the entities.
 The Ansible Modules for Dell EMC VxRail supports the following
 features:
 
--   Add a L2 Node discovered by LoudMouth to an existing VxRail Cluster, including node validation, node configuration 
-    and query the status.
+-   Perform day1 bringup and cluster expansion
 -   Retrieve details of VxRail System information
 
 Known issues
