@@ -25,7 +25,7 @@ Revision History
 
 | **Date** | **Document revision** | **Description of changes** |
 |----------|-----------------------|----------------------------|
-| September 2021 | 01 | Ansible Modules for Dell EMC VxRail release 7.0.240.0 |
+| September 2021 | 01 | Ansible Modules for Dell EMC VxRail release 7.0.240 |
 
 Product Description
 -------------------
