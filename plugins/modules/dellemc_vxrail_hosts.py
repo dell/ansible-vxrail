@@ -304,7 +304,6 @@ class VxRailHosts():
         self.configuration.password = self.vc_password
         self.configuration.verify_ssl = False
         self.configuration.host = self.hosts_url.set_host()
-        response = ''
 
     def get_v4_hosts(self):
         # create an instance of the API class
