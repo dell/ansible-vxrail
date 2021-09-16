@@ -123,8 +123,6 @@ from ansible.module_utils.basic import AnsibleModule
 import vxrail_ansible_utility
 from vxrail_ansible_utility.rest import ApiException
 from vxrail_ansible_utility import configuration as utils
-import time
-import json
 
 LOGGER = utils.get_logger("dellemc_vxrail_clusterinfo", "/tmp/vxrail_ansible_clusterinfo.log", log_devel=logging.DEBUG)
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -153,7 +151,6 @@ class VxRailCluster():
         self.configuration.password = self.vc_password
         self.configuration.verify_ssl = False
         self.configuration.host = self.system_url.set_host()
-        response = ''
 
     def get_v1_cluster(self):
         clusterInfos = {}
