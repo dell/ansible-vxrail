@@ -10,7 +10,6 @@ config:
     header: "Copyright 2021 Dell Inc. or its subsidiaries. All Rights Reserved"
     extensions:
     - "gradle"
-    - "md"
     - "py"
     - "ts"
     - "js"
@@ -18,7 +17,6 @@ config:
     - "go"
     - "sh"
     - "proto"
-    - "yml"
     - "xml"
     - "mf"
     - "pl"
