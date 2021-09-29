@@ -29,6 +29,8 @@ The modules are written in such a way that all requests are idempotent and hence
   * Cluster information module
   * Hosts module
   * Callhome module
+  * iDRAC module
+  * Chassis module
 
 ## Installation of SDK
 

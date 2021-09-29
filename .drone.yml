@@ -1,0 +1,199 @@
+---
+# Copyright 2021 Dell Inc. or its subsidiaries. All Rights Reserved
+#
+# This software contains the intellectual property of Dell Inc. or is licensed to Dell Inc. from third parties.
+# Use of this software and the intellectual property contained therein is expressly limited to the terms and
+# conditions of the License Agreement under which it is provided by or on behalf of Dell Inc. or its subsidiaries.
+
+
+kind: pipeline
+type: docker
+name: copyright-inspect
+
+clone:
+  skip_verify: true
+
+trigger:
+  branch:
+    - master
+  event:
+    - pull_request
+  repo:
+    include:
+      - vxrail/*
+
+image_pull_secrets:
+  - dockerconfig
+
+steps:
+  - name: github-init-status
+    image: vxraildevops/github-status
+    settings:
+      state: pending
+      context: continuous-integration/copyright-inspect
+      github_api_token:
+        from_secret: github_api_token
+
+  - name: inspect
+    image: vxraildevops/poxio/poxio-cli:latest
+    commands:
+      - poxio copyright inspect --config ./.poxio/config.yml --tolerate-legacy --start-commit ${DRONE_COMMIT_BEFORE} --end-commit ${DRONE_COMMIT} .
+
+  - name: github-status-change
+    image: vxraildevops/github-status
+    settings:
+      context: continuous-integration/copyright-inspect
+      github_api_token:
+        from_secret: github_api_token
+    when:
+      status:
+        - success
+        - failure
+    depends_on:
+      - inspect
+---
+kind: pipeline
+type: docker
+name: lint-git
+
+clone:
+  skip_verify: true
+
+trigger:
+  branch:
+    - master
+  event:
+    - pull_request
+    - push
+  repo:
+    include:
+      - vxrail/*
+
+image_pull_secrets:
+  - dockerconfig
+
+steps:
+  - name: github-init-status
+    image: vxraildevops/github-status
+    settings:
+      state: pending
+      context: continuous-integration/gitlint
+      github_api_token:
+        from_secret: github_api_token
+    when:
+      event:
+        - pull_request
+
+  - name: lint
+    image: python:3.7-alpine
+    commands:
+      - apk update && apk upgrade && apk add git
+      - pip install gitlint
+      - gitlint --commits ${DRONE_COMMIT_BEFORE}...${DRONE_COMMIT}
+
+  - name: github-status-change
+    image: vxraildevops/github-status
+    settings:
+      context: continuous-integration/gitlint
+      github_api_token:
+        from_secret: github_api_token
+    when:
+      event:
+        - pull_request
+      status:
+        - success
+        - failure
+    depends_on:
+      - lint
+
+---
+kind: pipeline
+type: docker
+name: lint-shell-scripts
+
+clone:
+  skip_verify: true
+
+trigger:
+  branch:
+    - master
+  event:
+    - pull_request
+    - push
+  repo:
+    include:
+      - vxrail/*
+
+image_pull_secrets:
+  - dockerconfig
+
+steps:
+  - name: lint
+    image: koalaman/shellcheck-alpine
+    commands:
+      - shellcheck scripts/*
+
+---
+kind: pipeline
+type: docker
+name: lint-python
+
+clone:
+  skip_verify: true
+
+trigger:
+  branch:
+    - master
+  event:
+    - pull_request
+  repo:
+    include:
+      - vxrail/*
+
+steps:
+  - name: lint
+    image: pipelinecomponents/flake8
+    commands:
+      - apk update && apk add bash git
+      - bash ./scripts/lint-python.sh ${DRONE_BUILD_EVENT}
+
+---
+kind: pipeline
+type: docker
+name: sanity-test
+
+clone:
+  skip_verify: true
+
+trigger:
+  branch:
+    - master
+  event:
+    - pull_request
+  repo:
+    include:
+      - vxrail/*
+
+steps:
+  - name: lint
+    image: vxraildevops/vxrail-ansible
+    commands:
+      - bash ./scripts/lint-ansible.sh
+
+  - name: sanity-test
+    image: vxraildevops/vxrail-ansible
+    commands:
+      - bash ./scripts/sanity-test.sh
+    environment:
+      GITHUB_USER:
+        from_secret: github_user
+      GITHUB_API_TOKEN:
+        from_secret: github_api_token
+      GITHUB_URL:
+        from_secret: github_url
+      GITHUB_HOST:
+        from_secret: github_host
+      UTILITY_REPO_URL:
+        from_secret: ansible_utility_repo_url
+      UTILITY_REPO_NAME:
+        from_secret: ansible_utility_repo_name
