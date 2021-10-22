@@ -1,0 +1,19 @@
+---
+- name: Retrieve VxRail System VM Information
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+
+  tasks:
+    - name: Get System VM Information
+      DellEMC_VxRail_Cluster_GetSystemVirtualMachines_v1:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+      register: system_vm_info
+
+    - name: Display System VM Information
+      debug:
+        msg:  "{{system_vm_info}}"
