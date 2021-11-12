@@ -53,8 +53,7 @@ options:
     default: 60
 
 author:
-    - Gao Hongmei(@gaohongmei) <s.gao@dell.com>
-    - Yan Sun(@sunyan) <yan_sun5@dell.com>
+    - VxRail Development Team(@VxRailDevTeam) <ansible.team@dell.com>
 
 '''
 

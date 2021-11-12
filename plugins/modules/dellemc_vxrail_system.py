@@ -47,7 +47,7 @@ options:
     default: 60
 
 author:
-    - Hongmei Gao(@gaohongmei) <s.gao@dell.com>
+    - VxRail Development Team(@VxRailDevTeam) <ansible.team@dell.com>
 
 '''
 

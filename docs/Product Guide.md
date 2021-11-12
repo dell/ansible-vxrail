@@ -71,7 +71,15 @@
     -   [Notes](#notes-7)
     -   [Examples](#examples-7)
     -   [Return Values](#return-values-7)
-    -   [Authors](#authors-7)    
+    -   [Authors](#authors-7)
+-   [Remove Host Module](#remove-host-module)
+    -   [Synopsis](#synopsis-8)
+    -   [Supported Endpoints](#supported-endpoints-8)
+    -   [Parameters](#parameters-8)
+    -   [Notes](#notes-8)
+    -   [Examples](#examples-8)
+    -   [Return Values](#return-values-8)
+    -   [Authors](#authors-8)     
     
 
 
@@ -3038,6 +3046,252 @@ The following are the fields unique to this module:
                                 </td>
         </tr>
                     </table>
+
+Authors
+-------
+
+-   VxRail Development Team &lt;<ansible.team@dell.com>&gt;
+
+Remove Host Module
+=================
+
+Synopsis
+--------
+This module will Remove a host from the cluster.
+  
+Supported Endpoints
+--------
+
+* POST /v1/cluster/remove-host
+* GET /v1/requests/{id}
+  
+
+Parameters
+----------
+
+<table  border=0 cellpadding=0 class="documentation-table">
+    <tr>
+        <th colspan="1">Parameter</th>
+        <th>Choices/<font color="blue">Defaults</font></th>
+                    <th width="100%">Comments</th>
+    </tr>
+                            <tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
+                <b>vxmip</b>
+                <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                    <br>
+                    <span style="color: red">required=true</span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div></div>
+                                        <div>The IP address of the VxRail Manager System</div>
+                                                    </td>
+        </tr>
+                            <tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
+                <b>vcadmin</b>
+                <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                    <br>
+                    <span style="color: red">required=true</span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div></div>
+                                        <div>Administrative account of the vCenter Server the VxRail Manager is registered to</div>
+                                                    </td>
+        </tr>
+<tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
+                <b>vcpasswd</b>
+                <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                    <br>
+                    <span style="color: red">required=true</span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div></div>
+                                        <div>The password for the administrator account provided in vcadmin</div>
+                                                    </td>
+        </tr>
+                            <tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
+                <b>vc_root_account</b>
+                <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                    <br>
+                    <span style="color: red">required=true</span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div></div>
+                                        <div>Root account of the vCenter Server the VxRail Manager is registered to</div>
+                                                    </td>
+        </tr>
+<tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
+                <b>vc_root_passwd</b>
+                <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                    <br>
+                    <span style="color: red">required=true</span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div></div>
+                                        <div>The password for the root account provided in vcadmin</div>
+                                                    </td>
+        </tr>
+<tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
+                <b>host_sn</b>
+                <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                    <br>
+                    <span style="color: red">required=true</span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div></div>
+                                        <div>Serial number of the host to be removed</div>
+                                                    </td>
+        </tr>
+<tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-state"></div>
+                <b>timeout</b>
+                <a class="ansibleOptionLink" href="#parameter-state" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=integer</span>
+                    <br>
+                    <span style="color: red"></span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                        <ul style="margin: 0; padding: 0"><b>Default:</b>
+                                                                                                                                                            <li>1800s</li>
+                                                                                </ul>
+                                                                        </td>
+                                                            <td>
+                                        <div></div>
+                                        <div>Time out value for node removal, the default value is 1800 seconds</div>
+                                        <div></div>
+                                                    </td>
+        </tr>
+                    </table>
+
+Notes
+-----
+- Make sure you have done precheck action, e.g, entering maintainance mode and vsan Health checking is pass.
+- Can check Log file /tmp/vxrail_ansible_rmnode.log for more details about execution result.
+
+
+Examples
+--------
+
+``` yaml+jinja
+  - name: Remove a host
+    DellEMC_VxRail_Cluster_RemoveHost_v1:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        host_sn: "{{ host_sn }}"
+        vc_root_account: "{{ vc_root_account }}"
+        vc_root_passwd: "{{ vc_root_passwd }}"
+        timeout : "{{ timeout }}"
+
+```
+
+Return Values
+-------------
+
+The following are the fields unique to this module:
+
+<table border=0 cellpadding=0 class="documentation-table">
+    <tr>
+        <th colspan="2">Key</th>
+        <th>Returned</th>
+        <th width="100%">Description</th>
+    </tr>
+                <tr>
+                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="return-changed"></div>
+                <b>changed</b>
+                <a class="ansibleOptionLink" href="#return-changed" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=boolean</span>
+                                      </div>
+                                </td>
+            <td>always</td>
+            <td>
+                                        <div>Whether or not the resource has changed.</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="return-host_details"></div>
+                <b>Remove_Node</b>
+                <a class="ansibleOptionLink" href="#return-host_details" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=list</span>
+                                      </div>
+                                </td>
+            <td>When Node Removal completes</td>
+            <td>
+                                        <div>Node Removal Status</div>
+                                    <br/>
+                                </td>
+        </tr>
+                                    <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-host_details/bw_limit"></div>
+                <b>request_id</b>
+                <a class="ansibleOptionLink" href="#return-host_details/bw_limit" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>Node Removal(long-running) request returns a requestId.</div>
+<tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-host_details/bw_limit"></div>
+                <b>status</b>
+                <a class="ansibleOptionLink" href="#return-host_details/bw_limit" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>The current state of the execution</div>
+
+
+</table>
 
 Authors
 -------

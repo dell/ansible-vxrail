@@ -120,7 +120,7 @@ options:
     default: 1800
 
 author:
-    - Hongmei Gao(@gaohongmei) <ansible.team@dell.com>
+    - VxRail Development Team(@VxRailDevTeam) <ansible.team@dell.com>
 
 '''
 
