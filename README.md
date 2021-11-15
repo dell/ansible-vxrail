@@ -31,6 +31,7 @@ The modules are written in such a way that all requests are idempotent and hence
   * Callhome module
   * iDRAC module
   * Chassis module
+  * Remove Host module
 
 ## Installation of SDK
 
