@@ -11,8 +11,6 @@ DOCUMENTATION = r'''
 ---
 module: DellEMC_VxRail_Cluster_GetSystemVirtualMachines_v1
 
-short_description: Retrieve the information for system virtual machines in the VxRail cluster.
-
 # If this is part of a collection, you need to use semantic versioning,
 # i.e. the version is of the form "2.5.0" and not "2.4".
 version_added: "1.1.0"
@@ -47,12 +45,12 @@ options:
     default: 60
 
 author:
-    - Himanshu Saxena(@saxenh1) <himanshu.saxena@dell.com>
+    - VxRail Development Team(@VxRailDevTeam) <ansible.team@dell.com>
 
 '''
 
 EXAMPLES = r'''
-  - name: Retrives VxRail Cluster Information
+  - name: Retrives name, status and host information for system virtual machines in the VxRail cluster
     DellEMC_VxRail_Cluster_GetSystemVirtualMachines_v1:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
@@ -88,9 +86,9 @@ import vxrail_ansible_utility
 from vxrail_ansible_utility.rest import ApiException
 from vxrail_ansible_utility import configuration as utils
 
-
+LOG_FILE_NAME= "/tmp/VxRail_Ansible_Cluster_GetSystemVirtualMachines_v1.log"
 LOGGER = utils.get_logger("DellEMC_VxRail_Cluster_GetSystemVirtualMachines_v1",
-                          "/tmp/VxRail_Ansible_Cluster_GetSystemVirtualMachines_v1.log", log_devel=logging.DEBUG)
+                          LOG_FILE_NAME, log_devel=logging.DEBUG)
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
@@ -156,7 +154,7 @@ def main():
     )
     result = VxRailCluster().get_v1_cluster_system_virtual_machines()
     if result == 'error':
-        module.fail_json(msg="API call failed, please refer /tmp/VxRail_Ansible_Cluster_GetSystemVirtualMachines_v1.log ")
+        module.fail_json(msg="API call failed, please refer /tmp/VxRail_Ansible_Cluster_GetSystemVirtualMachines_v1.log")
     vx_facts = {'System_VM_Information': result}
     vx_facts_result = dict(changed=False, V1_VirtualMachineInformation_API=vx_facts)
     module.exit_json(**vx_facts_result)

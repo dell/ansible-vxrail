@@ -1,5 +1,5 @@
 ---
-- name: Retrieve VxRail System VM Information
+- name: Retrives name, status and host information for system virtual machines in the VxRail cluster
   hosts: localhost
   vars:
     vxmip: "{{ vxmip }}"
