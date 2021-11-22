@@ -11,6 +11,8 @@ DOCUMENTATION = r'''
 ---
 module: DellEMC_VxRail_Cluster_GetSystemVirtualMachines_v1
 
+short_description: Retrives name, status and host information for system virtual machines in the VxRail cluster.
+
 # If this is part of a collection, you need to use semantic versioning,
 # i.e. the version is of the form "2.5.0" and not "2.4".
 version_added: "1.1.0"
@@ -86,7 +88,7 @@ import vxrail_ansible_utility
 from vxrail_ansible_utility.rest import ApiException
 from vxrail_ansible_utility import configuration as utils
 
-LOG_FILE_NAME= "/tmp/VxRail_Ansible_Cluster_GetSystemVirtualMachines_v1.log"
+LOG_FILE_NAME = "/tmp/VxRail_Ansible_Cluster_GetSystemVirtualMachines_v1.log"
 LOGGER = utils.get_logger("DellEMC_VxRail_Cluster_GetSystemVirtualMachines_v1",
                           LOG_FILE_NAME, log_devel=logging.DEBUG)
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
