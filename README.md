@@ -33,6 +33,7 @@ The modules are written in such a way that all requests are idempotent and hence
   * Chassis module
   * Remove Host module
   * System Virtual Machines module
+  * Telemetry Tier Module
 
 ## Installation of SDK
 
