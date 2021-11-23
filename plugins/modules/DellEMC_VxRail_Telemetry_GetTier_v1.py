@@ -9,7 +9,7 @@ __metaclass__ = type
 
 DOCUMENTATION = r'''
 ---
-module: DellEMC_VxRail_Telemetry_Tier_v1
+module: DellEMC_VxRail_Telemetry_GetTier_v1
 
 short_description: Retrieve VxRail Telemetry Tier
 
