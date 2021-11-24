@@ -8,7 +8,7 @@
 
   tasks:
     - name: Get Telemetry Information
-      dellemc_vxrail_telemetry_tier:
+      DellEMC_VxRail_Telemetry_GetTier_v1:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
