@@ -15,7 +15,7 @@ This table provides information about the software prerequisites for the Ansible
 
 | **Ansible Modules** | **VxRail version** | **Python version** | **Python library (VxRail Ansible Utility) version** | **Ansible Version** |
 |---------------------|----------------|--------------------|----------------------------|-------------|
-| v1.0.0 | 7.0.240 | <br> 3.6.x <br> 3.7.x | 1.0.0 | 2.9 and 2.10 | 
+| v1.1.0 | 7.0.240 | <br> 3.6.x <br> 3.7.x | 1.1.0 | 2.9 and 2.10 | 
 
   * Please follow VxRail Ansible Utility installation instructions on [VxRail Ansible Utility Documentation](https://github.com/dell/ansible-vxrail-utility)
 
@@ -43,7 +43,7 @@ Install the python sdk named ['VxRail Ansible Utility'](https://github.com/dell/
 
   * Download the tar build and install the collection anywhere in your system, e.g.
         
-        ansible-galaxy collection install dellemc-vxrail-1.0.0.tar.gz -p <install_path>
+        ansible-galaxy collection install dellemc-vxrail-1.1.0.tar.gz -p <install_path>
   
   * Set the environment variable:
         
