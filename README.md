@@ -5,7 +5,7 @@ The Ansible Modules for Dell EMC VxRail allow data center and IT administrators 
 The capabilities of Ansible modules are gathering system information and performing Lay2 Node Expansion. These tasks can be executed by running simple playbooks written in yaml syntax. The modules are written so that all the operations are idempotent, therefore making multiple identical requests has the same effect as making a single request.
 
 ## Support
-Ansible modules for VxRail are supported by Dell EMC and are provided under the terms of the license attached to the source code. Dell EMC does not provide support for any source code modifications. For any Ansible module issues, questions or feedback, join the [Dell EMC Automation community]( https://www.dell.com/community/Automation/bd-p/Automation ).
+Ansible modules for VxRail are supported by Dell EMC open source community, but not product support agreements, and are provided under the terms of the license attached to the source code. Dell EMC does not provide support for any source code modifications. For any Ansible module issues, questions or feedback, join the [Dell EMC Automation community]( https://www.dell.com/community/Automation/bd-p/Automation ).
 
 ## Supported Platforms
   * Dell EMC VxRail
@@ -60,6 +60,3 @@ Install the python sdk named ['VxRail Ansible Utility'](https://github.com/dell/
 ## Running Ansible Modules
 
 The Ansible server must be configured with Python library for VxRail Ansible Utility to run the Ansible playbooks. The [Documents]( https://github.com/dell/ansible-vxrail/tree/master/docs ) provide information on different Ansible modules along with their functions and syntax. The parameters table in the Product Guide provides information on various parameters which needs to be configured before running the modules.
-
-## Support
-The code is provided AS-IS and not supported by any Dell EMC product support agreements. For community support please create a GitHub issue.
