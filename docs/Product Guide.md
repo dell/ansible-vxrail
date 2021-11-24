@@ -3598,7 +3598,7 @@ Examples
 
 ``` yaml+jinja
   - name: Retrives VxRail Telemetry Tier
-    dellemc_vxrail_system:
+    DellEMC_VxRail_Telemetry_GetTier_v1:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
