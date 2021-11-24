@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # Copyright 2021 Dell Inc. or its subsidiaries. All Rights Reserved
 
+
 # Copyright: (c) 2018, Terry Jones <terry.jones@example.org>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 from __future__ import (absolute_import, division, print_function)
@@ -8,16 +9,16 @@ __metaclass__ = type
 
 DOCUMENTATION = r'''
 ---
-module: dellemc_vxrail_callhome
+module: DellEMC_VxRail_Cluster_GetSystemVirtualMachines_v1
 
-short_description: Get call home server information (v2)
+short_description: Retrives name, status and host information for system virtual machines in the VxRail cluster.
 
 # If this is part of a collection, you need to use semantic versioning,
 # i.e. the version is of the form "2.5.0" and not "2.4".
-version_added: "1.0.0"
+version_added: "1.1.0"
 
 description:
-- This module will retrieve information about the call home servers.
+- This module will retrieve the name, status, and host information for system virtual machines in the VxRail cluster.
 options:
 
   vxmip:
@@ -40,7 +41,7 @@ options:
 
   timeout:
     description:
-      Time out value for getting callhome information, the default value is 60 seconds
+      Time out value for getting cluster infomation, the default value is 60 seconds
     required: false
     type: int
     default: 60
@@ -51,8 +52,8 @@ author:
 '''
 
 EXAMPLES = r'''
-  - name: Retrives VxRail Callhome Information
-    dellemc_vxrail_callhome:
+  - name: Retrives name, status and host information for system virtual machines in the VxRail cluster
+    DellEMC_VxRail_Cluster_GetSystemVirtualMachines_v1:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
@@ -60,24 +61,24 @@ EXAMPLES = r'''
 '''
 
 RETURN = r'''
-Callhome_Information:
-  description: callhome information summary
+System_VM_Information:
+  description: system VMs information summary
   returned: always
   type: dict
   sample: >-
-    {
-     "address_list": [
-                        {
-                            "address": "20.11.73.109",
-                            "primary": true,
-                            "upgradeRequestId": null,
-                            "version": "3.52.00.08"
-                        }
-                    ],
-     "integrated": true,
-     "site_id": "11145366",
-     "status": "registered"
-    }
+    [
+                {
+                    "host": "vcluster109-esx04.vv13xapp01.local",
+                    "name": "VxRail Manager",
+                    "status": "POWERED_ON"
+                },
+                {
+                    "host": "vcluster109-esx01.vv13xapp01.local",
+                    "name": "VMware vCenter Server Appliance",
+                    "status": "POWERED_ON"
+                }
+            ]
+
 '''
 
 import logging
@@ -87,27 +88,29 @@ import vxrail_ansible_utility
 from vxrail_ansible_utility.rest import ApiException
 from vxrail_ansible_utility import configuration as utils
 
-LOGGER = utils.get_logger("dellemc_vxrail_callhome", "/tmp/vxrail_ansible_callhome.log", log_devel=logging.DEBUG)
+LOG_FILE_NAME = "/tmp/VxRail_Ansible_Cluster_GetSystemVirtualMachines_v1.log"
+LOGGER = utils.get_logger("DellEMC_VxRail_Cluster_GetSystemVirtualMachines_v1",
+                          LOG_FILE_NAME, log_devel=logging.DEBUG)
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
-class VxrailCallhomeUrls():
+class VxrailClusterUrls():
     cluster_url = 'https://{}/rest/vxm'
 
     def __init__(self, vxm_ip):
         self.vxm_ip = vxm_ip
 
     def set_host(self):
-        return VxrailCallhomeUrls.cluster_url.format(self.vxm_ip)
+        return VxrailClusterUrls.cluster_url.format(self.vxm_ip)
 
 
-class VxRailCallhome():
+class VxRailCluster():
     def __init__(self):
         self.vxm_ip = module.params.get('vxmip')
         self.timeout = module.params.get('timeout')
         self.vc_admin = module.params.get('vcadmin')
         self.vc_password = module.params.get('vcpasswd')
-        self.system_url = VxrailCallhomeUrls(self.vxm_ip)
+        self.system_url = VxrailClusterUrls(self.vxm_ip)
         # Configure HTTP basic authorization: basicAuth
         self.configuration = vxrail_ansible_utility.Configuration()
         self.configuration.username = self.vc_admin
@@ -115,38 +118,25 @@ class VxRailCallhome():
         self.configuration.verify_ssl = False
         self.configuration.host = self.system_url.set_host()
 
-    def get_v2_callhome(self):
-        callhomeInfos = {}
-        callhomeInfolist = []
+    def get_v1_cluster_system_virtual_machines(self):
+        response = ''
         # create an instance of the API class
-        api_instance = vxrail_ansible_utility.CallHomeOperationsApi(vxrail_ansible_utility.ApiClient(self.configuration))
+        api_instance = vxrail_ansible_utility.VirtualMachineInformationApi(vxrail_ansible_utility.ApiClient(self.configuration))
         try:
-            # query v2 callhome information
-            response = api_instance.v2_callhome_info_get()
+            # query v1 cluster system virtual machines information
+            response = api_instance.v1_cluster_system_virtual_machines_get()
         except ApiException as e:
-            LOGGER.error("Exception when calling CallHomeOperationsApi->v2_callhome_info_get: %s\n", e)
+            LOGGER.error("Exception when calling VirtualMachineInformationApi->v1_cluster_system_virtual_machines_get: %s\n", e)
             return 'error'
-        LOGGER.info("v2/callhome api response: %s\n", response)
-        data = response
-        callhomeInfos['status'] = data.status
-        callhomeInfos['integrated'] = data.integrated
-        callhomeInfos['address_list'] = data.address_list
-        if data.site_id is not None:
-            callhomeInfos['site_id'] = data.site_id
-        if len(data.address_list) > 0:
-            callhomeInfos['address_list'] = []
-            callhome_list = data.address_list
-            callhome = {}
-            systemInfo_callhome_list = []
-            for i in range(len(callhome_list)):
-                callhome['address'] = callhome_list[i].address
-                callhome['primary'] = callhome_list[i].primary
-                callhome['version'] = callhome_list[i].version
-                callhome['upgradeRequestId'] = callhome_list[i].upgrade_request_id
-                systemInfo_callhome_list.append(dict(callhome.items()))
-            callhomeInfos['address_list'] = systemInfo_callhome_list
-        callhomeInfolist.append(dict(callhomeInfos.items()))
-        return callhomeInfolist
+        LOGGER.info("v1/virtual machine information api response: %s\n", response)
+        system_vms = {}
+        system_vms_list = []
+        for i in range(len(response)):
+            system_vms['host'] = response[i].host
+            system_vms['name'] = response[i].name
+            system_vms['status'] = response[i].status
+            system_vms_list.append(dict(system_vms.items()))
+        return system_vms_list
 
 
 def main():
@@ -164,11 +154,11 @@ def main():
         argument_spec=module_args,
         supports_check_mode=True,
     )
-    result = VxRailCallhome().get_v2_callhome()
+    result = VxRailCluster().get_v1_cluster_system_virtual_machines()
     if result == 'error':
-        module.fail_json(msg="Call V2/callhome API failed,please see log file /tmp/vxrail_ansible_callhome.log for more error details.")
-    vx_facts = {'Callhome_Information': result}
-    vx_facts_result = dict(changed=False, V2_Callhome_API=vx_facts)
+        module.fail_json(msg="API call failed, please refer /tmp/VxRail_Ansible_Cluster_GetSystemVirtualMachines_v1.log")
+    vx_facts = {'System_VM_Information': result}
+    vx_facts_result = dict(changed=False, V1_VirtualMachineInformation_API=vx_facts)
     module.exit_json(**vx_facts_result)
 
 

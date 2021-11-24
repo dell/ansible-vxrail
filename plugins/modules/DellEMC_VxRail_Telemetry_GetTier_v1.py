@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # Copyright 2021 Dell Inc. or its subsidiaries. All Rights Reserved
 
+
 # Copyright: (c) 2018, Terry Jones <terry.jones@example.org>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 from __future__ import (absolute_import, division, print_function)
@@ -8,16 +9,16 @@ __metaclass__ = type
 
 DOCUMENTATION = r'''
 ---
-module: dellemc_vxrail_callhome
+module: DellEMC_VxRail_Telemetry_GetTier_v1
 
-short_description: Get call home server information (v2)
+short_description: Retrieve VxRail Telemetry Tier
 
 # If this is part of a collection, you need to use semantic versioning,
 # i.e. the version is of the form "2.5.0" and not "2.4".
-version_added: "1.0.0"
+version_added: "1.1.0"
 
 description:
-- This module will retrieve information about the call home servers.
+- This module will retrieve the system's Telemetry tier.
 options:
 
   vxmip:
@@ -40,7 +41,7 @@ options:
 
   timeout:
     description:
-      Time out value for getting callhome information, the default value is 60 seconds
+      Time out value for getting telemetry information, the default value is 60 seconds
     required: false
     type: int
     default: 60
@@ -51,8 +52,8 @@ author:
 '''
 
 EXAMPLES = r'''
-  - name: Retrives VxRail Callhome Information
-    dellemc_vxrail_callhome:
+  - name: Retrives VxRail Telemetry Information
+    dellemc-vxrail-telemetry-info:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
@@ -60,24 +61,14 @@ EXAMPLES = r'''
 '''
 
 RETURN = r'''
-Callhome_Information:
-  description: callhome information summary
+Telemetry_tier:
+  description: The current telemetry tier for the system
   returned: always
   type: dict
   sample: >-
-    {
-     "address_list": [
-                        {
-                            "address": "20.11.73.109",
-                            "primary": true,
-                            "upgradeRequestId": null,
-                            "version": "3.52.00.08"
-                        }
-                    ],
-     "integrated": true,
-     "site_id": "11145366",
-     "status": "registered"
-    }
+        {
+            "level": "BASIC"
+        }
 '''
 
 import logging
@@ -87,27 +78,27 @@ import vxrail_ansible_utility
 from vxrail_ansible_utility.rest import ApiException
 from vxrail_ansible_utility import configuration as utils
 
-LOGGER = utils.get_logger("dellemc_vxrail_callhome", "/tmp/vxrail_ansible_callhome.log", log_devel=logging.DEBUG)
+LOGGER = utils.get_logger("dellemc_vxrail_telemetry_info", "/tmp/vxrail_ansible_telemetry_info.log", log_devel=logging.DEBUG)
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
-class VxrailCallhomeUrls():
+class VxrailClusterUrls():
     cluster_url = 'https://{}/rest/vxm'
 
     def __init__(self, vxm_ip):
         self.vxm_ip = vxm_ip
 
     def set_host(self):
-        return VxrailCallhomeUrls.cluster_url.format(self.vxm_ip)
+        return VxrailClusterUrls.cluster_url.format(self.vxm_ip)
 
 
-class VxRailCallhome():
+class VxRailCluster():
     def __init__(self):
         self.vxm_ip = module.params.get('vxmip')
         self.timeout = module.params.get('timeout')
         self.vc_admin = module.params.get('vcadmin')
         self.vc_password = module.params.get('vcpasswd')
-        self.system_url = VxrailCallhomeUrls(self.vxm_ip)
+        self.system_url = VxrailClusterUrls(self.vxm_ip)
         # Configure HTTP basic authorization: basicAuth
         self.configuration = vxrail_ansible_utility.Configuration()
         self.configuration.username = self.vc_admin
@@ -115,38 +106,20 @@ class VxRailCallhome():
         self.configuration.verify_ssl = False
         self.configuration.host = self.system_url.set_host()
 
-    def get_v2_callhome(self):
-        callhomeInfos = {}
-        callhomeInfolist = []
+    def get_v1_telemetry_tier(self):
+        TelemInfo = {}
         # create an instance of the API class
-        api_instance = vxrail_ansible_utility.CallHomeOperationsApi(vxrail_ansible_utility.ApiClient(self.configuration))
+        api_instance = vxrail_ansible_utility.TelemetryReportingApi(vxrail_ansible_utility.ApiClient(self.configuration))
         try:
-            # query v2 callhome information
-            response = api_instance.v2_callhome_info_get()
+            # query v1 telemetry information
+            response = api_instance.query_telemetry_tier_setting_information()
         except ApiException as e:
-            LOGGER.error("Exception when calling CallHomeOperationsApi->v2_callhome_info_get: %s\n", e)
+            LOGGER.error("Exception when calling TelemetryReportingApi->query_telemetry_tier_setting_information: %s\n", e)
             return 'error'
-        LOGGER.info("v2/callhome api response: %s\n", response)
+        LOGGER.info("v1/telemetry/tier api response: %s\n", response)
         data = response
-        callhomeInfos['status'] = data.status
-        callhomeInfos['integrated'] = data.integrated
-        callhomeInfos['address_list'] = data.address_list
-        if data.site_id is not None:
-            callhomeInfos['site_id'] = data.site_id
-        if len(data.address_list) > 0:
-            callhomeInfos['address_list'] = []
-            callhome_list = data.address_list
-            callhome = {}
-            systemInfo_callhome_list = []
-            for i in range(len(callhome_list)):
-                callhome['address'] = callhome_list[i].address
-                callhome['primary'] = callhome_list[i].primary
-                callhome['version'] = callhome_list[i].version
-                callhome['upgradeRequestId'] = callhome_list[i].upgrade_request_id
-                systemInfo_callhome_list.append(dict(callhome.items()))
-            callhomeInfos['address_list'] = systemInfo_callhome_list
-        callhomeInfolist.append(dict(callhomeInfos.items()))
-        return callhomeInfolist
+        TelemInfo['level'] = data.level
+        return dict(TelemInfo.items())
 
 
 def main():
@@ -164,11 +137,11 @@ def main():
         argument_spec=module_args,
         supports_check_mode=True,
     )
-    result = VxRailCallhome().get_v2_callhome()
+    result = VxRailCluster().get_v1_telemetry_tier()
     if result == 'error':
-        module.fail_json(msg="Call V2/callhome API failed,please see log file /tmp/vxrail_ansible_callhome.log for more error details.")
-    vx_facts = {'Callhome_Information': result}
-    vx_facts_result = dict(changed=False, V2_Callhome_API=vx_facts)
+        module.fail_json(msg="Call V1/telemetry/tier API failed,please see log file /tmp/vxrail_ansible_telemetry_info.log for more error details.")
+    vx_facts = {'Telemetry_Tier': result}
+    vx_facts_result = dict(changed=False, V1_Telemetry_API=vx_facts)
     module.exit_json(**vx_facts_result)
 
 

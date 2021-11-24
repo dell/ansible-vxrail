@@ -1,9 +1,9 @@
 
 **Ansible Modules for Dell EMC VxRail**
 =========================================
-### Product Guide 1.0.0
+### Product Guide 1.1.0
 
->© 2021 Dell Inc. or its subsidiaries. All rights reserved. Dell 
+> © 2021 Dell Inc. or its subsidiaries. All rights reserved. Dell 
 > EMC, and other trademarks are trademarks of Dell Inc. or its 
 > subsidiaries. Other trademarks may be trademarks of their respective owners. 
 
@@ -55,8 +55,47 @@
     -   [Notes](#notes-5)
     -   [Examples](#examples-5)
     -   [Return Values](#return-values-5)
-    -   [Authors](#authors-5)      
-    
+    -   [Authors](#authors-5)
+-   [iDRAC Network Settings Module](#idrac-network-settings-module)
+    -   [Synopsis](#synopsis-6)
+    -   [Supported Endpoints](#supported-endpoints-6)
+    -   [Parameters](#parameters-6)
+    -   [Notes](#notes-6)
+    -   [Examples](#examples-6)
+    -   [Return Values](#return-values-6)
+    -   [Authors](#authors-6)
+-   [Chassis Module](#chassis-module)
+    -   [Synopsis](#synopsis-7)
+    -   [Supported Endpoints](#supported-endpoints-7)
+    -   [Parameters](#parameters-7)
+    -   [Notes](#notes-7)
+    -   [Examples](#examples-7)
+    -   [Return Values](#return-values-7)
+    -   [Authors](#authors-7)
+-   [Remove Host Module](#remove-host-module)
+    -   [Synopsis](#synopsis-8)
+    -   [Supported Endpoints](#supported-endpoints-8)
+    -   [Parameters](#parameters-8)
+    -   [Notes](#notes-8)
+    -   [Examples](#examples-8)
+    -   [Return Values](#return-values-8)
+    -   [Authors](#authors-8)
+-   [System Virtual Machines Module](#system-virtual-machines-module)
+    -   [Synopsis](#synopsis-9)
+    -   [Supported Endpoints](#supported-endpoints-9)
+    -   [Parameters](#parameters-9)
+    -   [Notes](#notes-9)
+    -   [Examples](#examples-9)
+    -   [Return Values](#return-values-9)
+    -   [Authors](#authors-9)
+-   [Telemetry Tier Module](#telemetry-tier-module)
+    -   [Synopsis](#synopsis-10)
+    -   [Supported Endpoints](#supported-endpoints-10)
+    -   [Parameters](#parameters-10)
+    -   [Notes](#notes-10)
+    -   [Examples](#examples-10)
+    -   [Return Values](#return-values-10)
+    -   [Authors](#authors-10)     
 
 
 Cluster Expansion Module
@@ -1609,7 +1648,6 @@ Authors
 -   VxRail Development Team &lt;<ansible.team@dell.com>&gt;
 
 
-
 Hosts Module
 =================
 
@@ -2306,6 +2344,1322 @@ The following are the fields unique to this module:
             <td>success</td>
             <td>
                                         <div>An array of SRS server addresses with associated information</div>
+                                    <br/>
+                                </td>
+        </tr>
+                    </table>
+
+Authors
+-------
+
+-   VxRail Development Team &lt;<ansible.team@dell.com>&gt;
+
+iDRAC Network Settings Module
+=================
+
+Synopsis
+--------
+This module will retrieve iDRAC Network Settings Information.
+
+Supported Endpoints
+--------
+
+* GET /v1/hosts/{sn}/idrac/network
+
+Parameters
+----------
+
+<table  border=0 cellpadding=0 class="documentation-table">
+    <tr>
+        <th colspan="1">Parameter</th>
+        <th>Choices/<font color="blue">Defaults</font></th>
+                    <th width="100%">Comments</th>
+    </tr>
+                            <tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
+                <b>vxmip</b>
+                <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                    <br>
+                    <span style="color: red">required=true</span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div></div>
+                                        <div>The IP address of the VxRail Manager System</div>
+                                                    </td>
+        </tr>
+                            <tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
+                <b>vcadmin</b>
+                <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                    <br>
+                    <span style="color: red">required=true</span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div></div>
+                                        <div>Administrative account of the vCenter Server the VxRail Manager is registered to</div>
+                                                    </td>
+        </tr>
+<tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
+                <b>vcpasswd</b>
+                <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                    <br>
+                    <span style="color: red">required=true</span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div></div>
+                                        <div>The password for the administrator account provided in vcadmin</div>
+                                                    </td>
+        </tr>
+<tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
+                <b>sn</b>
+                <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                    <br>
+                    <span style="color: red">required=true</span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div></div>
+                                        <div>The serial number of the host to be queried</div>
+<tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-state"></div>
+                <b>timeout</b>
+                <a class="ansibleOptionLink" href="#parameter-state" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=integer</span>
+                    <br>
+                    <span style="color: red"></span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                        <ul style="margin: 0; padding: 0"><b>Default:</b>
+                                                                                                                                                            <li>60s</li>
+                                                                                </ul>
+                                                                        </td>
+                                                            <td>
+                                        <div></div>
+                                        <div>Time out value for getting iDRAC Network Settings infomation, the default value is 60 seconds</div>
+                                        <div></div>
+                                                    </td>
+        </tr>
+                    </table>
+
+Notes
+-----
+- This module calls /v1/hosts/{sn}/idrac/network api, make sure your VxRail environment supports this API
+- For more details about execution result, log file can be found at /tmp/vxrail_ansible_idrac.log
+
+
+Examples
+--------
+
+``` yaml+jinja
+  - name: Get iDRAC Network Settings
+    DellEMC_VxRail_idrac_GetNetworkSettings_v1:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        sn: "{{ sn }}"
+        timeout: "{{ timeout }}"
+
+```
+
+Return Values
+-------------
+
+The following are the fields unique to this module:
+
+<table border=0 cellpadding=0 class="documentation-table">
+    <tr>
+        <th colspan="3">Key</th>
+        <th>Returned</th>
+        <th width="100%">Description</th>
+    </tr>
+                <tr>
+                            <td colspan="3">
+                <div class="ansibleOptionAnchor" id="return-changed"></div>
+                <b>changed</b>
+                <a class="ansibleOptionLink" href="#return-changed" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=boolean</span>
+                                      </div>
+                                </td>
+            <td>always</td>
+            <td>
+                                        <div>Whether or not the resource has changed.</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                            <td colspan="3">
+                <div class="ansibleOptionAnchor" id="return-hostgroup_details"></div>
+                <b>iDRAC_Network_Settings</b>
+                <a class="ansibleOptionLink" href="#return-hostgroup_details" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">complex</span>
+                                      </div>
+                                </td>
+            <td>When iDRAC Network Settings exists</td>
+            <td>
+                                        <div>Information about the iDRAC Network Settings</div>
+                                    <br/>
+                                </td>
+        </tr>
+                                    <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="return-hostgroup_details/consistent_lun"></div>
+                <b>dhcp_enabled</b>
+                <a class="ansibleOptionLink" href="#return-hostgroup_details/consistent_lun" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=boolean</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>Whether DHCP service is enabled</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="return-hostgroup_details/disabled_flags"></div>
+                <b>ip</b>
+                <a class="ansibleOptionLink" href="#return-hostgroup_details/disabled_flags" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=dictionary</span>
+                  <br>
+                  <span style="color: purple"></span>                    </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>The iDRAC Network IP Settings</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-hostgroup_details/enabled_flags"></div>
+                <b>type</b>
+                <a class="ansibleOptionLink" href="#return-hostgroup_details/enabled_flags" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                  <br>
+                  <span style="color: purple"></span>                    </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>The VLAN ID settings of the iDRAC</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-hostgroup_details/enabled_flags"></div>
+                <b>ip_address</b>
+                <a class="ansibleOptionLink" href="#return-hostgroup_details/enabled_flags" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                  <br>
+                  <span style="color: purple"></span>                    </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>The MAC address of the iDRAC</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-hostgroup_details/enabled_flags"></div>
+                <b>netmask</b>
+                <a class="ansibleOptionLink" href="#return-hostgroup_details/enabled_flags" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                  <br>
+                  <span style="color: purple"></span>                    </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>The netmask of the iDRAC</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-hostgroup_details/enabled_flags"></div>
+                <b>gateway</b>
+                <a class="ansibleOptionLink" href="#return-hostgroup_details/enabled_flags" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                  <br>
+                  <span style="color: purple"></span>                    </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>The gateway address of the iDRAC</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="return-hostgroup_details/num_of_masking_views"></div>
+                <b>vlan</b>
+                <a class="ansibleOptionLink" href="#return-hostgroup_details/num_of_masking_views" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=dictionary</span>
+                                    </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>The IPv4 address of the iDRAC</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-hostgroup_details/enabled_flags"></div>
+                <b>vlan_id</b>
+                <a class="ansibleOptionLink" href="#return-hostgroup_details/enabled_flags" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=integer</span>
+                  <br>
+                  <span style="color: purple"></span>                    </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>The VLAN ID setting of the iDRAC</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-hostgroup_details/enabled_flags"></div>
+                <b>vlan_priority</b>
+                <a class="ansibleOptionLink" href="#return-hostgroup_details/enabled_flags" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=integer</span>
+                  <br>
+                  <span style="color: purple"></span>                    </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>The VLAN priority setting of the iDRAC</div>
+                                    <br/>
+                                </td>
+        </tr>
+                    </table>
+
+Authors
+-------
+
+-   VxRail Development Team &lt;<ansible.team@dell.com>&gt;
+
+Chassis Module
+=================
+
+Synopsis
+--------
+This module will retrieve VxRail Chassis Information.
+
+Supported Endpoints
+--------
+
+* GET /v3/chassis
+
+Parameters
+----------
+
+<table  border=0 cellpadding=0 class="documentation-table">
+    <tr>
+        <th colspan="1">Parameter</th>
+        <th>Choices/<font color="blue">Defaults</font></th>
+                    <th width="100%">Comments</th>
+    </tr>
+                            <tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
+                <b>vxmip</b>
+                <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                    <br>
+                    <span style="color: red">required=true</span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div></div>
+                                        <div>The IP address of the VxRail Manager System</div>
+                                                    </td>
+        </tr>
+                            <tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
+                <b>vcadmin</b>
+                <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                    <br>
+                    <span style="color: red">required=true</span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div></div>
+                                        <div>Administrative account of the vCenter Server the VxRail Manager is registered to</div>
+                                                    </td>
+        </tr>
+<tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
+                <b>vcpasswd</b>
+                <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                    <br>
+                    <span style="color: red">required=true</span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div></div>
+                                        <div>The password for the administrator account provided in vcadmin</div>
+                                                    </td>
+        </tr>
+<tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-state"></div>
+                <b>timeout</b>
+                <a class="ansibleOptionLink" href="#parameter-state" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=integer</span>
+                    <br>
+                    <span style="color: red"></span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                        <ul style="margin: 0; padding: 0"><b>Default:</b>
+                                                                                                                                                            <li>60s</li>
+                                                                                </ul>
+                                                                        </td>
+                                                            <td>
+                                        <div></div>
+                                        <div>Time out value for getting system infomation, the default value is 60 seconds</div>
+                                        <div></div>
+                                                    </td>
+        </tr>
+                    </table>
+
+Notes
+-----
+- This module called v3/chassis api,make sure your VxRail environment supported this API.
+- Can check Log file /tmp/vxrail_ansible_chassis.log for more details about execution result.
+
+
+Examples
+--------
+
+``` yaml+jinja
+  - name: Retrives VxRail Chassis Information
+    dellemc_vxrail_chassis:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        timeout : "{{ timeout }}"
+
+```
+
+Return Values
+-------------
+
+The following are the fields unique to this module:
+
+<table border=0 cellpadding=0 class="documentation-table">
+    <tr>
+        <th colspan="3">Key</th>
+        <th>Returned</th>
+        <th width="100%">Description</th>
+    </tr>
+                <tr>
+                            <td colspan="3">
+                <div class="ansibleOptionAnchor" id="return-changed"></div>
+                <b>changed</b>
+                <a class="ansibleOptionLink" href="#return-changed" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=boolean</span>
+                                      </div>
+                                </td>
+            <td>always</td>
+            <td>
+                                        <div>Whether or not the resource has changed.</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                            <td colspan="3">
+                <div class="ansibleOptionAnchor" id="return-hostgroup_details"></div>
+                <b>chassis_information</b>
+                <a class="ansibleOptionLink" href="#return-hostgroup_details" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">complex</span>
+                                      </div>
+                                </td>
+            <td>When cluster exists.</td>
+            <td>
+                                        <div>Details of Vxrail System</div>
+                                    <br/>
+                                </td>
+        </tr>
+                                    <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="return-hostgroup_details/consistent_lun"></div>
+                <b>id</b>
+                <a class="ansibleOptionLink" href="#return-hostgroup_details/consistent_lun" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>chassis id</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="return-hostgroup_details/disabled_flags"></div>
+                <b>sn</b>
+                <a class="ansibleOptionLink" href="#return-hostgroup_details/disabled_flags" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                  <br>
+                  <span style="color: purple"></span>                    </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>chassis sn</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="return-hostgroup_details/enabled_flags"></div>
+                <b>part_number</b>
+                <a class="ansibleOptionLink" href="#return-hostgroup_details/enabled_flags" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                  <br>
+                  <span style="color: purple"></span>                    </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>chassis part number</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="return-hostgroup_details/host"></div>
+                <b>description</b>
+                <a class="ansibleOptionLink" href="#return-hostgroup_details/host" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                  <br>
+                  <span style="color: purple"></span>                    </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>chassis description</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="return-hostgroup_details/hostGroupId"></div>
+                <b>service_tag</b>
+                <a class="ansibleOptionLink" href="#return-hostgroup_details/hostGroupId" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>chassis service tag</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="return-hostgroup_details/maskingview"></div>
+                <b>psnt</b>
+                <a class="ansibleOptionLink" href="#return-hostgroup_details/maskingview" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                  <br>
+                  <span style="color: purple"></span>                    </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>chassis psnt</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="return-hostgroup_details/num_of_hosts"></div>
+                <b>model</b>
+                <a class="ansibleOptionLink" href="#return-hostgroup_details/num_of_hosts" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>chassis model</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="return-hostgroup_details/num_of_initiators"></div>
+                <b>render_category</b>
+                <a class="ansibleOptionLink" href="#return-hostgroup_details/num_of_initiators" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                  <br>
+                  <span style="color: purple"></span>                    </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>chassis render category</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="return-hostgroup_details/num_of_masking_views"></div>
+                <b>hosts</b>
+                <a class="ansibleOptionLink" href="#return-hostgroup_details/num_of_masking_views" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=list</span>
+                  <br>
+                  <span style="color: purple">elements=HostBasicInfoV3</span>                    </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>host basic infomation</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="return-hostgroup_details/port_flags_override"></div>
+                <b>generation</b>
+                <a class="ansibleOptionLink" href="#return-hostgroup_details/port_flags_override" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=integer</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>chassis generation</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="return-hostgroup_details/type"></div>
+                <b>health</b>
+                <a class="ansibleOptionLink" href="#return-hostgroup_details/type" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>chassis health status</div>
+                                    <br/>
+                                </td>
+        </tr>
+ <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="return-hostgroup_details/type"></div>
+                <b>missing</b>
+                <a class="ansibleOptionLink" href="#return-hostgroup_details/type" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=boolean</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>The upgrade status of the VxRail appliance software</div>
+                                    <br/>
+                                </td>
+        </tr>
+<tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="return-hostgroup_details/num_of_initiators"></div>
+                <b>power_supplies</b>
+                <a class="ansibleOptionLink" href="#return-hostgroup_details/num_of_initiators" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=list</span>
+                  <br>
+                  <span style="color: purple">elements=PowerSupplyInfo</span>                    </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>Information about the chassis power supplies</div>
+                                    <br/>
+                                </td>
+        </tr>
+                    </table>
+
+Authors
+-------
+
+-   VxRail Development Team &lt;<ansible.team@dell.com>&gt;
+
+Remove Host Module
+=================
+
+Synopsis
+--------
+This module will Remove a host from the cluster.
+  
+Supported Endpoints
+--------
+
+* POST /v1/cluster/remove-host
+* GET /v1/requests/{id}
+  
+
+Parameters
+----------
+
+<table  border=0 cellpadding=0 class="documentation-table">
+    <tr>
+        <th colspan="1">Parameter</th>
+        <th>Choices/<font color="blue">Defaults</font></th>
+                    <th width="100%">Comments</th>
+    </tr>
+                            <tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
+                <b>vxmip</b>
+                <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                    <br>
+                    <span style="color: red">required=true</span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div></div>
+                                        <div>The IP address of the VxRail Manager System</div>
+                                                    </td>
+        </tr>
+                            <tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
+                <b>vcadmin</b>
+                <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                    <br>
+                    <span style="color: red">required=true</span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div></div>
+                                        <div>Administrative account of the vCenter Server the VxRail Manager is registered to</div>
+                                                    </td>
+        </tr>
+<tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
+                <b>vcpasswd</b>
+                <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                    <br>
+                    <span style="color: red">required=true</span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div></div>
+                                        <div>The password for the administrator account provided in vcadmin</div>
+                                                    </td>
+        </tr>
+                            <tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
+                <b>vc_root_account</b>
+                <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                    <br>
+                    <span style="color: red">required=true</span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div></div>
+                                        <div>Root account of the vCenter Server the VxRail Manager is registered to</div>
+                                                    </td>
+        </tr>
+<tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
+                <b>vc_root_passwd</b>
+                <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                    <br>
+                    <span style="color: red">required=true</span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div></div>
+                                        <div>The password for the root account provided in vcadmin</div>
+                                                    </td>
+        </tr>
+<tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
+                <b>host_sn</b>
+                <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                    <br>
+                    <span style="color: red">required=true</span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div></div>
+                                        <div>Serial number of the host to be removed</div>
+                                                    </td>
+        </tr>
+<tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-state"></div>
+                <b>timeout</b>
+                <a class="ansibleOptionLink" href="#parameter-state" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=integer</span>
+                    <br>
+                    <span style="color: red"></span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                        <ul style="margin: 0; padding: 0"><b>Default:</b>
+                                                                                                                                                            <li>1800s</li>
+                                                                                </ul>
+                                                                        </td>
+                                                            <td>
+                                        <div></div>
+                                        <div>Time out value for node removal, the default value is 1800 seconds</div>
+                                        <div></div>
+                                                    </td>
+        </tr>
+                    </table>
+
+Notes
+-----
+- Make sure you have done precheck action, e.g, entering maintainance mode and vsan Health checking is pass.
+- Can check Log file /tmp/vxrail_ansible_rmnode.log for more details about execution result.
+
+
+Examples
+--------
+
+``` yaml+jinja
+  - name: Remove a host
+    DellEMC_VxRail_Cluster_RemoveHost_v1:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        host_sn: "{{ host_sn }}"
+        vc_root_account: "{{ vc_root_account }}"
+        vc_root_passwd: "{{ vc_root_passwd }}"
+        timeout : "{{ timeout }}"
+
+```
+
+Return Values
+-------------
+
+The following are the fields unique to this module:
+
+<table border=0 cellpadding=0 class="documentation-table">
+    <tr>
+        <th colspan="2">Key</th>
+        <th>Returned</th>
+        <th width="100%">Description</th>
+    </tr>
+                <tr>
+                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="return-changed"></div>
+                <b>changed</b>
+                <a class="ansibleOptionLink" href="#return-changed" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=boolean</span>
+                                      </div>
+                                </td>
+            <td>always</td>
+            <td>
+                                        <div>Whether or not the resource has changed.</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="return-host_details"></div>
+                <b>Remove_Node</b>
+                <a class="ansibleOptionLink" href="#return-host_details" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=list</span>
+                                      </div>
+                                </td>
+            <td>When Node Removal completes</td>
+            <td>
+                                        <div>Node Removal Status</div>
+                                    <br/>
+                                </td>
+        </tr>
+                                    <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-host_details/bw_limit"></div>
+                <b>request_id</b>
+                <a class="ansibleOptionLink" href="#return-host_details/bw_limit" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>Node Removal(long-running) request returns a requestId.</div>
+<tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-host_details/bw_limit"></div>
+                <b>status</b>
+                <a class="ansibleOptionLink" href="#return-host_details/bw_limit" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>The current state of the execution</div>
+
+
+</table>
+
+Authors
+-------
+
+-   VxRail Development Team &lt;<ansible.team@dell.com>&gt;
+
+System Virtual Machines Module
+=================
+
+Synopsis
+--------
+This module will retrieve name, status and host information for system virtual machines in the VxRail cluster.
+
+Supported Endpoints
+--------
+
+* GET /v1/cluster/system-virtual-machines
+
+Parameters
+----------
+
+<table  border=0 cellpadding=0 class="documentation-table">
+    <tr>
+        <th colspan="1">Parameter</th>
+        <th>Choices/<font color="blue">Defaults</font></th>
+                    <th width="100%">Comments</th>
+    </tr>
+                            <tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
+                <b>vxmip</b>
+                <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                    <br>
+                    <span style="color: red">required=true</span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div></div>
+                                        <div>The IP address of the VxRail Manager System</div>
+                                                    </td>
+        </tr>
+                            <tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
+                <b>vcadmin</b>
+                <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                    <br>
+                    <span style="color: red">required=true</span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div></div>
+                                        <div>Administrative account of the vCenter Server the VxRail Manager is registered to</div>
+                                                    </td>
+        </tr>
+<tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
+                <b>vcpasswd</b>
+                <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                    <br>
+                    <span style="color: red">required=true</span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div></div>
+                                        <div>The password for the administrator account provided in vcadmin</div>
+                                                    </td>
+        </tr>
+
+<tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-state"></div>
+                <b>timeout</b>
+                <a class="ansibleOptionLink" href="#parameter-state" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=integer</span>
+                    <br>
+                    <span style="color: red"></span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                        <ul style="margin: 0; padding: 0"><b>Default:</b>
+                                                                                                                                                            <li>60s</li>
+                                                                                </ul>
+                                                                        </td>
+                                                            <td>
+                                        <div></div>
+                                        <div>Time out value for getting iDRAC Network Settings infomation, the default value is 60 seconds</div>
+                                        <div></div>
+                                                    </td>
+        </tr>
+                    </table>
+
+Notes
+-----
+- This module calls /v1/cluster/system-virtual-machines  api, make sure your VxRail environment supports this API
+- For more details about execution result, log file can be found at /tmp/VxRail_Ansible_Cluster_GetSystemVirtualMachines_v1.log
+
+
+Examples
+--------
+
+``` yaml+jinja
+  - name: Retrives name, status and host information for system  virtual machines in the VxRail cluster
+    DellEMC_VxRail_Cluster_GetSystemVirtualMachines_v1:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        timeout : "{{ timeout }}"
+
+```
+
+Return Values
+-------------
+
+The following are the fields unique to this module:
+
+<table border=0 cellpadding=0 class="documentation-table">
+    <tr>
+        <th colspan="3">Key</th>
+        <th>Returned</th>
+        <th width="100%">Description</th>
+    </tr>
+                <tr>
+                            <td colspan="3">
+                <div class="ansibleOptionAnchor" id="return-changed"></div>
+                <b>name</b>
+                <a class="ansibleOptionLink" href="#return-changed" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                                      </div>
+                                </td>
+            <td>When VM information exists</td>
+            <td>
+                                        <div>Name of the Virtual Machine.</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                            <td colspan="3">
+                <div class="ansibleOptionAnchor" id="return-hostgroup_details"></div>
+                <b>host</b>
+                <a class="ansibleOptionLink" href="#return-hostgroup_details" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                                      </div>
+                                </td>
+            <td>When VM information exists</td>
+            <td>
+                                        <div>Host FQDN system for the virtual machine</div>
+                                    <br/>
+                                </td>
+        </tr> 
+        <tr>
+                            <td colspan="3">
+                <div class="ansibleOptionAnchor" id="return-hostgroup_details"></div>
+                <b>status</b>
+                <a class="ansibleOptionLink" href="#return-hostgroup_details" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                                      </div>
+                                </td>
+            <td>When VM information exists</td>
+            <td>
+                                        <div>Status of Virtual Machine</div>
+                                    <br/>
+                                </td>
+        </tr>   
+                    </table>
+
+
+Authors
+-------
+
+-   VxRail Development Team &lt;<ansible.team@dell.com>&gt;
+
+Telemetry Tier Module
+=================
+
+Synopsis
+--------
+This module will return the system's telemetry tier.
+  
+Supported Endpoints
+--------
+
+* GET /v1/telemetry/tier
+  
+
+Parameters
+----------
+
+<table  border=0 cellpadding=0 class="documentation-table">
+    <tr>
+        <th colspan="1">Parameter</th>
+        <th>Choices/<font color="blue">Defaults</font></th>
+                    <th width="100%">Comments</th>
+    </tr>
+                            <tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
+                <b>vxmip</b>
+                <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                    <br>
+                    <span style="color: red">required=true</span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div></div>
+                                        <div>The IP address of the VxRail Manager System</div>
+                                                    </td>
+        </tr>
+                            <tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
+                <b>vcadmin</b>
+                <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                    <br>
+                    <span style="color: red">required=true</span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div></div>
+                                        <div>Administrative account of the vCenter Server the VxRail Manager is registered to</div>
+                                                    </td>
+        </tr>
+<tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
+                <b>vcpasswd</b>
+                <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                    <br>
+                    <span style="color: red">required=true</span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div></div>
+                                        <div>The password for the administrator account provided in vcadmin</div>
+                                                    </td>
+        </tr>
+<tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-state"></div>
+                <b>timeout</b>
+                <a class="ansibleOptionLink" href="#parameter-state" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=integer</span>
+                    <br>
+                    <span style="color: red"></span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                        <ul style="margin: 0; padding: 0"><b>Default:</b>
+                                                                                                                                                            <li>60s</li>
+                                                                                </ul>
+                                                                        </td>
+                                                            <td>
+                                        <div></div>
+                                        <div>Time out value for getting system infomation, the default value is 60 seconds</div>
+                                        <div></div>
+                                                    </td>
+        </tr>
+                    </table>
+
+Notes
+-----
+- Can check Log file /tmp/vxrail_telemetry_info.log for more details about execution result.
+
+
+Examples
+--------
+
+``` yaml+jinja
+  - name: Retrives VxRail Telemetry Tier
+    DellEMC_VxRail_Telemetry_GetTier_v1:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        timeout : "{{ timeout }}"
+
+```
+
+Return Values
+-------------
+
+The following are the fields unique to this module:
+
+<table border=0 cellpadding=0 class="documentation-table">
+    <tr>
+        <th colspan="3">Key</th>
+        <th>Returned</th>
+        <th width="100%">Description</th>
+    </tr>
+                <tr>
+                            <td colspan="3">
+                <div class="ansibleOptionAnchor" id="return-changed"></div>
+                <b>changed</b>
+                <a class="ansibleOptionLink" href="#return-changed" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=boolean</span>
+                                      </div>
+                                </td>
+            <td>always</td>
+            <td>
+                                        <div>Whether or not the resource has changed.</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                            <td colspan="3">
+                <div class="ansibleOptionAnchor" id="return-hostgroup_details"></div>
+                <b>telemtry_tier</b>
+                <a class="ansibleOptionLink" href="#return-hostgroup_details" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">complex</span>
+                                      </div>
+                                </td>
+            <td>When cluster exists.</td>
+            <td>
+                                        <div>The telemetry tier of the cluster.</div>
+                                    <br/>
+                                </td>
+        </tr>
+
+<tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="return-hostgroup_details/num_of_initiators"></div>
+                <b>level</b>
+                <a class="ansibleOptionLink" href="#return-hostgroup_details/num_of_initiators" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                                 </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>The current telemetry tier of the system. Options include: BASIC (default), OFF, LIGHT, ADVANCED</div>
                                     <br/>
                                 </td>
         </tr>

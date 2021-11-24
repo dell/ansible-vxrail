@@ -47,7 +47,7 @@ options:
     default: 60
 
 author:
-    - Hongmei Gao(@gaohongmei) <s.gao@dell.com>
+    - VxRail Development Team(@VxRailDevTeam) <ansible.team@dell.com>
 
 '''
 
@@ -171,7 +171,6 @@ class VxRailSystem():
         self.configuration.password = self.vc_password
         self.configuration.verify_ssl = False
         self.configuration.host = self.system_url.set_host()
-        response = ''
 
     def get_v3_system(self):
         systemInfos = {}

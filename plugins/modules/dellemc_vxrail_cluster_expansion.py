@@ -120,7 +120,7 @@ options:
     default: 1800
 
 author:
-    - Hongmei Gao(@gaohongmei) <ansible.team@dell.com>
+    - VxRail Development Team(@VxRailDevTeam) <ansible.team@dell.com>
 
 '''
 
@@ -174,7 +174,6 @@ from ansible.module_utils.basic import AnsibleModule
 import vxrail_ansible_utility
 from vxrail_ansible_utility.rest import ApiException
 import time
-import json
 
 from vxrail_ansible_utility import configuration as utils
 
@@ -217,7 +216,6 @@ class VxRailCluster():
         self.configuration.password = self.vc_password
         self.configuration.verify_ssl = False
         self.configuration.host = self.cluster_url.set_host()
-        response = ''
 
     def start_validation(self, validate_json):
         request_body = validate_json
@@ -319,7 +317,7 @@ class VxRailCluster():
         return network
 
     def _create_nicmapping_section(self):
-        nic_mappings = list()
+        nic_mappings = []
         api_instance = vxrail_ansible_utility.SystemInformationApi(vxrail_ansible_utility.ApiClient(self.configuration))
         try:
             # get nic mapping
@@ -339,7 +337,6 @@ class VxRailCluster():
 
 def main():
     ''' Entry point into execution flow '''
-    result = ''
     global module
     # define available arguments/parameters a user can pass to the module
     module_args = dict(

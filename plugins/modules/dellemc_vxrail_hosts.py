@@ -53,8 +53,7 @@ options:
     default: 60
 
 author:
-    - Gao Hongmei(@gaohongmei) <s.gao@dell.com>
-    - Yan Sun(@sunyan) <yan_sun5@dell.com>
+    - VxRail Development Team(@VxRailDevTeam) <ansible.team@dell.com>
 
 '''
 
@@ -304,7 +303,6 @@ class VxRailHosts():
         self.configuration.password = self.vc_password
         self.configuration.verify_ssl = False
         self.configuration.host = self.hosts_url.set_host()
-        response = ''
 
     def get_v4_hosts(self):
         # create an instance of the API class

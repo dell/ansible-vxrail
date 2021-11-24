@@ -1,0 +1,20 @@
+---
+- name: Retrieve VxRail iDRAC Network Settings
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+    sn: "{{ sn }}"
+
+  tasks:
+    - name: Get iDRAC Network Settings
+      DellEMC_VxRail_idrac_GetNetworkSettings_v1:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        sn: "{{ sn }}"
+      register: idrac_info
+    - name: Display Idrac Network Settings
+      debug:
+        msg:  "{{ idrac_info }}"

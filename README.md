@@ -15,7 +15,7 @@ This table provides information about the software prerequisites for the Ansible
 
 | **Ansible Modules** | **VxRail version** | **Python version** | **Python library (VxRail Ansible Utility) version** | **Ansible Version** |
 |---------------------|----------------|--------------------|----------------------------|-------------|
-| v1.0.0 | 7.0.240 | <br> 3.6.x <br> 3.7.x | 7.0.240.0 | 2.9 and 2.10 | 
+| v1.1.0 | 7.0.240 | <br> 3.6.x <br> 3.7.x | 1.1.0 | 2.9 and 2.10 | 
 
   * Please follow VxRail Ansible Utility installation instructions on [VxRail Ansible Utility Documentation](https://github.com/dell/ansible-vxrail-utility)
 
@@ -29,6 +29,11 @@ The modules are written in such a way that all requests are idempotent and hence
   * Cluster information module
   * Hosts module
   * Callhome module
+  * iDRAC Network Settings module
+  * Chassis module
+  * Remove Host module
+  * System Virtual Machines module
+  * Telemetry Tier Module
 
 ## Installation of SDK
 
@@ -38,7 +43,7 @@ Install the python sdk named ['VxRail Ansible Utility'](https://github.com/dell/
 
   * Download the tar build and install the collection anywhere in your system, e.g.
         
-        ansible-galaxy collection install dellemc-vxrail-1.0.0.tar.gz -p <install_path>
+        ansible-galaxy collection install dellemc-vxrail-1.1.0.tar.gz -p <install_path>
   
   * Set the environment variable:
         
@@ -55,3 +60,6 @@ Install the python sdk named ['VxRail Ansible Utility'](https://github.com/dell/
 ## Running Ansible Modules
 
 The Ansible server must be configured with Python library for VxRail Ansible Utility to run the Ansible playbooks. The [Documents]( https://github.com/dell/ansible-vxrail/tree/master/docs ) provide information on different Ansible modules along with their functions and syntax. The parameters table in the Product Guide provides information on various parameters which needs to be configured before running the modules.
+
+## Support
+The code is provided AS-IS and not supported by any Dell EMC product support agreements. For community support please create a GitHub issue.

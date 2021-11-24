@@ -53,7 +53,7 @@ options:
     default: 18000
 
 author:
-    - Hongmei Gao(@gaohongmei) <ansible.team@dell.com>
+    - VxRail Development Team(@VxRailDevTeam) <ansible.team@dell.com>
 
 '''
 
@@ -128,7 +128,6 @@ class VxRailDay1():
         self.configuration.password = self.vc_password
         self.configuration.verify_ssl = False
         self.configuration.host = self.day1_url.set_host()
-        response = ''
 
     def start_validation(self, day1_json):
         request_body = day1_json
@@ -183,7 +182,6 @@ class VxRailDay1():
 
 def main():
     ''' Entry point into execution flow '''
-    result = ''
     global module
     # define available arguments/parameters a user can pass to the module
     module_args = dict(
@@ -209,7 +207,7 @@ def main():
     file = module.params.get('day1json_file')
     if os.path.isfile(file):
         LOGGER.info('VxRail Initializaion using JSON file %s', module.params.get('day1json_file'))
-        with open(file) as f:
+        with open(file, encoding='utf_8') as f:
             config_json = json.load(f)
     else:
         LOGGER.error('File cannot not be opened or does not exit, please verify and try again')
