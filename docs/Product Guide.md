@@ -1645,8 +1645,7 @@ The following are the fields unique to this module:
 Authors
 -------
 
--   Himanshu Saxena (@saxenh1) &lt;<ansible.team@dell.com>&gt;
-
+-   VxRail Development Team &lt;<ansible.team@dell.com>&gt;
 
 
 Hosts Module
