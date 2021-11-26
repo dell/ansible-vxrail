@@ -9,7 +9,7 @@
 
   tasks:
     - name: Get iDRAC Network Settings
-      DellEMC_VxRail_idrac_GetNetworkSettings_v1:
+      dellemc_vxrail_idrac_getnetwork_v1:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
