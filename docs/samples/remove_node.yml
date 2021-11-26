@@ -11,7 +11,7 @@
 
   tasks:
     - name: Start to remove node
-      DellEMC_VxRail_Cluster_RemoveHost_v1:
+      dellemc_vxrail_cluster_rmhost_v1:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"

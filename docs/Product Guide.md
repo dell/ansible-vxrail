@@ -2475,7 +2475,7 @@ Examples
 
 ``` yaml+jinja
   - name: Get iDRAC Network Settings
-    DellEMC_VxRail_idrac_GetNetworkSettings_v1:
+    dellemc_vxrail_idrac_getnetwork_v1:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
@@ -3225,7 +3225,7 @@ Examples
 
 ``` yaml+jinja
   - name: Remove a host
-    DellEMC_VxRail_Cluster_RemoveHost_v1:
+    dellemc_vxrail_cluster_rmhost_v1:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
@@ -3419,7 +3419,7 @@ Examples
 
 ``` yaml+jinja
   - name: Retrives name, status and host information for system  virtual machines in the VxRail cluster
-    DellEMC_VxRail_Cluster_GetSystemVirtualMachines_v1:
+    dellemc_vxrail_cluster_getvm_v1:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
@@ -3597,7 +3597,7 @@ Examples
 
 ``` yaml+jinja
   - name: Retrives VxRail Telemetry Tier
-    DellEMC_VxRail_Telemetry_GetTier_v1:
+    dellemc_vxrail_telemetry_tier_v1:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"

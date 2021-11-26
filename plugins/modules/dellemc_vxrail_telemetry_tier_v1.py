@@ -9,16 +9,16 @@ __metaclass__ = type
 
 DOCUMENTATION = r'''
 ---
-module: DellEMC_VxRail_Cluster_GetSystemVirtualMachines_v1
+module: dellemc_vxrail_telemetry_tier_v1
 
-short_description: Retrives name, status and host information for system virtual machines in the VxRail cluster.
+short_description: Retrieve VxRail Telemetry Tier
 
 # If this is part of a collection, you need to use semantic versioning,
 # i.e. the version is of the form "2.5.0" and not "2.4".
 version_added: "1.1.0"
 
 description:
-- This module will retrieve the name, status, and host information for system virtual machines in the VxRail cluster.
+- This module will retrieve the system's Telemetry tier.
 options:
 
   vxmip:
@@ -41,7 +41,7 @@ options:
 
   timeout:
     description:
-      Time out value for getting cluster infomation, the default value is 60 seconds
+      Time out value for getting telemetry information, the default value is 60 seconds
     required: false
     type: int
     default: 60
@@ -52,8 +52,8 @@ author:
 '''
 
 EXAMPLES = r'''
-  - name: Retrives name, status and host information for system virtual machines in the VxRail cluster
-    DellEMC_VxRail_Cluster_GetSystemVirtualMachines_v1:
+  - name: Retrives VxRail Telemetry Information
+    dellemc-vxrail-telemetry-info:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
@@ -61,24 +61,14 @@ EXAMPLES = r'''
 '''
 
 RETURN = r'''
-System_VM_Information:
-  description: system VMs information summary
+Telemetry_tier:
+  description: The current telemetry tier for the system
   returned: always
   type: dict
   sample: >-
-    [
-                {
-                    "host": "vcluster109-esx04.vv13xapp01.local",
-                    "name": "VxRail Manager",
-                    "status": "POWERED_ON"
-                },
-                {
-                    "host": "vcluster109-esx01.vv13xapp01.local",
-                    "name": "VMware vCenter Server Appliance",
-                    "status": "POWERED_ON"
-                }
-            ]
-
+        {
+            "level": "BASIC"
+        }
 '''
 
 import logging
@@ -88,9 +78,7 @@ import vxrail_ansible_utility
 from vxrail_ansible_utility.rest import ApiException
 from vxrail_ansible_utility import configuration as utils
 
-LOG_FILE_NAME = "/tmp/VxRail_Ansible_Cluster_GetSystemVirtualMachines_v1.log"
-LOGGER = utils.get_logger("DellEMC_VxRail_Cluster_GetSystemVirtualMachines_v1",
-                          LOG_FILE_NAME, log_devel=logging.DEBUG)
+LOGGER = utils.get_logger("dellemc_vxrail_telemetry_info", "/tmp/vxrail_ansible_telemetry_info.log", log_devel=logging.DEBUG)
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
@@ -118,25 +106,20 @@ class VxRailCluster():
         self.configuration.verify_ssl = False
         self.configuration.host = self.system_url.set_host()
 
-    def get_v1_cluster_system_virtual_machines(self):
-        response = ''
+    def get_v1_telemetry_tier(self):
+        TelemInfo = {}
         # create an instance of the API class
-        api_instance = vxrail_ansible_utility.VirtualMachineInformationApi(vxrail_ansible_utility.ApiClient(self.configuration))
+        api_instance = vxrail_ansible_utility.TelemetryReportingApi(vxrail_ansible_utility.ApiClient(self.configuration))
         try:
-            # query v1 cluster system virtual machines information
-            response = api_instance.v1_cluster_system_virtual_machines_get()
+            # query v1 telemetry information
+            response = api_instance.query_telemetry_tier_setting_information()
         except ApiException as e:
-            LOGGER.error("Exception when calling VirtualMachineInformationApi->v1_cluster_system_virtual_machines_get: %s\n", e)
+            LOGGER.error("Exception when calling TelemetryReportingApi->query_telemetry_tier_setting_information: %s\n", e)
             return 'error'
-        LOGGER.info("v1/virtual machine information api response: %s\n", response)
-        system_vms = {}
-        system_vms_list = []
-        for i in range(len(response)):
-            system_vms['host'] = response[i].host
-            system_vms['name'] = response[i].name
-            system_vms['status'] = response[i].status
-            system_vms_list.append(dict(system_vms.items()))
-        return system_vms_list
+        LOGGER.info("v1/telemetry/tier api response: %s\n", response)
+        data = response
+        TelemInfo['level'] = data.level
+        return dict(TelemInfo.items())
 
 
 def main():
@@ -154,11 +137,11 @@ def main():
         argument_spec=module_args,
         supports_check_mode=True,
     )
-    result = VxRailCluster().get_v1_cluster_system_virtual_machines()
+    result = VxRailCluster().get_v1_telemetry_tier()
     if result == 'error':
-        module.fail_json(msg="API call failed, please refer /tmp/VxRail_Ansible_Cluster_GetSystemVirtualMachines_v1.log")
-    vx_facts = {'System_VM_Information': result}
-    vx_facts_result = dict(changed=False, V1_VirtualMachineInformation_API=vx_facts)
+        module.fail_json(msg="Call V1/telemetry/tier API failed,please see log file /tmp/vxrail_ansible_telemetry_info.log for more error details.")
+    vx_facts = {'Telemetry_Tier': result}
+    vx_facts_result = dict(changed=False, V1_Telemetry_API=vx_facts)
     module.exit_json(**vx_facts_result)
 
 

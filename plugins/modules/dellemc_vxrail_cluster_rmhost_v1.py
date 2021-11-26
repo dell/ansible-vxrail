@@ -9,7 +9,7 @@ __metaclass__ = type
 
 DOCUMENTATION = r'''
 ---
-module: DellEMC_VxRail_Cluster_RemoveHost_v1
+module: dellemc_vxrail_cluster_rmhost_v1
 
 short_description: Remove a host from the cluster
 
