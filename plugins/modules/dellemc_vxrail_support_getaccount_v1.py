@@ -9,16 +9,16 @@ __metaclass__ = type
 
 DOCUMENTATION = r'''
 ---
-module: dellemc_vxrail_telemetry_tier_v1
+module: dellemc_vxrail_support_getaccount_v1
 
-short_description: Retrieve VxRail Telemetry Tier
+short_description: Retrieve VxRail support account
 
 # If this is part of a collection, you need to use semantic versioning,
 # i.e. the version is of the form "2.5.0" and not "2.4".
-version_added: "1.1.0"
+version_added: "1.2.0"
 
 description:
-- This module will retrieve the system's Telemetry tier.
+- This module will get the current support account set in VxRail.
 options:
 
   vxmip:
@@ -52,8 +52,8 @@ author:
 '''
 
 EXAMPLES = r'''
-  - name: Retrives VxRail Telemetry Information
-    dellemc-vxrail-telemetry-info:
+  - name: Retrieve VxRail support account Information
+    dellemc_vxrail_support_getaccount_v1:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
@@ -61,13 +61,13 @@ EXAMPLES = r'''
 '''
 
 RETURN = r'''
-Telemetry_tier:
-  description: The current telemetry tier for the system
+Support_account:
+  description: the current support account set in VxRail
   returned: always
   type: dict
   sample: >-
         {
-            "level": "BASIC"
+            "username": "vxrailtest3@example.com"
         }
 '''
 
@@ -78,7 +78,7 @@ import vxrail_ansible_utility
 from vxrail_ansible_utility.rest import ApiException
 from ansible_collections.dellemc.vxrail.plugins.module_utils import dellemc_vxrail_ansible_utils as utils
 
-LOGGER = utils.get_logger("dellemc_vxrail_telemetry_tier_v1", "/tmp/vxrail_ansible_telemetry_info.log", log_devel=logging.DEBUG)
+LOGGER = utils.get_logger("dellemc_vxrail_support_getaccount_v1", "/tmp/vxrail_ansible_support_account.log", log_devel=logging.DEBUG)
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
@@ -92,7 +92,7 @@ class VxrailClusterUrls():
         return VxrailClusterUrls.cluster_url.format(self.vxm_ip)
 
 
-class VxRailCluster():
+class VxRailSupport():
     def __init__(self):
         self.vxm_ip = module.params.get('vxmip')
         self.timeout = module.params.get('timeout')
@@ -106,20 +106,20 @@ class VxRailCluster():
         self.configuration.verify_ssl = False
         self.configuration.host = self.system_url.set_host()
 
-    def get_v1_telemetry_tier(self):
-        TelemInfo = {}
+    def get_v1_support_account(self):
+        supportInfo = {}
         # create an instance of the API class
-        api_instance = vxrail_ansible_utility.TelemetryReportingApi(vxrail_ansible_utility.ApiClient(self.configuration))
+        api_instance = vxrail_ansible_utility.SupportAccountApi(vxrail_ansible_utility.ApiClient(self.configuration))
         try:
-            # query v1 telemetry information
-            response = api_instance.query_telemetry_tier_setting_information()
+            # query v1 support account
+            response = api_instance.v1_support_account_get()
         except ApiException as e:
-            LOGGER.error("Exception when calling TelemetryReportingApi->query_telemetry_tier_setting_information: %s\n", e)
+            LOGGER.error("Exception when calling SupportAccountApi->v1_support_account_get: %s\n", e)
             return 'error'
-        LOGGER.info("v1/telemetry/tier api response: %s\n", response)
+        LOGGER.info("v1/support/account api response: %s\n", response)
         data = response
-        TelemInfo['level'] = data.level
-        return dict(TelemInfo.items())
+        supportInfo['username'] = data.username
+        return dict(supportInfo.items())
 
 
 def main():
@@ -137,11 +137,11 @@ def main():
         argument_spec=module_args,
         supports_check_mode=True,
     )
-    result = VxRailCluster().get_v1_telemetry_tier()
+    result = VxRailSupport().get_v1_support_account()
     if result == 'error':
-        module.fail_json(msg="Call V1/telemetry/tier API failed,please see log file /tmp/vxrail_ansible_telemetry_info.log for more error details.")
-    vx_facts = {'Telemetry_Tier': result}
-    vx_facts_result = dict(changed=False, V1_Telemetry_API=vx_facts)
+        module.fail_json(msg="Call V1/support/account API failed,please see log file /tmp/vxrail_ansible_support_account.log for more error details.")
+    vx_facts = {'Support_Account': result}
+    vx_facts_result = dict(changed=False, V1_Support_Account_API=vx_facts)
     module.exit_json(**vx_facts_result)
 
 

@@ -70,14 +70,13 @@ author:
 
 EXAMPLES = r'''
 - name: Remove a node
-  hosts: localhost
-  vars:
-    vxmip: "{{ vxmip }}"
-    vcadmin: "{{ vcadmin }}"
-    vcpasswd: "{{ vcpasswd }}"
-    host_sn: "{{ host_sn }}"
-    vc_root_account: "{{ vc_root_account }}"
-    vc_root_passwd: "{{ vc_root_passwd }}"
+  dellemc_vxrail_cluster_rmhost_v1:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        host_sn: "{{ host_sn }}"
+        vc_root_account: "{{ vc_root_account }}"
+        vc_root_passwd: "{{ vc_root_passwd }}"
 '''
 
 RETURN = r'''
@@ -105,9 +104,9 @@ from ansible.module_utils.basic import AnsibleModule
 import vxrail_ansible_utility
 from vxrail_ansible_utility.rest import ApiException
 import time
-from vxrail_ansible_utility import configuration as utils
+from ansible_collections.dellemc.vxrail.plugins.module_utils import dellemc_vxrail_ansible_utils as utils
 LOG_FILE_NAME = "/tmp/vxrail_ansible_rmnode.log"
-LOGGER = utils.get_logger("DellEMC_VxRail_Cluster_RemoveHost_v1", LOG_FILE_NAME, log_devel=logging.DEBUG)
+LOGGER = utils.get_logger("dellemc_vxrail_cluster_rmhost_v1", LOG_FILE_NAME, log_devel=logging.DEBUG)
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
@@ -168,9 +167,9 @@ class VxRailRemoveHost():
     def get_request_status(self, request_id):
         job_id = request_id
         # create an instance of the API class
-        api_instance = vxrail_ansible_utility.ClusterShutdownApi(vxrail_ansible_utility.ApiClient(self.configuration))
+        api_instance = vxrail_ansible_utility.RequestStatusApi(vxrail_ansible_utility.ApiClient(self.configuration))
         try:
-            response = api_instance.v1_requests_id_get(job_id)
+            response = api_instance.v1_request_id_get(job_id)
         except ApiException as e:
             LOGGER.error("Exception when calling v1_requests_id_get: %s\n", e)
             return 'error'

@@ -1,0 +1,37 @@
+---
+- name: LCM with v4 api
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+    bundle: "{{ bundle }}"
+    vc_root_account: "{{ vc_root_account }}"
+    vc_root_passwd: "{{ vc_root_passwd }}"
+    vxm_root_account: "{{ vxm_root_account }}"
+    vxm_root_passwd: "{{ vxm_root_passwd }}"
+
+  tasks:
+    - name: Start to upgrade all nodes in cluster
+      dellemc_vxrail_lcm_v4:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        bundle: "{{ bundle }}"
+        vc_root_account: "{{ vc_root_account }}"
+        vc_root_passwd: "{{ vc_root_passwd }}"
+        vxm_root_account: "{{ vxm_root_account }}"
+        vxm_root_passwd: "{{ vxm_root_passwd }}"
+      async: 25200
+      poll: 0
+      register: lcm_status
+    - name: Check if LCM is completed...The upgrade is still ongoing.
+      async_status:
+        jid: "{{ lcm_status.ansible_job_id }}"
+      register: job_result
+      until: job_result.finished
+      retries: 210
+      delay: 120
+    - name: Get LCM Result
+      debug:
+        msg:  "{{job_result}}"

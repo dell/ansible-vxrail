@@ -1,0 +1,71 @@
+---
+- name: Add satellite nodes
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+    vxm_version: "{{ vxm_version }}"
+    folder_id: "{{ folder_id }}"
+    mgt_ip: "{{ mgt_ip }}"
+    network_ip: "{{ network_ip }}"
+    current_root_password: "{{ current_root_password }}"
+    hostname: "{{ hostname }}"
+    domain_name: "{{ domain_name }}"
+    root_account: "{{ root_account }}"
+    root_passwd: "{{ root_passwd }}"
+    mgt_account: "{{ mgt_account }}"
+    mgt_passwd: "{{ mgt_passwd }}"
+    mgt_vlan: "{{ mgt_vlan }}"
+    mgt_netmask: "{{ mgt_netmask }}"
+    mgt_gateway: "{{ mgt_gateway }}"
+    dns_server: "{{ dns_server }}"
+    ntp_server: "{{ ntp_server }}"
+    syslog_server: "{{ syslog_server }}"
+    rack_name: "{{ rack_name }}"
+    order_number: "{{ order_number }}"
+
+  tasks:
+    - name: Start a satellite nodes expansion
+      dellemc_vxrail_satellite_node_expansion:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        vxm_version: "{{ vxm_version }}"
+        folder_id: "{{ folder_id }}"
+        mgt_ip: "{{ mgt_ip }}"
+        network_ip: "{{ network_ip }}"
+        current_root_password: "{{ current_root_password }}"
+        hostname: "{{ hostname }}"
+        domain_name: "{{ domain_name }}"
+        root_account: "{{ root_account }}"
+        root_passwd: "{{ root_passwd }}"
+        mgt_account: "{{ mgt_account }}"
+        mgt_passwd: "{{ mgt_passwd }}"
+        mgt_vlan: "{{ mgt_vlan }}"
+        mgt_netmask: "{{ mgt_netmask }}"
+        mgt_gateway: "{{ mgt_gateway }}"
+        dns_server: "{{ dns_server }}"
+        ntp_server: "{{ ntp_server }}"
+        syslog_server: "{{ syslog_server }}"
+        rack_name: "{{ rack_name }}"
+        order_number: "{{ order_number }}"
+      async: 1800
+      poll: 0
+      register: expansion_status
+
+    - name: Check if satellite node expansion job is completed...The node addition is still ongoing.
+      async_status:
+        jid: "{{ expansion_status.ansible_job_id }}"
+      register: job_result
+      until: job_result.finished
+      retries: 60
+      delay: 30
+
+    - name: Display added satellite node hostname
+      debug:
+        var: hostname
+
+    - name: Get satellite node Expansion Result
+      debug:
+        msg:  "{{job_result}}"

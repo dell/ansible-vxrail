@@ -1,0 +1,19 @@
+---
+- name: Retrieve VxRail support account Information
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+
+  tasks:
+    - name: Get Support account information
+      dellemc_vxrail_support_getaccount_v1:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+      register: support_account_info
+
+    - name: Display Support account information
+      debug:
+        msg:  "{{support_account_info}}"

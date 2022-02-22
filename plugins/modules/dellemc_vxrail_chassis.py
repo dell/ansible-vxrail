@@ -216,7 +216,7 @@ Chassis_Information:
         }
 '''
 from functools import reduce
-from vxrail_ansible_utility import configuration as utils
+from ansible_collections.dellemc.vxrail.plugins.module_utils import dellemc_vxrail_ansible_utils as utils
 from vxrail_ansible_utility.rest import ApiException
 import vxrail_ansible_utility
 from ansible.module_utils.basic import AnsibleModule
@@ -309,9 +309,9 @@ class VxRailHosts():
         host_info['tpm_present'] = data.tpm_present
         host_info['operational_status'] = data.operational_status
         host_info['power_status'] = data.power_status
-        if data.firmware_information is not None:
-            host_info['firmware_information'] = self._generate_firmware_info_from_response_data(
-                data.firmware_information)
+        if data.firmware_info is not None:
+            host_info['firmware_info'] = self._generate_firmware_info_from_response_data(
+                data.firmware_info)
         if data.geo_location is not None:
             host_info['geo_location'] = self._generate_geo_location_info_from_response_data(
                 data.geo_location)

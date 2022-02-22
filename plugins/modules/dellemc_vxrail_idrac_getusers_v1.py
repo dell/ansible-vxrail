@@ -1,7 +1,6 @@
 #!/usr/bin/python
 # Copyright 2021 Dell Inc. or its subsidiaries. All Rights Reserved
 
-
 # Copyright: (c) 2018, Terry Jones <terry.jones@example.org>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 from __future__ import (absolute_import, division, print_function)
@@ -9,16 +8,16 @@ __metaclass__ = type
 
 DOCUMENTATION = r'''
 ---
-module: dellemc_vxrail_telemetry_tier_v1
+module: dellemc_vxrail_idrac_getusers_v1
 
-short_description: Retrieve VxRail Telemetry Tier
+short_description: Get list of the iDRAC user accounts on the specified host.
 
 # If this is part of a collection, you need to use semantic versioning,
 # i.e. the version is of the form "2.5.0" and not "2.4".
-version_added: "1.1.0"
+version_added: "1.2.0"
 
 description:
-- This module will retrieve the system's Telemetry tier.
+  - "This module will get list of the iDRAC user accounts on the specified host."
 options:
 
   vxmip:
@@ -39,36 +38,54 @@ options:
     required: True
     type: str
 
+  sn:
+    description:
+      The serial number of the host to be queried
+    required: True
+    type: str
+
   timeout:
     description:
-      Time out value for getting telemetry information, the default value is 60 seconds
+      Time out value for getting iDRAC network settings, the default value is 60 seconds
     required: false
     type: int
     default: 60
 
 author:
-    - VxRail Development Team(@VxRailDevTeam) <ansible.team@dell.com>
-
+  - VxRail Development Team(@VxRailDevTeam) <ansible.team@dell.com>
 '''
 
 EXAMPLES = r'''
-  - name: Retrives VxRail Telemetry Information
-    dellemc-vxrail-telemetry-info:
+  - name: Get iDRAC User Accounts
+    dellemc_vxrail_idrac_getusers_v1:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
-        timeout : "{{ timeout }}"
+        sn: "{{ sn }}"
+        timeout: "{{ timeout }}"
 '''
 
 RETURN = r'''
-Telemetry_tier:
-  description: The current telemetry tier for the system
+iDRAC_Users:
+  description: iDRAC user accounts
   returned: always
   type: dict
   sample: >-
-        {
-            "level": "BASIC"
-        }
+                {
+                    "id": 2,
+                    "name": "root",
+                    "privilege": "ADMIN"
+                },
+                {
+                    "id": 15,
+                    "name": "vxpsvc",
+                    "privilege": "ADMIN"
+                },
+                {
+                    "id": 16,
+                    "name": "PTAdmin",
+                    "privilege": "ADMIN"
+                }
 '''
 
 import logging
@@ -78,7 +95,9 @@ import vxrail_ansible_utility
 from vxrail_ansible_utility.rest import ApiException
 from ansible_collections.dellemc.vxrail.plugins.module_utils import dellemc_vxrail_ansible_utils as utils
 
-LOGGER = utils.get_logger("dellemc_vxrail_telemetry_tier_v1", "/tmp/vxrail_ansible_telemetry_info.log", log_devel=logging.DEBUG)
+
+LOG_FILE_NAME = "/tmp/vxrail_ansible_idrac_getusers_v1.log"
+LOGGER = utils.get_logger("dellemc_vxrail_idrac_getusers_v1", LOG_FILE_NAME, log_devel=logging.DEBUG)
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
@@ -98,6 +117,7 @@ class VxRailCluster():
         self.timeout = module.params.get('timeout')
         self.vc_admin = module.params.get('vcadmin')
         self.vc_password = module.params.get('vcpasswd')
+        self.sn = module.params.get('sn')
         self.system_url = VxrailClusterUrls(self.vxm_ip)
         # Configure HTTP basic authorization: basicAuth
         self.configuration = vxrail_ansible_utility.Configuration()
@@ -106,20 +126,25 @@ class VxRailCluster():
         self.configuration.verify_ssl = False
         self.configuration.host = self.system_url.set_host()
 
-    def get_v1_telemetry_tier(self):
-        TelemInfo = {}
+    def get_v1_idrac_getusers(self):
         # create an instance of the API class
-        api_instance = vxrail_ansible_utility.TelemetryReportingApi(vxrail_ansible_utility.ApiClient(self.configuration))
+        response = ''
+        api_instance = vxrail_ansible_utility.HostIDRACConfigurationApi(vxrail_ansible_utility.ApiClient(self.configuration))
         try:
-            # query v1 telemetry information
-            response = api_instance.query_telemetry_tier_setting_information()
+            # query v1 host idrac users information
+            response = api_instance.v1_hosts_sn_idrac_user_get(self.sn)
         except ApiException as e:
-            LOGGER.error("Exception when calling TelemetryReportingApi->query_telemetry_tier_setting_information: %s\n", e)
+            LOGGER.error("Exception when calling HostIDRACConfigurationApi->v1_hosts_sn_idrac_users_get: %s\n", e)
             return 'error'
-        LOGGER.info("v1/telemetry/tier api response: %s\n", response)
-        data = response
-        TelemInfo['level'] = data.level
-        return dict(TelemInfo.items())
+        LOGGER.info("v1/idrac users api response: %s\n", response)
+        idrac_users = {}
+        idrac_users_list = []
+        for i in range(len(response)):
+            idrac_users['id'] = response[i].id
+            idrac_users['name'] = response[i].name
+            idrac_users['privilege'] = response[i].privilege
+            idrac_users_list.append(dict(idrac_users.items()))
+        return idrac_users_list
 
 
 def main():
@@ -131,17 +156,18 @@ def main():
         vxmip=dict(required=True),
         vcadmin=dict(required=True),
         vcpasswd=dict(required=True, no_log=True),
-        timeout=dict(type='int', default=60)
+        timeout=dict(type='int', default=60),
+        sn=dict(required=True)
     )
     module = AnsibleModule(
         argument_spec=module_args,
         supports_check_mode=True,
     )
-    result = VxRailCluster().get_v1_telemetry_tier()
+    result = VxRailCluster().get_v1_idrac_getusers()
     if result == 'error':
-        module.fail_json(msg="Call V1/telemetry/tier API failed,please see log file /tmp/vxrail_ansible_telemetry_info.log for more error details.")
-    vx_facts = {'Telemetry_Tier': result}
-    vx_facts_result = dict(changed=False, V1_Telemetry_API=vx_facts)
+        module.fail_json(msg="iDRAC API call failed, please see log file /tmp/vxrail_ansible_idrac_getusers_v1.log for details.")
+    vx_facts = {'iDRAC_Users': result}
+    vx_facts_result = dict(changed=False, V1_iDRAC_Users_API=vx_facts)
     module.exit_json(**vx_facts_result)
 
 

@@ -126,7 +126,7 @@ author:
 
 EXAMPLES = r'''
   - name: Start a cluster expansion
-    dellemc-vxrail-cluster:
+    dellemc_vxrail_cluster_expansion:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
@@ -164,7 +164,7 @@ expansion_status:
         "request_id": "433d0a61-06e7-4cb8-a1eb-985ab9a8b5dd",
         "status": "COMPLETED"
     }
-    "msg": "The cluster expansion is successful. Please see the /tmp/vxrail_ansible_cluster.log for more details"
+    "msg": "The cluster expansion is successful. Please see the /tmp/vxrail_ansible_cluster_expansion.log for more details"
    }
 '''
 
@@ -174,10 +174,9 @@ from ansible.module_utils.basic import AnsibleModule
 import vxrail_ansible_utility
 from vxrail_ansible_utility.rest import ApiException
 import time
+from ansible_collections.dellemc.vxrail.plugins.module_utils import dellemc_vxrail_ansible_utils as utils
 
-from vxrail_ansible_utility import configuration as utils
-
-LOGGER = utils.get_logger("dell_vxrail_cluster", "/tmp/vxrail_ansible_cluster.log", log_devel=logging.DEBUG)
+LOGGER = utils.get_logger("dellemc_vxrail_cluster_expansion", "/tmp/vxrail_ansible_cluster_expansion.log", log_devel=logging.DEBUG)
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
@@ -246,9 +245,9 @@ class VxRailCluster():
     def get_request_status(self, request_id):
         job_id = request_id
         # create an instance of the API class
-        api_instance = vxrail_ansible_utility.ClusterShutdownApi(vxrail_ansible_utility.ApiClient(self.configuration))
+        api_instance = vxrail_ansible_utility.RequestStatusApi(vxrail_ansible_utility.ApiClient(self.configuration))
         try:
-            response = api_instance.v1_requests_id_get(job_id)
+            response = api_instance.v1_request_id_get(job_id)
         except ApiException as e:
             LOGGER.error("Exception when calling v1_requests_id_get: %s\n", e)
             return 'error'
@@ -377,7 +376,7 @@ def main():
     LOGGER.info('Node_validation: VxRail task_ID: %s.', validation_request_id)
     if validation_request_id == "error":
         module.fail_json(
-            msg="validation request id is not returned. Please see the /tmp/vxrail_ansible_cluster.log for more details")
+            msg="validation request id is not returned. Please see the /tmp/vxrail_ansible_cluster_expansion.log for more details")
 
     while validation_status not in ('COMPLETED', 'FAILED') and time_out < initial_timeout:
         validation_response = VxRailCluster().get_request_status(validation_request_id)
@@ -414,18 +413,18 @@ def main():
             error = hosts[0].get('errors')
             vx_expansion = {'request_id': expansion_request_id, 'response_error': error}
             vx_facts_result = dict(failed=True, NodeExpansion=vx_expansion,
-                                   msg='The node expansion has failed. Please see the /tmp/vxrail_ansible_cluster.log for more details')
+                                   msg='The node expansion has failed. Please see the /tmp/vxrail_ansible_cluster_expansion.log for more details')
             module.exit_json(**vx_facts_result)
     else:
         LOGGER.info("------Validation Failed-----")
         vx_validation = {'request_id': validation_request_id, 'response_error': error}
         vx_facts_result = dict(failed=True, NodeCompatiblityValidation=vx_validation,
-                               msg="The node validaiton has failed. Please see the /tmp/vxrail_ansible_cluster.log for more details")
+                               msg="The node validaiton has failed. Please see the /tmp/vxrail_ansible_cluster_expansion.log for more details")
         module.exit_json(**vx_facts_result)
     vx_validation = {'status': validation_status, 'request_id': validation_request_id}
     vx_expansion = {'status': expansion_status, 'request_id': expansion_request_id}
     vx_facts_result = dict(changed=True, NodeExpansion=vx_expansion, NodeCompatiblityValidation=vx_validation,
-                           msg="The cluster expansion is successful. Please see the /tmp/vxrail_ansible_cluster.log for more details")
+                           msg="The cluster expansion is successful. Please see the /tmp/vxrail_ansible_cluster_expansion.log for more details")
     module.exit_json(**vx_facts_result)
 
 

@@ -33,7 +33,15 @@ The modules are written in such a way that all requests are idempotent and hence
   * Chassis module
   * Remove Host module
   * System Virtual Machines module
-  * Telemetry Tier Module
+  * Telemetry Tier module
+  * iDRAC Users module
+  * LCM module
+  * Support Account module
+  * Satellite Node Expansion module
+  * Satellite Node Remove module
+  * System Cluster Hosts module
+  * Cluster Portgroups module
+
 
 ## Installation of SDK
 
