@@ -1,0 +1,19 @@
+---
+- name: Retrieve VxRail Cluster Hosts Information
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+
+  tasks:
+    - name: Get Cluster Hosts Information
+      dellemc_vxrail_system_getclusterhosts_v2:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+      register: hosts_info
+
+    - name: Display Cluster Hosts Information
+      debug:
+        msg:  "{{hosts_info}}"

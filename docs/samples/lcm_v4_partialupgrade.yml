@@ -1,0 +1,41 @@
+---
+- name: Partical upgrade with v4 API
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+    bundle: "{{ bundle }}"
+    vc_root_account: "{{ vc_root_account }}"
+    vc_root_passwd: "{{ vc_root_passwd }}"
+    vxm_root_account: "{{ vxm_root_account }}"
+    vxm_root_passwd: "{{ vxm_root_passwd }}"
+    target_hosts_name: "{{ target_hosts_name }}"
+  tasks:
+    - name: Start to paritally upgrade, please make sure vlcm is enabled.
+      dellemc_vxrail_lcm_v4:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        bundle: "{{ bundle }}"
+        vc_root_account: "{{ vc_root_account }}"
+        vc_root_passwd: "{{ vc_root_passwd }}"
+        vxm_root_account: "{{ vxm_root_account }}"
+        vxm_root_passwd: "{{ vxm_root_passwd }}"
+        target_hosts_name: "{{ target_hosts_name }}"
+      async: 25200
+      poll: 0
+      register: lcm_status
+    - name: Check if LCM is completed...The upgrade is still ongoing.
+      async_status:
+        jid: "{{ lcm_status.ansible_job_id }}"
+      register: job_result
+      until: job_result.finished
+      retries: 210
+      delay: 120
+    - name: Display upgraded target_hosts_name
+      debug:
+        var: target_hosts_name
+    - name: Get LCM Result
+      debug:
+        msg:  "{{job_result}}"

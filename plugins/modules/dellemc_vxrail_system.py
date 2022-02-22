@@ -142,7 +142,7 @@ import urllib3
 from ansible.module_utils.basic import AnsibleModule
 import vxrail_ansible_utility
 from vxrail_ansible_utility.rest import ApiException
-from vxrail_ansible_utility import configuration as utils
+from ansible_collections.dellemc.vxrail.plugins.module_utils import dellemc_vxrail_ansible_utils as utils
 
 LOGGER = utils.get_logger("dellemc_vxrail_system", "/tmp/vxrail_ansible_system.log", log_devel=logging.DEBUG)
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)

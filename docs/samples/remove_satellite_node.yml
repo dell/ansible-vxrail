@@ -1,0 +1,34 @@
+---
+- name: Remove a satellite node
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+    host_sn: "{{ host_sn }}"
+
+  tasks:
+    - name: Start to remove satellite node
+      dellemc_vxrail_satellite_node_remove:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        host_sn: "{{ host_sn }}"
+      async: 1800
+      poll: 0
+      register: removal_status
+
+    - name: Check if Satellite Node Removal job is completed...The node removal is still ongoing.
+      async_status:
+        jid: "{{ removal_status.ansible_job_id }}"
+      register: job_result
+      until: job_result.finished
+      retries: 100
+      delay: 30
+
+    - name: Display removed node host_sn
+      debug:
+        var: host_sn
+    - name: Get Node Removal Result
+      debug:
+        msg:  "{{job_result}}"

@@ -1,0 +1,20 @@
+---
+- name: Retrieve VxRail iDRAC Network Settings
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+    sn: "{{ sn }}"
+
+  tasks:
+    - name: Get iDRAC Users
+      dellemc_vxrail_idrac_getusers_v1:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        sn: "{{ sn }}"
+      register: iDRAC_Users
+    - name: Display Idrac Users
+      debug:
+        msg:  "{{ iDRAC_Users }}"

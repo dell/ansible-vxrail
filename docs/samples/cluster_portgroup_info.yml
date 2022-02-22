@@ -1,0 +1,21 @@
+---
+- name: Retrieve Cluster Portgroup Information
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+    node_fqdn: "{{ node_fqdn }}"
+
+  tasks:
+    - name: Get Node's Cluster Portgroup Information
+      dellemc_vxrail_cluster_portgroups_fqdn_v1:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        node_fqdn: "{{ node_fqdn }}"
+      register: cluster_portgroup_info
+
+    - name: Display Cluster Portgroup Information
+      debug:
+        msg:  "{{ cluster_portgroup_info }}"

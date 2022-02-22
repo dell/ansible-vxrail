@@ -85,7 +85,7 @@ import urllib3
 from ansible.module_utils.basic import AnsibleModule
 import vxrail_ansible_utility
 from vxrail_ansible_utility.rest import ApiException
-from vxrail_ansible_utility import configuration as utils
+from ansible_collections.dellemc.vxrail.plugins.module_utils import dellemc_vxrail_ansible_utils as utils
 
 LOGGER = utils.get_logger("dellemc_vxrail_callhome", "/tmp/vxrail_ansible_callhome.log", log_devel=logging.DEBUG)
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -122,7 +122,7 @@ class VxRailCallhome():
         api_instance = vxrail_ansible_utility.CallHomeOperationsApi(vxrail_ansible_utility.ApiClient(self.configuration))
         try:
             # query v2 callhome information
-            response = api_instance.v2_callhome_info_get()
+            response = api_instance.v2_callhome_info()
         except ApiException as e:
             LOGGER.error("Exception when calling CallHomeOperationsApi->v2_callhome_info_get: %s\n", e)
             return 'error'
@@ -133,7 +133,7 @@ class VxRailCallhome():
         callhomeInfos['address_list'] = data.address_list
         if data.site_id is not None:
             callhomeInfos['site_id'] = data.site_id
-        if len(data.address_list) > 0:
+        if data.address_list is not None:
             callhomeInfos['address_list'] = []
             callhome_list = data.address_list
             callhome = {}
