@@ -1,0 +1,19 @@
+---
+- name: Retrieve VxRail Internet Mode Information
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+
+  tasks:
+    - name: Get Internet Mode Information
+      dellemc_vxrail_internet_mode_info_v1:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+      register: internet_mode_info
+
+    - name: Display Internet Mode
+      debug:
+        msg:  "{{internet_mode_info}}"

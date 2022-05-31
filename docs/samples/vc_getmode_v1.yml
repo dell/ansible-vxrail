@@ -1,5 +1,5 @@
 ---
-- name: Retrieve VxRail Telemetry Tier Information
+- name: Retrieve VxRail VC Mode Information
   hosts: localhost
   vars:
     vxmip: "{{ vxmip }}"
@@ -7,13 +7,13 @@
     vcpasswd: "{{ vcpasswd }}"
 
   tasks:
-    - name: Get Telemetry Information
-      dellemc_vxrail_telemetry_tier_v1:
+    - name: Get VC Mode Information
+      dellemc_vxrail_vc_getmode_v1:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
-      register: telemetry_info
+      register: vc_mode_info
 
-    - name: Display Telemetry Tier
+    - name: Display VC Mode Info
       debug:
-        msg:  "{{telemetry_info}}"
+        msg:  "{{vc_mode_info}}"

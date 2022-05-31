@@ -15,7 +15,7 @@ This table provides information about the software prerequisites for the Ansible
 
 | **Ansible Modules** | **VxRail version** | **Python version** | **Python library (VxRail Ansible Utility) version** | **Ansible Version** |
 |---------------------|----------------|--------------------|----------------------------|-------------|
-| v1.1.0 | 7.0.240 | <br> 3.6.x <br> 3.7.x | 1.1.0 | 2.9 and 2.10 | 
+| v1.3.0 | 7.0.240 | 3.7.x | 1.3.0 | 2.9 and 2.10 |
 
   * Please follow VxRail Ansible Utility installation instructions on [VxRail Ansible Utility Documentation](https://github.com/dell/ansible-vxrail-utility)
 
@@ -33,7 +33,7 @@ The modules are written in such a way that all requests are idempotent and hence
   * Chassis module
   * Remove Host module
   * System Virtual Machines module
-  * Telemetry Tier module
+  * Telemetry Tier Info module
   * iDRAC Users module
   * LCM module
   * Support Account module
@@ -41,7 +41,18 @@ The modules are written in such a way that all requests are idempotent and hence
   * Satellite Node Remove module
   * System Cluster Hosts module
   * Cluster Portgroups module
-
+  * Cluster Layer3 Get Segments module
+  * Cluster Layer3 Get Segment Health module
+  * VC Mode Information module
+  * Telemetry Tier Change module
+  * Internet Mode Info module
+  * Internet Mode Change module
+  * Cluster Layer3 Specific Segment module
+  * System Available Hosts module
+  * System DNS Information module
+  * System DNS Change Module
+  * LCM Precheck module
+  * Cluster Layer3 New Segment module
 
 ## Installation of SDK
 

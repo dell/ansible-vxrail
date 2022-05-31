@@ -1,0 +1,21 @@
+---
+- name: Change VxRail Telemetry Tier
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+    tier: "{{ tier }}"
+
+  tasks:
+    - name: Change Telemetry Tier
+      dellemc_vxrail_telemetry_tier_change_v1:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        tier: "{{ tier }}"
+      register: telemetry_change
+
+    - name: Display Telemetry Tier Change
+      debug:
+        msg:  "{{telemetry_change}}"

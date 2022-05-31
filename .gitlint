@@ -1,0 +1,8 @@
+[general]
+ignore=B6, B5, B1
+
+[title-max-length]
+line-length=100
+
+[title-match-regex]
+regex=^(feat|fix)\(([a-z|\- ]+)\):\s.*$|^(release|api|design|docs|cleanup|refactor|hotfix|build|ci|chore|revert|style|test|perf)(\(([a-z|\- ]+)\))?:\s.*$

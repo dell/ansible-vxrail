@@ -1,7 +1,6 @@
 #!/usr/bin/python
 # Copyright 2021 Dell Inc. or its subsidiaries. All Rights Reserved
 
-
 # Copyright: (c) 2018, Terry Jones <terry.jones@example.org>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 from __future__ import (absolute_import, division, print_function)
@@ -9,16 +8,16 @@ __metaclass__ = type
 
 DOCUMENTATION = r'''
 ---
-module: dellemc_vxrail_telemetry_tier_v1
+module: dellemc_vxrail_vc_getmode_v1
 
-short_description: Retrieve VxRail Telemetry Tier
+short_description: Retrieve VC and PSC mode.
 
 # If this is part of a collection, you need to use semantic versioning,
 # i.e. the version is of the form "2.5.0" and not "2.4".
-version_added: "1.1.0"
+version_added: "1.3.0"
 
 description:
-- This module will retrieve the system's Telemetry tier.
+- This module will retrieve the current vCenter mode and PSC mode.
 options:
 
   vxmip:
@@ -52,22 +51,22 @@ author:
 '''
 
 EXAMPLES = r'''
-  - name: Retrieves VxRail Telemetry Information
-    dellemc_vxrail_telemetry_tier_v1:
+  - name: Get VC Mode Information
+    dellemc_vxrail_vc_getmode_v1:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
-        timeout : "{{ timeout }}"
 '''
 
 RETURN = r'''
-Telemetry_tier:
-  description: The current telemetry tier for the system
+VC_PSC_Mode:
+  description: The current VC and PSC mode
   returned: always
   type: dict
   sample: >-
         {
-            "level": "BASIC"
+                "psc_mode": "EMBEDDED",
+                "vc_mode": "EMBEDDED"
         }
 '''
 
@@ -78,7 +77,7 @@ import vxrail_ansible_utility
 from vxrail_ansible_utility.rest import ApiException
 from ansible_collections.dellemc.vxrail.plugins.module_utils import dellemc_vxrail_ansible_utils as utils
 
-LOGGER = utils.get_logger("dellemc_vxrail_telemetry_tier_v1", "/tmp/vxrail_ansible_telemetry_info.log", log_devel=logging.DEBUG)
+LOGGER = utils.get_logger("dellemc_vxrail_vc_getmode_v1", "/tmp/vxrail_ansible_vc_mode_info_v1.log", log_devel=logging.DEBUG)
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
@@ -106,20 +105,21 @@ class VxRailCluster():
         self.configuration.verify_ssl = False
         self.configuration.host = self.system_url.set_host()
 
-    def get_v1_telemetry_tier(self):
-        telem_info = {}
+    def get_v1_vc_mode(self):
+        VCModeInfo = {}
         # create an instance of the API class
-        api_instance = vxrail_ansible_utility.TelemetryReportingApi(vxrail_ansible_utility.ApiClient(self.configuration))
+        api_instance = vxrail_ansible_utility.VCenterServerModeApi(vxrail_ansible_utility.ApiClient(self.configuration))
         try:
-            # query v1 telemetry information
-            response = api_instance.query_telemetry_tier_setting_information()
+            # query V1 VC Mode information
+            response = api_instance.v1_vc_vc_mode_get()
         except ApiException as e:
-            LOGGER.error("Exception when calling TelemetryReportingApi->query_telemetry_tier_setting_information: %s\n", e)
+            LOGGER.error("Exception when calling VCenterServerModeApi->v1_vc_vc_mode_get: %s\n", e)
             return 'error'
-        LOGGER.info("v1/telemetry/tier api response: %s\n", response)
+        LOGGER.info("v1/vc/mode api response: %s\n", response)
         data = response
-        telem_info['level'] = data.level
-        return dict(telem_info.items())
+        VCModeInfo['vc_mode'] = data.vc_mode
+        VCModeInfo['psc_mode'] = data.psc_mode
+        return dict(VCModeInfo.items())
 
 
 def main():
@@ -137,12 +137,11 @@ def main():
         argument_spec=module_args,
         supports_check_mode=True,
     )
-    result = VxRailCluster().get_v1_telemetry_tier()
+    result = VxRailCluster().get_v1_vc_mode()
     if result == 'error':
-        module.fail_json(msg="Call GET V1/telemetry/tier API failed,"
-                             "please see log file /tmp/vxrail_ansible_telemetry_info.log for more error details.")
-    vx_facts = {'Telemetry_Tier': result}
-    vx_facts_result = dict(changed=False, V1_Telemetry_API=vx_facts)
+        module.fail_json(msg="Call v1/vc/mode API failed,please see log file /tmp/vxrail_ansible_vc_mode_info_v1.log for more error details.")
+    vx_facts = {'VC_PSC_Mode': result}
+    vx_facts_result = dict(changed=False, V1_VC_Mode_API=vx_facts)
     module.exit_json(**vx_facts_result)
 
 

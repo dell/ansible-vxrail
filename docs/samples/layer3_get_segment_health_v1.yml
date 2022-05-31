@@ -1,0 +1,21 @@
+---
+- name: Retrieve Cluster Layer3 Segment Health Information
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+    segment_label: "{{ segment_label }}"
+
+  tasks:
+    - name: Get Cluster Layer3 Segment Health
+      dellemc_vxrail_cluster_layer3_get_segment_health_v1:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        segment_label: "{{ segment_label }}"
+      register: segment_health_info
+
+    - name: Display Cluster Layer3 Segment Health Information
+      debug:
+        msg:  "{{segment_health_info}}"

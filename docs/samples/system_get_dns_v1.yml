@@ -1,5 +1,5 @@
 ---
-- name: Retrieve VxRail Telemetry Tier Information
+- name: Retrieve VxRail System DNS Information
   hosts: localhost
   vars:
     vxmip: "{{ vxmip }}"
@@ -7,13 +7,13 @@
     vcpasswd: "{{ vcpasswd }}"
 
   tasks:
-    - name: Get Telemetry Information
-      dellemc_vxrail_telemetry_tier_v1:
+    - name: Get System DNS Information
+      dellemc_vxrail_system_getdns_v1:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
-      register: telemetry_info
+      register: system_dns_info
 
-    - name: Display Telemetry Tier
+    - name: Display System DNS Information
       debug:
-        msg:  "{{telemetry_info}}"
+        msg:  "{{system_dns_info}}"

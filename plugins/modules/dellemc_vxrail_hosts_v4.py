@@ -8,7 +8,7 @@ __metaclass__ = type
 
 DOCUMENTATION = r'''
 ---
-module: dellemc_vxrail_hosts
+module: dellemc_vxrail_hosts_v4
 
 short_description: Retrieve VxRail hosts and their associated subcomponent information.
 
@@ -59,7 +59,7 @@ author:
 
 EXAMPLES = r'''
   - name: Retrives All VxRail Hosts Information
-    dellemc_vxrail_hosts:
+    dellemc_vxrail_hosts_v4:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
@@ -275,7 +275,7 @@ import urllib3
 import logging
 
 LOGGER = utils.get_logger(
-    "dellemc_vxrail_hosts", "/tmp/vxrail_ansible_hosts.log", log_devel=logging.DEBUG)
+    "dellemc_vxrail_hosts_v4", "/tmp/vxrail_ansible_hosts_v4.log", log_devel=logging.DEBUG)
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
@@ -476,7 +476,7 @@ def main():
                                               ) == "all" else VxRailHosts().get_specific_v4_hosts()
     if result == 'error':
         module.fail_json(
-            msg="Call V4/Hosts API failed,please see log file /tmp/vxrail_ansible_system.log for more error details.")
+            msg="Call V4/Hosts API failed,please see log file /tmp/vxrail_ansible_hosts_v4.log for more error details.")
     vx_facts = {"Hosts_Information": result}
     vx_facts_result = dict(changed=False, V4_Hosts_API=vx_facts)
     module.exit_json(**vx_facts_result)

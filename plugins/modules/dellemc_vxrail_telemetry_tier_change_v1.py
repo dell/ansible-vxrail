@@ -5,20 +5,21 @@
 # Copyright: (c) 2018, Terry Jones <terry.jones@example.org>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 from __future__ import (absolute_import, division, print_function)
+
 __metaclass__ = type
 
 DOCUMENTATION = r'''
 ---
-module: dellemc_vxrail_telemetry_tier_v1
+module: dellemc_vxrail_telemetry_tier_change_v1
 
-short_description: Retrieve VxRail Telemetry Tier
+short_description: Change VxRail Telemetry Tier
 
 # If this is part of a collection, you need to use semantic versioning,
 # i.e. the version is of the form "2.5.0" and not "2.4".
-version_added: "1.1.0"
+version_added: "1.3.0"
 
 description:
-- This module will retrieve the system's Telemetry tier.
+- This module will change the system's Telemetry tier.
 options:
 
   vxmip:
@@ -39,6 +40,12 @@ options:
     required: True
     type: str
 
+  tier:
+    description:
+      The telemetry tier to set. Values are LIGHT, BASIC, ADVANCED, NONE
+    required: True
+    type: str
+
   timeout:
     description:
       Time out value for getting telemetry information, the default value is 60 seconds
@@ -52,17 +59,18 @@ author:
 '''
 
 EXAMPLES = r'''
-  - name: Retrieves VxRail Telemetry Information
-    dellemc_vxrail_telemetry_tier_v1:
+  - name: Changes the VxRail Telemetry Tier
+    dellemc_vxrail_telemetry_tier_change_v1:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
+        tier: "{{ tier }}"
         timeout : "{{ timeout }}"
 '''
 
 RETURN = r'''
-Telemetry_tier:
-  description: The current telemetry tier for the system
+Telemetry_Tier_Change:
+  description: Change the current telemetry tier for the system. Returns the value that was set.
   returned: always
   type: dict
   sample: >-
@@ -78,7 +86,8 @@ import vxrail_ansible_utility
 from vxrail_ansible_utility.rest import ApiException
 from ansible_collections.dellemc.vxrail.plugins.module_utils import dellemc_vxrail_ansible_utils as utils
 
-LOGGER = utils.get_logger("dellemc_vxrail_telemetry_tier_v1", "/tmp/vxrail_ansible_telemetry_info.log", log_devel=logging.DEBUG)
+LOGGER = utils.get_logger("dellemc_vxrail_telemetry_tier_change_v1", "/tmp/vxrail_ansible_telemetry_change.log",
+                          log_devel=logging.DEBUG)
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
@@ -98,6 +107,7 @@ class VxRailCluster():
         self.timeout = module.params.get('timeout')
         self.vc_admin = module.params.get('vcadmin')
         self.vc_password = module.params.get('vcpasswd')
+        self.tier = module.params.get('tier').upper()
         self.system_url = VxrailClusterUrls(self.vxm_ip)
         # Configure HTTP basic authorization: basicAuth
         self.configuration = vxrail_ansible_utility.Configuration()
@@ -106,20 +116,22 @@ class VxRailCluster():
         self.configuration.verify_ssl = False
         self.configuration.host = self.system_url.set_host()
 
-    def get_v1_telemetry_tier(self):
-        telem_info = {}
+    def post_v1_telemetry_tier(self):
+        tier_info = {}
+        tier_info['level'] = self.tier
         # create an instance of the API class
-        api_instance = vxrail_ansible_utility.TelemetryReportingApi(vxrail_ansible_utility.ApiClient(self.configuration))
+        api_instance = vxrail_ansible_utility.TelemetryReportingApi(
+            vxrail_ansible_utility.ApiClient(self.configuration))
         try:
-            # query v1 telemetry information
-            response = api_instance.query_telemetry_tier_setting_information()
+            # post v1 telemetry information
+            response = api_instance.post_telemetry_tier_setting_information(tier_info)
         except ApiException as e:
-            LOGGER.error("Exception when calling TelemetryReportingApi->query_telemetry_tier_setting_information: %s\n", e)
+            LOGGER.error("Exception when calling TelemetryReportingApi->post_telemetry_tier_setting_information: %s\n",
+                         e)
             return 'error'
-        LOGGER.info("v1/telemetry/tier api response: %s\n", response)
-        data = response
-        telem_info['level'] = data.level
-        return dict(telem_info.items())
+        LOGGER.info("v1/telemetry/tier POST api response: %s\n", response)
+        LOGGER.info("Telemetry Tier set to: %s\n", self.tier)
+        return dict(tier_info.items())
 
 
 def main():
@@ -131,18 +143,19 @@ def main():
         vxmip=dict(required=True),
         vcadmin=dict(required=True),
         vcpasswd=dict(required=True, no_log=True),
+        tier=dict(required=True),
         timeout=dict(type='int', default=60)
     )
     module = AnsibleModule(
         argument_spec=module_args,
         supports_check_mode=True,
     )
-    result = VxRailCluster().get_v1_telemetry_tier()
+    result = VxRailCluster().post_v1_telemetry_tier()
     if result == 'error':
-        module.fail_json(msg="Call GET V1/telemetry/tier API failed,"
-                             "please see log file /tmp/vxrail_ansible_telemetry_info.log for more error details.")
-    vx_facts = {'Telemetry_Tier': result}
-    vx_facts_result = dict(changed=False, V1_Telemetry_API=vx_facts)
+        module.fail_json(msg="Call POST V1/telemetry/tier API failed,please see log file "
+                             "/tmp/vxrail_ansible_telemetry_change.log for more error details.")
+    vx_facts = {'Telemetry_Tier_Change': result}
+    vx_facts_result = dict(changed=True, V1_Telemetry_API=vx_facts)
     module.exit_json(**vx_facts_result)
 
 
