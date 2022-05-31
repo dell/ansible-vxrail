@@ -1,7 +1,7 @@
 
 **Ansible Modules for Dell EMC VxRail** 
 =========================================
-### Release Notes 1.0.0
+### Release Notes 1.3.0
 
 >   © 2021 Dell Inc. or its subsidiaries. All rights reserved. Dell
 >   EMC, and other trademarks are trademarks of Dell Inc. or its
@@ -25,19 +25,13 @@ Revision History
 
 | **Date** | **Document revision** | **Description of changes** |
 |----------|-----------------------|----------------------------|
-| September 2021 | 01 | Ansible Modules for Dell EMC VxRail release 7.0.240 |
+| May 2022 | 01 | Ansible Modules for Dell EMC VxRail release 7.0.240+ |
 
 Product Description
 -------------------
 
-The Ansible Modules for Dell EMC VxRail are used for gathering system information and performing L2 Node Expansion.
-The modules use playbooks to list, show, create each of the entities.
-
-The Ansible Modules for Dell EMC VxRail supports the following
-features:
-
--   Perform day1 bringup and cluster expansion
--   Retrieve details of VxRail System information
+The Ansible Modules for Dell EMC VxRail are used for gathering system information and performing cluster level operations.
+The modules use playbooks to list, show, and create each of the entities.
 
 Known issues
 ------------
