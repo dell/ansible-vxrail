@@ -31,7 +31,20 @@ Product Description
 -------------------
 
 The Ansible Modules for Dell EMC VxRail are used for gathering system information and performing cluster level operations.
-The modules use playbooks to list, show, and create each of the entities.
+The modules use playbooks to list, show, and create each of the entities. The following new modules have been added as part of this release
+
+  * Cluster Layer3 Get Segments module
+  * Cluster Layer3 Get Segment Health module
+  * VC Mode Information module
+  * Telemetry Tier Change module
+  * Internet Mode Info module
+  * Internet Mode Change module
+  * Cluster Layer3 Specific Segment module
+  * System Available Hosts module
+  * System DNS Information module
+  * System DNS Change Module
+  * LCM Precheck module
+  * Cluster Layer3 New Segment module
 
 Known issues
 ------------
