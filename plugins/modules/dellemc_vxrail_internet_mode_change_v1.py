@@ -9,16 +9,16 @@ __metaclass__ = type
 
 DOCUMENTATION = r'''
 ---
-module: dellemc_vxrail_telemetry_tier_v1
+module: dellemc_vxrail_internet_mode_change_v1
 
-short_description: Retrieve VxRail Telemetry Tier
+short_description: Change VxRail Internet Mode
 
 # If this is part of a collection, you need to use semantic versioning,
 # i.e. the version is of the form "2.5.0" and not "2.4".
-version_added: "1.1.0"
+version_added: "1.3.0"
 
 description:
-- This module will retrieve the system's Telemetry tier.
+- This module will change the system's Internet Mode.
 options:
 
   vxmip:
@@ -39,36 +39,43 @@ options:
     required: True
     type: str
 
+  is_dark_site:
+    description:
+      Whether the system network should be set to a dark site or not.
+    required: True
+    type: bool
+
   timeout:
     description:
-      Time out value for getting telemetry information, the default value is 60 seconds
+      Time out value for changing internet mode information, the default value is 60 seconds
     required: false
     type: int
     default: 60
 
 author:
     - VxRail Development Team(@VxRailDevTeam) <ansible.team@dell.com>
-
 '''
 
 EXAMPLES = r'''
-  - name: Retrieves VxRail Telemetry Information
-    dellemc_vxrail_telemetry_tier_v1:
+  - name: Changes the VxRail Internet Mode
+    dellemc_vxrail_internet_mode_change_v1:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
+        is_dark_site: "{{ is_dark_site }}"
         timeout : "{{ timeout }}"
 '''
 
 RETURN = r'''
-Telemetry_tier:
-  description: The current telemetry tier for the system
+Internet_Mode_Change:
+  description: Change the current internet mode (is_dark_site) for the system. Returns the value that was set.
   returned: always
   type: dict
   sample: >-
         {
-            "level": "BASIC"
+            "is_dark_site": false
         }
+
 '''
 
 import logging
@@ -78,7 +85,9 @@ import vxrail_ansible_utility
 from vxrail_ansible_utility.rest import ApiException
 from ansible_collections.dellemc.vxrail.plugins.module_utils import dellemc_vxrail_ansible_utils as utils
 
-LOGGER = utils.get_logger("dellemc_vxrail_telemetry_tier_v1", "/tmp/vxrail_ansible_telemetry_info.log", log_devel=logging.DEBUG)
+LOGGER = utils.get_logger("dellemc_vxrail_internet_mode_change_v1",
+                          "/tmp/vxrail_ansible_internet_mode_change_v1.log",
+                          log_devel=logging.DEBUG)
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
@@ -98,6 +107,7 @@ class VxRailCluster():
         self.timeout = module.params.get('timeout')
         self.vc_admin = module.params.get('vcadmin')
         self.vc_password = module.params.get('vcpasswd')
+        self.is_dark_site = module.params.get('is_dark_site')
         self.system_url = VxrailClusterUrls(self.vxm_ip)
         # Configure HTTP basic authorization: basicAuth
         self.configuration = vxrail_ansible_utility.Configuration()
@@ -106,20 +116,21 @@ class VxRailCluster():
         self.configuration.verify_ssl = False
         self.configuration.host = self.system_url.set_host()
 
-    def get_v1_telemetry_tier(self):
-        telem_info = {}
+    def put_v1_internet_mode(self):
+        internet_mode_info = {}
+        internet_mode_info['is_dark_site'] = self.is_dark_site
         # create an instance of the API class
-        api_instance = vxrail_ansible_utility.TelemetryReportingApi(vxrail_ansible_utility.ApiClient(self.configuration))
+        api_instance = vxrail_ansible_utility.SystemNetworkApi(vxrail_ansible_utility.ApiClient(self.configuration))
         try:
-            # query v1 telemetry information
-            response = api_instance.query_telemetry_tier_setting_information()
+            # put v1 internet mode information
+            response = api_instance.v1_system_internet_mode_put(internet_mode_info)
         except ApiException as e:
-            LOGGER.error("Exception when calling TelemetryReportingApi->query_telemetry_tier_setting_information: %s\n", e)
+            LOGGER.error("Exception when calling SystemNetworkApi->v1_system_internet_mode_put: %s\n",
+                         e)
             return 'error'
-        LOGGER.info("v1/telemetry/tier api response: %s\n", response)
-        data = response
-        telem_info['level'] = data.level
-        return dict(telem_info.items())
+        LOGGER.info("v1/system/internet-mode PUT api response: %s\n", response)
+        LOGGER.info("is_dark_site set to: %s\n", self.is_dark_site)
+        return dict(internet_mode_info.items())
 
 
 def main():
@@ -131,18 +142,19 @@ def main():
         vxmip=dict(required=True),
         vcadmin=dict(required=True),
         vcpasswd=dict(required=True, no_log=True),
+        is_dark_site=dict(type='bool', required=True),
         timeout=dict(type='int', default=60)
     )
     module = AnsibleModule(
         argument_spec=module_args,
         supports_check_mode=True,
     )
-    result = VxRailCluster().get_v1_telemetry_tier()
+    result = VxRailCluster().put_v1_internet_mode()
     if result == 'error':
-        module.fail_json(msg="Call GET V1/telemetry/tier API failed,"
-                             "please see log file /tmp/vxrail_ansible_telemetry_info.log for more error details.")
-    vx_facts = {'Telemetry_Tier': result}
-    vx_facts_result = dict(changed=False, V1_Telemetry_API=vx_facts)
+        module.fail_json(msg="Call PUT V1/system/internet-mode API failed,please see log file "
+                             "/tmp/vxrail_ansible_internet_mode_change_v1.log for more error details.")
+    vx_facts = {'Internet_Mode_Change': result}
+    vx_facts_result = dict(changed=True, V1_System_Internet_Mode_API=vx_facts)
     module.exit_json(**vx_facts_result)
 
 

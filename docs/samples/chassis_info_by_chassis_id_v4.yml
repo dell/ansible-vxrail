@@ -1,0 +1,23 @@
+---
+- name: Retrieve chassis info specified by chassis id with v4/chassis/{chassis_id} API
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+    chassis_id: "{{ chassis_id }}"
+
+  tasks:
+    - name: Get Chassis Information
+      dellemc_vxrail_chassis_v4:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        chassis_id: "{{ chassis_id }}"
+      register: chassis_info
+    - name: Display chassis id
+      debug:
+        var: chassis_id
+    - name: Display Chassis Information
+      debug:
+        msg:  "{{chassis_info}}"

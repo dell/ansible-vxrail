@@ -9,16 +9,16 @@ __metaclass__ = type
 
 DOCUMENTATION = r'''
 ---
-module: dellemc_vxrail_telemetry_tier_v1
+module: dellemc_vxrail_system_getdns_v1
 
-short_description: Retrieve VxRail Telemetry Tier
+short_description: Retrieve information about the DNS servers for the cluster.
 
 # If this is part of a collection, you need to use semantic versioning,
 # i.e. the version is of the form "2.5.0" and not "2.4".
-version_added: "1.1.0"
+version_added: "1.3.0"
 
 description:
-- This module will retrieve the system's Telemetry tier.
+- This module will retrieve information about the DNS servers for the cluster.
 options:
 
   vxmip:
@@ -41,7 +41,7 @@ options:
 
   timeout:
     description:
-      Time out value for getting telemetry information, the default value is 60 seconds
+      Time out value for getting system information, the default value is 60 seconds
     required: false
     type: int
     default: 60
@@ -52,23 +52,27 @@ author:
 '''
 
 EXAMPLES = r'''
-  - name: Retrieves VxRail Telemetry Information
-    dellemc_vxrail_telemetry_tier_v1:
+  - name: Get System DNS Information
+    dellemc_vxrail_system_getdns_v1:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
-        timeout : "{{ timeout }}"
 '''
 
 RETURN = r'''
-Telemetry_tier:
-  description: The current telemetry tier for the system
+System_DNS_Info_v1:
+  description: System DNS information summary
   returned: always
   type: dict
   sample: >-
-        {
-            "level": "BASIC"
-        }
+    {
+                    "is_internal": false,
+                    "servers": [
+                        "10.244.72.247",
+                        "10.244.72.248"
+                    ]
+                  }
+
 '''
 
 import logging
@@ -78,27 +82,33 @@ import vxrail_ansible_utility
 from vxrail_ansible_utility.rest import ApiException
 from ansible_collections.dellemc.vxrail.plugins.module_utils import dellemc_vxrail_ansible_utils as utils
 
-LOGGER = utils.get_logger("dellemc_vxrail_telemetry_tier_v1", "/tmp/vxrail_ansible_telemetry_info.log", log_devel=logging.DEBUG)
+# Defining global variables
+API = "v1/system/dns"
+MODULE = "dellemc_vxrail_system_getdns_v1"
+LOG_FILE_PATH = "/tmp/vxrail_ansible_system_getdns_v1.log"
+RESULT = "System_DNS_Info_v1"
+
+LOGGER = utils.get_logger(MODULE, LOG_FILE_PATH, log_devel=logging.DEBUG)
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
-class VxrailClusterUrls():
+class VxrailSystemUrls():
     cluster_url = 'https://{}/rest/vxm'
 
     def __init__(self, vxm_ip):
         self.vxm_ip = vxm_ip
 
     def set_host(self):
-        return VxrailClusterUrls.cluster_url.format(self.vxm_ip)
+        return VxrailSystemUrls.cluster_url.format(self.vxm_ip)
 
 
-class VxRailCluster():
+class VxRailSystem():
     def __init__(self):
         self.vxm_ip = module.params.get('vxmip')
         self.timeout = module.params.get('timeout')
         self.vc_admin = module.params.get('vcadmin')
         self.vc_password = module.params.get('vcpasswd')
-        self.system_url = VxrailClusterUrls(self.vxm_ip)
+        self.system_url = VxrailSystemUrls(self.vxm_ip)
         # Configure HTTP basic authorization: basicAuth
         self.configuration = vxrail_ansible_utility.Configuration()
         self.configuration.username = self.vc_admin
@@ -106,20 +116,24 @@ class VxRailCluster():
         self.configuration.verify_ssl = False
         self.configuration.host = self.system_url.set_host()
 
-    def get_v1_telemetry_tier(self):
-        telem_info = {}
+    def get_api_response(self):
         # create an instance of the API class
-        api_instance = vxrail_ansible_utility.TelemetryReportingApi(vxrail_ansible_utility.ApiClient(self.configuration))
+        api_instance = vxrail_ansible_utility.SystemInformationApi(vxrail_ansible_utility.ApiClient(self.configuration))
         try:
-            # query v1 telemetry information
-            response = api_instance.query_telemetry_tier_setting_information()
+            # query API
+            response = api_instance.v1_system_dns_get()
         except ApiException as e:
-            LOGGER.error("Exception when calling TelemetryReportingApi->query_telemetry_tier_setting_information: %s\n", e)
+            LOGGER.error("Exception when calling SystemInformationApi->v1_system_dns_get: %s\n", e)
             return 'error'
-        LOGGER.info("v1/telemetry/tier api response: %s\n", response)
+        information = (f"{API} api response: %s\n", response)
+        LOGGER.info(information)
         data = response
-        telem_info['level'] = data.level
-        return dict(telem_info.items())
+        data_dictionary = {}
+        data_list = []
+        data_dictionary['servers'] = data.servers
+        data_dictionary['is_internal'] = data.is_internal
+        data_list.append(dict(data_dictionary.items()))
+        return data_list
 
 
 def main():
@@ -137,12 +151,12 @@ def main():
         argument_spec=module_args,
         supports_check_mode=True,
     )
-    result = VxRailCluster().get_v1_telemetry_tier()
+    result = VxRailSystem().get_api_response()
     if result == 'error':
-        module.fail_json(msg="Call GET V1/telemetry/tier API failed,"
-                             "please see log file /tmp/vxrail_ansible_telemetry_info.log for more error details.")
-    vx_facts = {'Telemetry_Tier': result}
-    vx_facts_result = dict(changed=False, V1_Telemetry_API=vx_facts)
+        module.fail_json(
+            msg=f"Call {API} API failed,please see log file {LOG_FILE_PATH} for more error details.")
+    vx_facts = {RESULT: result}
+    vx_facts_result = dict(changed=False, API_Facts=vx_facts)
     module.exit_json(**vx_facts_result)
 
 

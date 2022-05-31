@@ -9,7 +9,7 @@ __metaclass__ = type
 
 DOCUMENTATION = r'''
 ---
-module: dellemc_vxrail_system
+module: dellemc_vxrail_system_v3
 
 short_description: Retrieve VxRail System Information
 
@@ -144,7 +144,7 @@ import vxrail_ansible_utility
 from vxrail_ansible_utility.rest import ApiException
 from ansible_collections.dellemc.vxrail.plugins.module_utils import dellemc_vxrail_ansible_utils as utils
 
-LOGGER = utils.get_logger("dellemc_vxrail_system", "/tmp/vxrail_ansible_system.log", log_devel=logging.DEBUG)
+LOGGER = utils.get_logger("dellemc_vxrail_system_v3", "/tmp/vxrail_ansible_system_v3.log", log_devel=logging.DEBUG)
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
@@ -250,7 +250,7 @@ def main():
     )
     result = VxRailSystem().get_v3_system()
     if result == 'error':
-        module.fail_json(msg="Call V3/System API failed,please see log file /tmp/vxrail_ansible_system.log for more error details.")
+        module.fail_json(msg="Call V3/System API failed,please see log file /tmp/vxrail_ansible_system_v3.log for more error details.")
     vx_facts = {'System_Information': result}
     vx_facts_result = dict(changed=False, V3_System_API=vx_facts)
     module.exit_json(**vx_facts_result)

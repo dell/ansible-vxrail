@@ -1,0 +1,19 @@
+---
+- name: Retrieve VxRail System Available Hosts Information
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+
+  tasks:
+    - name: Get System Available Hosts Information
+      dellemc_vxrail_system_getavailablehosts_v1:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+      register: system_available_hosts_info
+
+    - name: Display System Available Hosts Information
+      debug:
+        msg:  "{{system_available_hosts_info}}"

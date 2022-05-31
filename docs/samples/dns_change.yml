@@ -1,0 +1,23 @@
+---
+- name: Change VxRail DNS Information
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+    components: "{{ components }}"
+    servers: "{{ servers }}"
+
+  tasks:
+    - name: Change DNS Settings
+      dellemc_vxrail_system_dns_change_v1:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        components: "{{ components }}"
+        servers: "{{ servers }}"
+      register: dns_change_info
+
+    - name: Display DNS Change
+      debug:
+        msg:  "{{dns_change_info}}"

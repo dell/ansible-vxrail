@@ -1,0 +1,23 @@
+---
+- name: Get host info of one host specified by serial number with v4/hosts/{sn}
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+    host_sn: "{{host_sn}}"
+
+  tasks:
+    - name: Get the information of one host specified by serial number
+      dellemc_vxrail_hosts_v4:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        host_sn: "{{host_sn}}"
+      register: hosts_info
+    - name: Display host host_sn
+      debug:
+        var: host_sn
+    - name: Display Hosts Information
+      debug:
+        msg:  "{{hosts_info}}"
