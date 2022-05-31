@@ -2,7 +2,7 @@
 
 The Ansible Modules for Dell EMC VxRail allow data center and IT administrators to use RedHat Ansible to automate and orchestrate the configuration and management of Dell EMC VxRail.
 
-The capabilities of Ansible modules are gathering system information and performing Lay2 Node Expansion. These tasks can be executed by running simple playbooks written in yaml syntax. The modules are written so that all the operations are idempotent, therefore making multiple identical requests has the same effect as making a single request.
+The Ansible Modules for Dell EMC VxRail are used for gathering system information and performing cluster level operations. These tasks can be executed by running simple playbooks written in yaml syntax. The modules are written so that all the operations are idempotent, therefore making multiple identical requests has the same effect as making a single request.
 
 ## Support
 Ansible modules for VxRail are supported by Dell EMC open source community, but not product support agreements, and are provided under the terms of the license attached to the source code. Dell EMC does not provide support for any source code modifications. For any Ansible module issues, questions or feedback, join the [Dell EMC Automation community]( https://www.dell.com/community/Automation/bd-p/Automation ).
