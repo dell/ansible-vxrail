@@ -1,5 +1,5 @@
 ---
-- name: Retrieve VxRail Hosts Information
+- name: Retrieve VxRail System Information with v3/system API
   hosts: localhost
   vars:
     vxmip: "{{ vxmip }}"
@@ -7,13 +7,13 @@
     vcpasswd: "{{ vcpasswd }}"
 
   tasks:
-    - name: Get Hosts Information
-      dellemc_vxrail_hosts:
+    - name: Get System Information
+      dellemc_vxrail_system_v3:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
-      register: hosts_info
+      register: system_info
 
-    - name: Display Hosts Information
+    - name: Display System Information
       debug:
-        msg:  "{{hosts_info}}"
+        msg:  "{{system_info}}"

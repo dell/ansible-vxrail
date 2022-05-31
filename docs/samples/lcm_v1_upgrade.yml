@@ -1,0 +1,65 @@
+---
+- name: LCM with v1 api
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+    bundle_file_locator: "{{ bundle_file_locator }}"
+    vc_root_account: "{{ vc_root_account }}"
+    vc_root_passwd: "{{ vc_root_passwd }}"
+    vxm_root_account: "{{ vxm_root_account }}"
+    vxm_root_passwd: "{{ vxm_root_passwd }}"
+    psc_root_account: "{{ psc_root_account }}"
+    psc_root_passwd: "{{ psc_root_passwd }}"
+    source_vcsa_host_name: "{{ source_vcsa_host_name }}"
+    source_vcsa_host_user_name: "{{ source_vcsa_host_user_name }}"
+    source_vcsa_host_user_passwd: "{{ source_vcsa_host_user_passwd }}"
+    source_psc_host_name: "{{ source_psc_host_name }}"
+    source_psc_host_user_name: "{{ source_psc_host_user_name }}"
+    source_psc_host_user_passwd: "{{ source_psc_host_user_passwd }}"
+    target_vcsa_host_name: "{{ target_vcsa_host_name }}"
+    target_vcsa_host_user_name: "{{ target_vcsa_host_user_name }}"
+    target_vcsa_host_user_passwd: "{{ target_vcsa_host_user_passwd }}"
+    temporary_ip: "{{ temporary_ip }}"
+    temporary_gateway: "{{ temporary_gateway }}"
+    temporary_netmask: "{{ temporary_netmask }}"
+
+  tasks:
+    - name: Start to upgrade all nodes in cluster
+      dellemc_vxrail_lcm_v1:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        bundle_file_locator: "{{ bundle_file_locator }}"
+        vc_root_account: "{{ vc_root_account }}"
+        vc_root_passwd: "{{ vc_root_passwd }}"
+        vxm_root_account: "{{ vxm_root_account }}"
+        vxm_root_passwd: "{{ vxm_root_passwd }}"
+        psc_root_account: "{{ psc_root_account }}"
+        psc_root_passwd: "{{ psc_root_passwd }}"
+        source_vcsa_host_name: "{{ source_vcsa_host_name }}"
+        source_vcsa_host_user_name: "{{ source_vcsa_host_user_name }}"
+        source_vcsa_host_user_passwd: "{{ source_vcsa_host_user_passwd }}"
+        source_psc_host_name: "{{ source_psc_host_name }}"
+        source_psc_host_user_name: "{{ source_psc_host_user_name }}"
+        source_psc_host_user_passwd: "{{ source_psc_host_user_passwd }}"
+        target_vcsa_host_name: "{{ target_vcsa_host_name }}"
+        target_vcsa_host_user_name: "{{ target_vcsa_host_user_name }}"
+        target_vcsa_host_user_passwd: "{{ target_vcsa_host_user_passwd }}"
+        temporary_ip: "{{ temporary_ip }}"
+        temporary_gateway: "{{ temporary_gateway }}"
+        temporary_netmask: "{{ temporary_netmask }}"
+      async: 25200
+      poll: 0
+      register: lcm_status
+    - name: Check if LCM is completed...The upgrade is still ongoing.
+      async_status:
+        jid: "{{ lcm_status.ansible_job_id }}"
+      register: job_result
+      until: job_result.finished
+      retries: 210
+      delay: 120
+    - name: Get LCM Result
+      debug:
+        msg:  "{{job_result}}"

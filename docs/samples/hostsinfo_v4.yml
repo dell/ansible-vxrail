@@ -1,5 +1,5 @@
 ---
-- name: Retrieve VxRail Telemetry Tier Information
+- name: Retrieve VxRail Hosts Information with with v4/hosts
   hosts: localhost
   vars:
     vxmip: "{{ vxmip }}"
@@ -7,13 +7,13 @@
     vcpasswd: "{{ vcpasswd }}"
 
   tasks:
-    - name: Get Telemetry Information
-      dellemc_vxrail_telemetry_tier_v1:
+    - name: Get Hosts Information
+      dellemc_vxrail_hosts_v4:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
-      register: telemetry_info
+      register: hosts_info
 
-    - name: Display Telemetry Tier
+    - name: Display Hosts Information
       debug:
-        msg:  "{{telemetry_info}}"
+        msg:  "{{hosts_info}}"

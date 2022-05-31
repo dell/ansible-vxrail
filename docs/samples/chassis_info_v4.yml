@@ -1,5 +1,5 @@
 ---
-- name: Retrieve VxRail Telemetry Tier Information
+- name: Retrieve VxRail Chassis Information with v4/chassis API
   hosts: localhost
   vars:
     vxmip: "{{ vxmip }}"
@@ -7,13 +7,13 @@
     vcpasswd: "{{ vcpasswd }}"
 
   tasks:
-    - name: Get Telemetry Information
-      dellemc_vxrail_telemetry_tier_v1:
+    - name: Get Chassis Information
+      dellemc_vxrail_chassis_v4:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
-      register: telemetry_info
+      register: chassis_info
 
-    - name: Display Telemetry Tier
+    - name: Display Chassis Information
       debug:
-        msg:  "{{telemetry_info}}"
+        msg:  "{{chassis_info}}"

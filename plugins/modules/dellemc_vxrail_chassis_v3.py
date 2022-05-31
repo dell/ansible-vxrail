@@ -8,7 +8,7 @@ __metaclass__ = type
 
 DOCUMENTATION = r'''
 ---
-module: dellemc_vxrail_chassis
+module: dellemc_vxrail_chassis_v3
 
 short_description: Get chassis list & every node information for each chassis.
 
@@ -17,7 +17,8 @@ short_description: Get chassis list & every node information for each chassis.
 version_added: "1.1.0"
 
 description:
-- This module will get chassis list & every node information for each chassis and provide more host level information.
+- This module will call v3/chassis api to get chassis list & every node information for each chassis and provide more host level information.
+
 options:
 
   vxmip:
@@ -52,7 +53,7 @@ author:
 
 EXAMPLES = r'''
   - name: Retrives All VxRail Chassis Information
-    dellemc_vxrail_chassis:
+    dellemc_vxrail_chassis_v3:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
@@ -224,7 +225,7 @@ import urllib3
 import logging
 
 LOGGER = utils.get_logger(
-    "dellemc_vxrail_chassis", "/tmp/vxrail_ansible_chassis.log", log_devel=logging.DEBUG)
+    "dellemc_vxrail_chassis_v3", "/tmp/vxrail_ansible_chassis_v3.log", log_devel=logging.DEBUG)
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
@@ -365,7 +366,7 @@ def main():
     result = VxRailHosts().get_v3_chassis()
     if result == 'error':
         module.fail_json(
-            msg="Call V3/chassis API failed,please see log file /tmp/vxrail_ansible_chassis.log for more error details.")
+            msg="Call V3/chassis API failed,please see log file /tmp/vxrail_ansible_chassis_v3.log for more error details.")
     vx_facts = {"Chassis_Information": result}
     vx_facts_result = dict(changed=False, V3_Chassis_API=vx_facts)
     module.exit_json(**vx_facts_result)

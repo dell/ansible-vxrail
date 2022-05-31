@@ -1,0 +1,21 @@
+---
+- name: Change VxRail Internet Mode Information
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+    is_dark_site: "{{ is_dark_site }}"
+
+  tasks:
+    - name: Change Internet Mode Information
+      dellemc_vxrail_internet_mode_change_v1:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        is_dark_site: "{{ is_dark_site }}"
+      register: internet_mode_change_info
+
+    - name: Display Internet Mode Change
+      debug:
+        msg:  "{{internet_mode_change_info}}"
