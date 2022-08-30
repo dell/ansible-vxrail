@@ -1,0 +1,33 @@
+---
+- name: Update VxRail System Proxy Information
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+    server: "{{ server }}"
+    proxy_port: "{{ proxy_port }}"
+    proxy_user: "{{ proxy_user }}"
+    proxy_passwd: "{{ proxy_passwd }}"
+    type: "{{ type }}"
+
+  tasks:
+    - name: Update VxRail System Proxy Information
+      dellemc_vxrail_system_update_proxy:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        esrs_passwd: "{{ esrs_passwd | default(omit) }}"
+        server: "{{ server }}"
+        proxy_port: "{{ proxy_port }}"
+        proxy_user: "{{ proxy_user }}"
+        proxy_passwd: "{{ proxy_passwd }}"
+        type: "{{ type }}"
+        socks_version: "{{ socks_version | default(omit) }}"
+        api_version_number: "{{ api_version_number | default(omit) }}"
+        timeout: "{{ timeout | default(omit) }}"
+      register: proxy_update_info
+
+    - name: Display Updated VxRail System Proxy Information
+      debug:
+        msg:  "{{proxy_update_info}}"

@@ -8,10 +8,12 @@
 
   tasks:
     - name: Get Internet Mode Information
-      dellemc_vxrail_internet_mode_info_v1:
+      dellemc_vxrail_system_get_internet_mode:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
+        api_version_number: "{{ api_version_number | default(omit) }}"
+        timeout: "{{ timeout | default(omit) }}"
       register: internet_mode_info
 
     - name: Display Internet Mode

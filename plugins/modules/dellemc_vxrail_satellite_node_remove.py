@@ -13,7 +13,7 @@ module: dellemc_vxrail_satellite_node_remove
 short_description: Remove a satellite host from the cluster
 # If this is part of a collection, you need to use semantic versioning,
 # i.e. the version is of the form "2.5.0" and not "2.4".
-version_added: "1.2.0"
+version_added: "1.4.0"
 description:
 - This module will Remove a satellite host from the cluster.
 options:
@@ -43,6 +43,11 @@ options:
     required: false
     type: int
     default: 1800
+  api_version_number:
+    description:
+      A specific version number to use for the API call. If not included, will use the highest version by default
+    required: false
+    type: int
 author:
     - VxRail Development Team(@VxRailDevTeam) <ansible.team@dell.com>
 '''
@@ -54,6 +59,7 @@ EXAMPLES = r'''
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
         host_sn: "{{ host_sn }}"
+        api_version_number: "{{ api_version_number }}"
 '''
 
 RETURN = r'''
@@ -75,14 +81,23 @@ Remove_Node_status:
 '''
 
 import logging
-import urllib3
-from ansible.module_utils.basic import AnsibleModule
-import vxrail_ansible_utility
-from vxrail_ansible_utility.rest import ApiException
-from ansible_collections.dellemc.vxrail.plugins.module_utils import dellemc_vxrail_ansible_utils as utils
+import traceback
+from ansible.module_utils.basic import AnsibleModule, missing_required_lib
+
 LOG_FILE_NAME = "/tmp/vxrail_ansible_satellite_node_remove.log"
-LOGGER = utils.get_logger("dellemc_vxrail_satellite_node_remove", LOG_FILE_NAME, log_devel=logging.DEBUG)
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+try:
+    import urllib3
+    import vxrail_ansible_utility
+    from vxrail_ansible_utility.rest import ApiException
+    from ansible_collections.dellemc.vxrail.plugins.module_utils import dellemc_vxrail_ansible_utils as utils
+    LOGGER = utils.get_logger("dellemc_vxrail_satellite_node_remove", LOG_FILE_NAME, log_devel=logging.DEBUG)
+    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+except ImportError:
+    HAS_ANOTHER_LIBRARY = False
+    ANOTHER_LIBRARY_IMPORT_ERROR = traceback.format_exc()
+else:
+    HAS_ANOTHER_LIBRARY = True
 
 
 class VxrailVXMUrls():
@@ -102,6 +117,7 @@ class VxRailRemoveSatelliteNode():
         self.timeout = module.params.get('timeout')
         self.vc_admin = module.params.get('vcadmin')
         self.vc_password = module.params.get('vcpasswd')
+        self.api_version_number = module.params.get('api_version_number')
         self.vxm_url = VxrailVXMUrls(self.vxm_ip)
         # Configure HTTP basic authorization: basicAuth
         self.configuration = vxrail_ansible_utility.Configuration()
@@ -110,12 +126,26 @@ class VxRailRemoveSatelliteNode():
         self.configuration.verify_ssl = False
         self.configuration.host = self.vxm_url.set_host()
 
+    # Obtains the response for the given module path with specified api_version_number or highest found version
+    def get_versioned_response(self, api_instance, module_path, host_sn):
+        # Set api version string and version number if not defined
+        if self.api_version_number is None:
+            self.api_version_string = utils.get_highest_api_version_string(self.vxm_ip, module_path, LOGGER)
+            self.api_version_number = int(self.api_version_string.split('v')[1])
+        else:
+            self.api_version_string = utils.get_api_version_string(self.vxm_ip, self.api_version_number, module_path, LOGGER)
+
+        call_string = 'remove_satellite_host'
+        LOGGER.info("Using utility method: %s\n", call_string)
+        api_remove_satellite_host = getattr(api_instance, call_string)
+        return api_remove_satellite_host(host_sn)
+
     def remove_satellite_node(self, host_sn):
         # create an instance of the API class
         api_instance = vxrail_ansible_utility.SatelliteNodeExpansionApi(vxrail_ansible_utility.ApiClient(self.configuration))
         try:
             # start Node Removal
-            api_instance.remove_satellite_host(host_sn)
+            self.get_versioned_response(api_instance, "/host-folder/hosts/{sn}", host_sn)
         except ApiException as e:
             LOGGER.error("Exception when calling SatelliteNodeRemoveApi->remove_satellite_host: %s\n", e)
             return "error"
@@ -131,12 +161,18 @@ def main():
         host_sn=dict(required=True),
         vcadmin=dict(required=True),
         vcpasswd=dict(required=True, no_log=True),
-        timeout=dict(type='int', default=30 * 60)
+        timeout=dict(type='int', default=30 * 60),
+        api_version_number=dict(type='int')
     )
     module = AnsibleModule(
         argument_spec=module_args,
         supports_check_mode=True,
     )
+
+    if not HAS_ANOTHER_LIBRARY:
+        module.fail_json(
+            msg=missing_required_lib('another_library'),
+            exception=ANOTHER_LIBRARY_IMPORT_ERROR)
 
     LOGGER.info('----Start to remove satellite node: %s.----', module.params.get('host_sn'))
     rmnode_result = VxRailRemoveSatelliteNode().remove_satellite_node(module.params.get('host_sn'))

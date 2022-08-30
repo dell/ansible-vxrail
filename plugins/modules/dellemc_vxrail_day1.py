@@ -4,8 +4,8 @@
 # Copyright: (c) 2018, Terry Jones <terry.jones@example.org>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 from __future__ import (absolute_import, division, print_function)
-__metaclass__ = type
 
+__metaclass__ = type
 
 DOCUMENTATION = r'''
 ---
@@ -27,23 +27,17 @@ options:
     required: True
     type: str
 
-  vcadmin:
-    description:
-      Administrative account of the vCenter Server the VxRail Manager is registered to
-    required: True
-    type: str
-
-  vcpasswd:
-    description:
-      The password for the administrator account provided in vcadmin
-    required: True
-    type: str
-
   day1json_file:
     description:
       The path of Day1 Json file.
     required: True
     type: str
+
+  api_version_number:
+    description:
+      A specific version number to use for the API call. If not included, will use the highest version by default
+    required: False
+    type: int
 
   timeout:
     description:
@@ -61,8 +55,6 @@ EXAMPLES = r'''
 - name: Day1 initialization
   dellemc_vxrail_day1:
     vxmip: "{{ vxmip }}"
-    vcadmin: "{{ vcadmin }}"
-    vcpasswd: "{{ vcpasswd }}"
     day1json_file: "{{ day1json_file }}"
 '''
 
@@ -121,24 +113,38 @@ class VxRailDay1():
     def __init__(self, new_vxm_ip=None):
         self.vxm_ip = new_vxm_ip if new_vxm_ip else module.params.get('vxmip')
         self.timeout = module.params.get('timeout')
-        self.vc_admin = module.params.get('vcadmin')
-        self.vc_password = module.params.get('vcpasswd')
         self.day1_cfg = module.params.get('day1_cfg')
         self.day1_url = VxrailDay1Urls(self.vxm_ip)
+        self.api_version_number = module.params.get('api_version_number')
         # Configure HTTP basic authorization: basicAuth
         self.configuration = vxrail_ansible_utility.Configuration()
-        self.configuration.username = self.vc_admin
-        self.configuration.password = self.vc_password
         self.configuration.verify_ssl = False
         self.configuration.host = self.day1_url.set_host()
+        self.api_version_string = "v?"
+
+    # Obtains the response for the given module path with specified api_version_number or highest found version
+    def get_versioned_response(self, api_instance, module_path):
+        # Set api version string and version number if not defined
+        if self.api_version_number is None:
+            self.api_version_string = utils.get_highest_api_version_string(self.vxm_ip, module_path, LOGGER)
+            self.api_version_number = int(self.api_version_string.split('v')[1])
+        else:
+            self.api_version_string = utils.get_api_version_string(self.vxm_ip, self.api_version_number, module_path,
+                                                                   LOGGER)
+        LOGGER.info("Using api version number: %s\n", self.api_version_string)
+        return self.api_version_string
 
     def start_validation(self, day1_json):
         request_body = day1_json
         # create an instance of the API class
-        api_instance = vxrail_ansible_utility.VxRailInstallationApi(vxrail_ansible_utility.ApiClient(self.configuration))
+        api_instance = vxrail_ansible_utility.VxRailInstallationApi(
+            vxrail_ansible_utility.ApiClient(self.configuration))
         try:
-            # start day1 DryRun validation
-            response = api_instance.v1_system_initialize_post(request_body, dryrun=True)
+            # start day1 DryRun validation(ex:v1_system_initialize_post)
+            call_string = self.get_versioned_response(api_instance, '/system/initialize') + '_system_initialize_post'
+            LOGGER.info("Using utility method: %s\n", call_string)
+            api_validation_post = getattr(api_instance, call_string)
+            response = api_validation_post(request_body, dryrun=True)
         except ApiException as e:
             LOGGER.error("Exception when calling VxRailInstallationApi->v1_system_initialize_post?dryrun=True: %s\n", e)
             return 'error'
@@ -148,21 +154,31 @@ class VxRailDay1():
     def start_initialization(self, day1_json):
         request_body = day1_json
         # create an instance of the API class
-        api_instance = vxrail_ansible_utility.VxRailInstallationApi(vxrail_ansible_utility.ApiClient(self.configuration))
+        api_instance = vxrail_ansible_utility.VxRailInstallationApi(
+            vxrail_ansible_utility.ApiClient(self.configuration))
         try:
-            # start day1 FirstRun
-            response = api_instance.v1_system_initialize_post(request_body)
+            # start day1 FirstRun(ex:v1_system_initialize_post)
+            call_string = self.get_versioned_response(api_instance, '/system/initialize') + '_system_initialize_post'
+            LOGGER.info("Using utility method: %s\n", call_string)
+            api_initialize_post = getattr(api_instance, call_string)
+            response = api_initialize_post(request_body)
         except ApiException as e:
-            LOGGER.error("Exception when calling ClusterExpansionApi->v1_cluster_expansion_post: %s\n", e)
+            LOGGER.error("Exception when calling ClusterInitializeApi->v1_system_initialize_post: %s\n", e)
             return 'error'
         job_id = response.request_id
         return job_id
 
     def get_request_status(self):
         # create an instance of the API class
-        api_instance = vxrail_ansible_utility.VxRailInstallationApi(vxrail_ansible_utility.ApiClient(self.configuration))
+        api_instance = vxrail_ansible_utility.VxRailInstallationApi(
+            vxrail_ansible_utility.ApiClient(self.configuration))
         try:
-            response = api_instance.v1_system_initialize_status_get()
+            # get day1 FirstRun status(ex:v1_system_initialize_status_get)
+            call_string = self.get_versioned_response(api_instance,
+                                                      '/system/initialize/status') + '_system_initialize_status_get'
+            LOGGER.info("Using utility method: %s\n", call_string)
+            api_system_initialize_status_get = getattr(api_instance, call_string)
+            response = api_system_initialize_status_get()
         except Exception as e:
             LOGGER.error("Exception when calling v1_system_initialize_status_get: %s\n", e)
             if hasattr(e, 'status') and e.status == 400 and hasattr(e, 'body'):
@@ -173,6 +189,7 @@ class VxRailDay1():
 
                         class Obj():
                             pass
+
                         response = Obj()
                         response.state = 'COMPLETED'
                         return response
@@ -215,9 +232,8 @@ def main():
     # define available arguments/parameters a user can pass to the module
     module_args = dict(
         vxmip=dict(required=True),
-        vcadmin=dict(required=True),
-        vcpasswd=dict(required=True, no_log=True),
         day1json_file=dict(required=True),
+        api_version_number=dict(type='int'),
         timeout=dict(type='int', default=MAX_CHECK_COUNT * CHECK_STATUS_INTERVAL)
     )
     module = AnsibleModule(
@@ -258,7 +274,8 @@ def main():
             msg="validation request id is not returned. Please see the /tmp/vxrail_ansible_day1.log for more details")
 
     error_count = 0
-    while validation_status not in ('COMPLETED', 'FAILED') and time_out < initial_timeout and error_count < MAX_ERROR_COUNT:
+    while validation_status not in (
+            'COMPLETED', 'FAILED') and time_out < initial_timeout and error_count < MAX_ERROR_COUNT:
         validation_response = VxRailDay1().get_request_status()
         if validation_response:
             error_count = 0
@@ -289,7 +306,8 @@ def main():
 
         new_vxm_ip_iswork = False
         error_count = 0
-        while installation_status not in ('COMPLETED', 'FAILED') and time_out < initial_timeout and error_count < MAX_ERROR_COUNT:
+        while installation_status not in (
+                'COMPLETED', 'FAILED') and time_out < initial_timeout and error_count < MAX_ERROR_COUNT:
             installation_response = None
             if new_vxm_ip:
                 installation_response = VxRailDay1(new_vxm_ip).get_request_status()

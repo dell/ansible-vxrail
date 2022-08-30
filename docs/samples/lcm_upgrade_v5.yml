@@ -1,0 +1,85 @@
+---
+- name: LCM upgrade v5. Supported in VxRail versions 7.0.400+.
+  hosts: localhost
+  vars:
+    ### Required ###
+    vxmip_var: "{{ vxmip }}"
+    vcadmin_var: "{{ vcadmin }}"
+    vcpasswd_var: "{{ vcpasswd }}"
+    bundle_var: "{{ bundle }}"
+    vc_root_account_var: "{{ vc_root_account }}"
+    vc_root_passwd_var: "{{ vc_root_passwd }}"
+    vxm_root_account_var: "{{ vxm_root_account }}"
+    vxm_root_passwd_var: "{{ vxm_root_passwd }}"
+    ### Optional ###
+    source_vcsa_host_name_var: "{{ source_vcsa_host_name | default(omit) }}"
+    source_vcsa_host_user_name_var: "{{ source_vcsa_host_user_name | default(omit) }}"
+    source_vcsa_host_user_passwd_var: "{{ source_vcsa_host_user_passwd | default(omit) }}"
+    target_vcsa_host_name_var: "{{ target_vcsa_host_name | default(omit) }}"
+    target_vcsa_host_user_name_var: "{{ target_vcsa_host_user_name | default(omit) }}"
+    target_vcsa_host_user_passwd_var: "{{ target_vcsa_host_user_passwd | default(omit) }}"
+    temporary_ip_var: "{{ temporary_ip | default(omit) }}"
+    temporary_gateway_var: "{{ temporary_gateway | default(omit) }}"
+    temporary_netmask_var: "{{ temporary_netmask | default(omit) }}"
+    witness_username_var: "{{ witness_username | default(omit) }}"
+    witness_password_var: "{{ witness_password | default(omit) }}"
+    auto_witness_upgrade_var: "{{ auto_witness_upgrade | default(omit) }}"
+    preferred_fault_domain_first_var: "{{ preferred_fault_domain_first | default(omit) }}"
+    # Indicate the host(s) to be upgraded. This only applies to a cluster when vLCM is enabled. If the property is empty, then upgrades all nodes in the cluster. #
+    target_hosts_name_var: "{{ target_hosts_name | default(omit) }}"
+    # Set the value to false if you want to using your customized upgrade bundle i.e. Smart Bundle. #
+    missing_file_check_var: "{{ missing_file_check | default(omit) }}"
+    skip_failed_hosts_var: "{{ skip_failed_hosts | default(omit) }}"
+    ecosystem_check_components_var: "{{ ecosystem_check_components | default(omit) }}"
+    ecosystem_check_continue_with_incompatible_var: "{{ ecosystem_check_continue_with_incompatible | default(omit) }}"
+    ### Optional for script, specify the API version to perform the upgrade. If not specified, the default value is the highest available version. ###
+    api_version_number_var: "5"
+    ### Optional for script, specify the timeout for the upgrade. If not specified, the default value is 6 hours. ###
+    timeout_var: "{{ timeout | default(omit) }}"
+
+
+  tasks:
+    - name: Start to upgrade with v5
+      dellemc_vxrail_lcm:
+        vxmip: "{{ vxmip_var }}"
+        vcadmin: "{{ vcadmin_var }}"
+        vcpasswd: "{{ vcpasswd_var}}"
+        bundle: "{{ bundle_var }}"
+        vc_root_account: "{{ vc_root_account_var }}"
+        vc_root_passwd: "{{ vc_root_passwd_var }}"
+        vxm_root_account: "{{ vxm_root_account_var }}"
+        vxm_root_passwd: "{{ vxm_root_passwd_var }}"
+        api_version_number: "{{ api_version_number_var }}"
+        timeout: "{{ timeout_var }}"
+        source_vcsa_host_name: "{{ source_vcsa_host_name_var }}"
+        source_vcsa_host_user_name: "{{ source_vcsa_host_user_name_var }}"
+        source_vcsa_host_user_passwd: "{{ source_vcsa_host_user_passwd_var }}"
+        target_vcsa_host_name: "{{ target_vcsa_host_name_var }}"
+        target_vcsa_host_user_name: "{{ target_vcsa_host_user_name_var }}"
+        target_vcsa_host_user_passwd: "{{ target_vcsa_host_user_passwd_var }}"
+        temporary_ip: "{{ temporary_ip_var }}"
+        temporary_gateway: "{{ temporary_gateway_var }}"
+        temporary_netmask: "{{ temporary_netmask_var }}"
+        witness_username: "{{ witness_username_var }}"
+        witness_password: "{{ witness_password_var }}"
+        auto_witness_upgrade: "{{ auto_witness_upgrade_var }}"
+        preferred_fault_domain_first: "{{ preferred_fault_domain_first_var }}"
+        target_hosts_name: "{{ target_hosts_name_var }}"
+        missing_file_check: "{{ missing_file_check_var }}"
+        skip_failed_hosts: "{{ skip_failed_hosts_var }}"
+        ecosystem_check_continue_with_incompatible: "{{ ecosystem_check_continue_with_incompatible_var }}"
+        ecosystem_check_components: "{{ ecosystem_check_components_var }}"
+      async: 25200
+      poll: 0
+      register: lcm_status
+    - name: Check if LCM is completed...The upgrade is still ongoing.
+      async_status:
+        jid: "{{ lcm_status.ansible_job_id }}"
+      register: job_result
+      until: job_result.finished
+      retries: 210
+      delay: 120
+    - name: Get LCM Result
+      debug:
+        msg:  "{{job_result}}"
+

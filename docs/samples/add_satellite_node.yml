@@ -20,10 +20,10 @@
     mgt_netmask: "{{ mgt_netmask }}"
     mgt_gateway: "{{ mgt_gateway }}"
     dns_server: "{{ dns_server }}"
-    ntp_server: "{{ ntp_server }}"
-    syslog_server: "{{ syslog_server }}"
-    rack_name: "{{ rack_name }}"
-    order_number: "{{ order_number }}"
+    ntp_server_var: "{{ ntp_server | default(omit) }}"
+    syslog_server_var: "{{ syslog_server | default(omit) }}"
+    rack_name_var: "{{ rack_name | default(omit) }}"
+    order_number_var: "{{ order_number | default(omit) }}"
 
   tasks:
     - name: Start a satellite nodes expansion
@@ -46,10 +46,11 @@
         mgt_netmask: "{{ mgt_netmask }}"
         mgt_gateway: "{{ mgt_gateway }}"
         dns_server: "{{ dns_server }}"
-        ntp_server: "{{ ntp_server }}"
-        syslog_server: "{{ syslog_server }}"
-        rack_name: "{{ rack_name }}"
-        order_number: "{{ order_number }}"
+        ntp_server: "{{ ntp_server_var }}"
+        syslog_server: "{{ syslog_server_var }}"
+        rack_name: "{{ rack_name_var }}"
+        order_number: "{{ order_number_var }}"
+        api_version_number: "{{ api_version_number | default(omit) }}"
       async: 1800
       poll: 0
       register: expansion_status

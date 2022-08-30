@@ -1,0 +1,20 @@
+---
+- name: Get automated renewal status of the certificate with /cluster/certificates/scep/status
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+
+  tasks:
+    - name: Get automated renewal status
+      dellemc_vxrail_certificates_get_scep_status:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        api_version_number: "{{ api_version_number | default(omit) }}"
+      register: scep_status
+
+    - name: Display automated renewal status 
+      debug:
+        msg:  "{{scep_status}}"

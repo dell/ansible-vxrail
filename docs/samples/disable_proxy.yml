@@ -1,0 +1,21 @@
+---
+- name: Disable the VxRail System's Proxy Configuration
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+
+  tasks:
+    - name: Disable the VxRail System's Proxy Configuration
+      dellemc_vxrail_system_disable_proxy:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        api_version_number: "{{ api_version_number | default(omit) }}"
+        timeout: "{{ timeout | default(omit) }}"
+      register: proxy_dis
+
+    - name: Display Message of Successful Proxy Disable Operation
+      debug:
+        msg:  "{{proxy_dis}}"

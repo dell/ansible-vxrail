@@ -14,7 +14,7 @@ short_description: Add a node discovered by LoudMouth to an existing VxRail Clus
 
 # If this is part of a collection, you need to use semantic versioning,
 # i.e. the version is of the form "2.5.0" and not "2.4".
-version_added: "1.0.0"
+version_added: "1.4.0"
 
 description:
 - This module will validate a L2 cluster expansion, perform a L2 cluster expansion
@@ -112,6 +112,12 @@ options:
     type: bool
     default: FALSE
 
+  api_version_number:
+    description:
+      A specific version number to use for the API call. If not included, will use the highest version by default
+    required: False
+    type: int
+
   timeout:
     description:
       Time out value for cluster expansion, the default value is 1800 seconds
@@ -143,6 +149,7 @@ EXAMPLES = r'''
         order_number: "{{ order_number }}"
         maintenance_mode : "{{ maintenance_mode }}"
         timeout : "{{ timeout }}"
+        api_version_number: "{{ api_version_number }}"
 '''
 
 RETURN = r'''
@@ -208,6 +215,7 @@ class VxRailCluster():
         self.order_number = module.params.get('order_number')
         self.root_passwd = module.params.get('root_passwd')
         self.mm = module.params.get('maintenance_mode')
+        self.api_version_number = module.params.get('api_version_number')
         self.cluster_url = VxrailClusterUrls(self.vxm_ip)
         # Configure HTTP basic authorization: basicAuth
         self.configuration = vxrail_ansible_utility.Configuration()
@@ -215,6 +223,40 @@ class VxRailCluster():
         self.configuration.password = self.vc_password
         self.configuration.verify_ssl = False
         self.configuration.host = self.cluster_url.set_host()
+        # Added for auto-version detection
+        self.api_version_string = "v?"
+
+    # Obtains the response for the given module path with specified api_version_number or highest found version
+    def get_versioned_response_validate(self, api_instance, module_path, node_json):
+        # Set api version string and version number if undefined
+        if self.api_version_number is None:
+            self.api_version_string = utils.get_highest_api_version_string(self.vxm_ip, module_path, LOGGER)
+            self.api_version_number = int(self.api_version_string.split('v')[1])
+        else:
+            self.api_version_string = utils.get_api_version_string(self.vxm_ip, self.api_version_number, module_path, LOGGER)
+
+        # Calls versioned method as attribute (ex: v1_cluster_expansion_validate_post)
+        call_string = self.api_version_string + '_cluster_expansion_validate_post'
+        LOGGER.info("Using utility method: %s\n", call_string)
+        api_cluster_expansion_validate_post = getattr(api_instance, call_string)
+        request_body = node_json
+        return api_cluster_expansion_validate_post(request_body)
+
+    # Obtains the response for the given module path with specified api_version_number or highest found version
+    def get_versioned_response_expansion(self, api_instance, module_path, node_json):
+        # Set api version string and version number if undefined
+        if self.api_version_number is None:
+            self.api_version_string = utils.get_highest_api_version_string(self.vxm_ip, module_path, LOGGER)
+            self.api_version_number = int(self.api_version_string.split('v')[1])
+        else:
+            self.api_version_string = utils.get_api_version_string(self.vxm_ip, self.api_version_number, module_path, LOGGER)
+
+        # Calls versioned method as attribute (ex: v1_cluster_expansion_post)
+        call_string = self.api_version_string + '_cluster_expansion_post'
+        LOGGER.info("Using utility method: %s\n", call_string)
+        api_cluster_expansion_post = getattr(api_instance, call_string)
+        request_body = node_json
+        return api_cluster_expansion_post(request_body)
 
     def start_validation(self, validate_json):
         request_body = validate_json
@@ -222,9 +264,9 @@ class VxRailCluster():
         api_instance = vxrail_ansible_utility.ClusterExpansionApi(vxrail_ansible_utility.ApiClient(self.configuration))
         try:
             # start cluster expansion validation
-            response = api_instance.v1_cluster_expansion_validate_post(request_body)
+            response = self.get_versioned_response_validate(api_instance, "/cluster/expansion/validate", request_body)
         except ApiException as e:
-            LOGGER.error("Exception when calling ClusterExpansionApi->v1_cluster_expansion_validate_post: %s\n", e)
+            LOGGER.error("Exception when calling ClusterExpansionApi->%s_cluster_expansion_validate_post: %s\n", self.api_version_string, e)
             return 'error'
         job_id = response.request_id
         return job_id
@@ -235,9 +277,9 @@ class VxRailCluster():
         api_instance = vxrail_ansible_utility.ClusterExpansionApi(vxrail_ansible_utility.ApiClient(self.configuration))
         try:
             # start cluster expansion
-            response = api_instance.v1_cluster_expansion_post(request_body)
+            response = self.get_versioned_response_expansion(api_instance, "/cluster/expansion", request_body)
         except ApiException as e:
-            LOGGER.error("Exception when calling ClusterExpansionApi->v1_cluster_expansion_post: %s\n", e)
+            LOGGER.error("Exception when calling ClusterExpansionApi->%s_cluster_expansion_post: %s\n", self.api_version_string, e)
             return 'error'
         job_id = response.request_id
         return job_id
@@ -354,6 +396,7 @@ def main():
         rack_name=dict(type='str', default="default-rack"),
         order_number=dict(type='int', default=5),
         maintenance_mode=dict(type='bool', default=False),
+        api_version_number=dict(type='int'),
         timeout=dict(type='int', default=30 * 60)
     )
     module = AnsibleModule(

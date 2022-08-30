@@ -1,0 +1,22 @@
+---
+- name: Remove Cluster Layer3 Segment Information
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+    segment_label: "{{ segment_label }}"
+
+  tasks:
+    - name: Remove Cluster Layer3 Segment
+      dellemc_vxrail_cluster_layer3_remove_segment:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        segment_label: "{{ segment_label }}"
+        api_version_number: "{{ api_version_number | default(omit) }}"
+      register: segment_remove_info
+
+    - name: Display Remove Cluster Layer3 Segment Information
+      debug:
+        msg:  "{{segment_remove_info}}"

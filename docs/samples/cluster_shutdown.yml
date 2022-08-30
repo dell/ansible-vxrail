@@ -1,0 +1,34 @@
+---
+- name: Cluster Shutdown
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+    dryrun: "{{ dryrun }}"
+
+  tasks:
+    - name: Perform Cluster Shutdown
+      dellemc_vxrail_cluster_shutdown:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        dryrun: "{{ dryrun | default(omit) }}"
+        timeout: "{{ timeout | default(omit) }}"
+        api_version_number: "{{ api_version_number | default(omit) }}"
+      async: 1800
+      poll: 0
+      register: request_info
+
+    - name: Check if cluster shutdown job is completed
+      async_status:
+        jid: "{{ request_info.ansible_job_id }}"
+      register: job_result
+      until: job_result.finished
+      retries: 100
+      delay: 30
+
+    - name: Display Cluster Shutdown Information
+      debug:
+        msg:  "{{ job_result }}"
+        

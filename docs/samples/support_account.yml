@@ -8,10 +8,12 @@
 
   tasks:
     - name: Get Support account information
-      dellemc_vxrail_support_getaccount_v1:
+      dellemc_vxrail_support_getaccount:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
+        timeout: "{{ timeout | default(omit) }}"
+        api_version_number: "{{ api_version_number | default(omit) }}"
       register: support_account_info
 
     - name: Display Support account information

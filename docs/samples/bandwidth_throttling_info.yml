@@ -1,0 +1,20 @@
+---
+- name: Retrieve bandwidth throttling Information
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+
+  tasks:
+    - name: Get bandwidth throttling Information
+      dellemc_vxrail_bandwidth_throttling_info:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        api_version_number: "{{ api_version_number | default(omit) }}"
+      register: bandwidth_throttling_info
+
+    - name: Display bandwidth throttling
+      debug:
+        msg:  "{{ bandwidth_throttling_info }}"

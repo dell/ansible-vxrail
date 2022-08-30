@@ -8,10 +8,12 @@
 
   tasks:
     - name: Get Cluster Information
-      dellemc_vxrail_clusterinfo:
+      dellemc_vxrail_getclusterinfo:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
+        timeout: "{{ timeout  | default(omit) }}"
+        api_version_number: "{{ api_version_number | default(omit) }}"
       register: cluster_info
 
     - name: Display Cluster Information

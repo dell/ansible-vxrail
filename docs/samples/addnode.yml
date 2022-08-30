@@ -14,9 +14,9 @@
     mgt_ip: "{{ mgt_ip }}"
     vsan_ip: "{{ vsan_ip }}"
     vmotion_ip: "{{ vmotion_ip }}"
-    rack_name: "{{ rack_name }}"
-    order_number: "{{ order_number }}"
-    maintenance_mode: "{{ maintenance_mode }}"
+    #Optional#
+    rack_name_var: "{{ rack_name | default(omit) }}"
+    order_number_var: "{{ order_number | default(omit) }}"
 
   tasks:
     - name: Start a cluster expansion
@@ -33,9 +33,11 @@
         mgt_ip: "{{ mgt_ip }}"
         vsan_ip: "{{ vsan_ip }}"
         vmotion_ip: "{{ vmotion_ip }}"
-        rack_name: "{{ rack_name }}"
-        order_number: "{{ order_number }}"
-        maintenance_mode: "{{ maintenance_mode }}"
+        rack_name: "{{ rack_name_var }}"
+        order_number: "{{ order_number_var }}"
+        maintenance_mode: "{{ maintenance_mode | default(omit) }}"
+        timeout: "{{ timeout | default(omit) }}"
+        api_version_number: "{{ api_version_number | default(omit) }}"
       async: 1800
       poll: 0
       register: expansion_status

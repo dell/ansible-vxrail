@@ -1,0 +1,21 @@
+---
+- name: Retrieve VxRail Hosts Information with with /hosts and /hosts/{sn} APIs
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+
+  tasks:
+    - name: Get Hosts Information
+      dellemc_vxrail_hosts_get:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        host_sn : "{{ host_sn | default(omit) }}"
+        api_version_number: "{{ api_version_number | default(omit) }}"
+      register: hosts_info
+
+    - name: Display Hosts Information
+      debug:
+        msg:  "{{hosts_info}}"

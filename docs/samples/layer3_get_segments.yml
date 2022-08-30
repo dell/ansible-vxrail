@@ -1,0 +1,20 @@
+---
+- name: Retrieve Cluster Layer3 Segments Information
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+
+  tasks:
+    - name: Get Cluster Layer3 Segments
+      dellemc_vxrail_cluster_layer3_get_segments:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        api_version_number: "{{ api_version_number | default(omit) }}"
+      register: segments_info
+
+    - name: Display Cluster Layer3 Segments Information
+      debug:
+        msg:  "{{segments_info}}"

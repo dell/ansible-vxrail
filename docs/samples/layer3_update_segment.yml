@@ -1,0 +1,58 @@
+---
+- name: Update Cluster Layer3 Segment Information
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+    ip_version: "{{ ip_version }}"
+    management_gateway: "{{ management_gateway }}"
+    management_netmask: "{{ management_netmask }}"
+    management_topology: "{{ management_topology }}"
+    management_vlan: "{{ management_vlan }}"
+    proxy_ip: "{{ proxy_ip }}"
+    segment_label: "{{ segment_label }}"
+    new_segment_label: "{{ new_segment_label }}"
+    vmotion_gateway: "{{ vmotion_gateway }}"
+    vmotion_init_gateway: "{{ vmotion_init_gateway }}"
+    vmotion_netmask: "{{ vmotion_netmask }}"
+    vmotion_topology: "{{ vmotion_topology }}"
+    vmotion_vlan: "{{ vmotion_vlan }}"
+    vsan_gateway: "{{ vsan_gateway }}"
+    vsan_init_gateway: "{{ vsan_init_gateway }}"
+    vsan_netmask: "{{ vsan_netmask }}"
+    vsan_topology: "{{ vsan_topology }}"
+    vsan_vlan: "{{ vsan_vlan }}"
+    version: "{{ version }}"
+
+  tasks:
+    - name: Update Cluster Layer3 Segment
+      dellemc_vxrail_cluster_layer3_update_segment:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        ip_version: "{{ ip_version }}"
+        management_gateway: "{{ management_gateway }}"
+        management_netmask: "{{ management_netmask }}"
+        management_topology: "{{ management_topology }}"
+        management_vlan: "{{ management_vlan }}"
+        proxy_ip: "{{ proxy_ip }}"
+        segment_label: "{{ segment_label }}"
+        new_segment_label: "{{ new_segment_label }}"
+        vmotion_gateway: "{{ vmotion_gateway }}"
+        vmotion_init_gateway: "{{ vmotion_init_gateway }}"
+        vmotion_netmask: "{{ vmotion_netmask }}"
+        vmotion_topology: "{{ vmotion_topology }}"
+        vmotion_vlan: "{{ vmotion_vlan }}"
+        vsan_gateway: "{{ vsan_gateway }}"
+        vsan_init_gateway: "{{ vsan_init_gateway }}"
+        vsan_netmask: "{{ vsan_netmask }}"
+        vsan_topology: "{{ vsan_topology }}"
+        vsan_vlan: "{{ vsan_vlan }}"
+        version: "{{ version }}"
+        api_version_number: "{{ api_version_number | default(omit) }}"
+      register: update_segment_info
+
+    - name: Display updated Cluster Layer3 Segment Information
+      debug:
+        msg:  "{{update_segment_info}}"
