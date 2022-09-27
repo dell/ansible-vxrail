@@ -9,11 +9,13 @@
 
   tasks:
     - name: Get Node's Cluster Portgroup Information
-      dellemc_vxrail_cluster_portgroups_fqdn_v1:
+      dellemc_vxrail_system_cluster_portgroups:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
         node_fqdn: "{{ node_fqdn }}"
+        timeout: "{{ timeout | default(omit) }}"
+        api_version_number: "{{ api_version_number | default(omit) }}"
       register: cluster_portgroup_info
 
     - name: Display Cluster Portgroup Information

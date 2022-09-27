@@ -15,7 +15,7 @@ short_description: Add a satellite node to an existing VxRail Cluster
 
 # If this is part of a collection, you need to use semantic versioning,
 # i.e. the version is of the form "2.5.0" and not "2.4".
-version_added: "1.2.0"
+version_added: "1.4.0"
 
 description:
 - This module will perform a satellite node expansion
@@ -141,7 +141,7 @@ options:
       The position of the node in the rack,the default value is 5
     required: false
     type: str
-    default: 5
+    default: "5"
 
   ntp_server:
     description:
@@ -163,6 +163,12 @@ options:
     required: false
     type: int
     default: 1800
+
+  api_version_number:
+    description:
+      A specific version number to use for the API call. If not included, will use the highest version by default
+    required: false
+    type: int
 
 author:
     - VxRail Development Team(@VxRailDevTeam) <ansible.team@dell.com>
@@ -194,6 +200,7 @@ EXAMPLES = r'''
         syslog_server: "{{ syslog_server }}"
         rack_name: "{{ rack_name }}"
         order_number: "{{ order_number }}"
+        api_version_number: "{{ api_version_number }}"
 '''
 
 RETURN = r'''
@@ -215,17 +222,24 @@ expansion_status:
    }
 '''
 
+import traceback
 import logging
-import urllib3
-from ansible.module_utils.basic import AnsibleModule
-import vxrail_ansible_utility
-from vxrail_ansible_utility.rest import ApiException
 import time
-from ansible_collections.dellemc.vxrail.plugins.module_utils import dellemc_vxrail_ansible_utils as utils
+from ansible.module_utils.basic import AnsibleModule, missing_required_lib
 
-LOGGER = utils.get_logger("dellemc_vxrail_satellite_node_expansion", "/tmp/vxrail_ansible_satellite_node_expansion.log",
-                          log_devel=logging.DEBUG)
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+try:
+    import urllib3
+    import vxrail_ansible_utility
+    from vxrail_ansible_utility.rest import ApiException
+    from ansible_collections.dellemc.vxrail.plugins.module_utils import dellemc_vxrail_ansible_utils as utils
+    LOGGER = utils.get_logger("dellemc_vxrail_satellite_node_expansion", "/tmp/vxrail_ansible_satellite_node_expansion.log",
+                              log_devel=logging.DEBUG)
+    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+except ImportError:
+    HAS_ANOTHER_LIBRARY = False
+    ANOTHER_LIBRARY_IMPORT_ERROR = traceback.format_exc()
+else:
+    HAS_ANOTHER_LIBRARY = True
 
 
 class VxrailClusterUrls():
@@ -263,6 +277,8 @@ class VxRailSatelliteNode():
         self.syslog_server = module.params.get('syslog_server')
         self.rack_name = module.params.get('rack_name')
         self.order_number = module.params.get('order_number')
+        self.api_version_number = module.params.get('api_version_number')
+
         self.cluster_url = VxrailClusterUrls(self.vxm_ip)
         # Configure HTTP basic authorization: basicAuth
         self.configuration = vxrail_ansible_utility.Configuration()
@@ -309,17 +325,45 @@ class VxRailSatelliteNode():
         else:
             return False
 
+    # Obtains the response for the given module path with specified api_version_number or highest found version
+    def get_versioned_response_cancel_expansion(self, api_instance, module_path):
+        # Set api version string and version number if not defined
+        if self.api_version_number is None:
+            self.api_version_string = utils.get_highest_api_version_string(self.vxm_ip, module_path, LOGGER)
+            self.api_version_number = int(self.api_version_string.split('v')[1])
+        else:
+            self.api_version_string = utils.get_api_version_string(self.vxm_ip, self.api_version_number, module_path, LOGGER)
+
+        call_string = self.api_version_string + '_satellite_node_expansion_cancel_post'
+        LOGGER.info("Using utility method: %s\n", call_string)
+        api_satellite_node_expansion_cancel_post = getattr(api_instance, call_string)
+        return api_satellite_node_expansion_cancel_post()
+
     def cancel_expansion(self):
         api_instance = vxrail_ansible_utility.SatelliteNodeExpansionApi(
             vxrail_ansible_utility.ApiClient(self.configuration))
         try:
             # cancel cluster expansion
-            api_instance.v1_satellite_node_expansion_cancel_post()
+            self.get_versioned_response_cancel_expansion(api_instance, "/host-folder/expansion/cancel")
         except ApiException as e:
             LOGGER.error(
-                "Exception when calling SatelliteNodeExpansionApi->v1_satellite_node_expansion_cancel_post: %s\n", e)
+                "Exception when calling SatelliteNodeExpansionApi->%s_satellite_node_expansion_cancel_post: %s\n", self.api_version_string, e)
             return 'error'
         return 'success'
+
+    # Obtains the response for the given module path with specified api_version_number or highest found version
+    def get_versioned_response_start_expansion(self, api_instance, module_path, request_body):
+        # Set api version string and version number if not defined
+        if self.api_version_number is None:
+            self.api_version_string = utils.get_highest_api_version_string(self.vxm_ip, module_path, LOGGER)
+            self.api_version_number = int(self.api_version_string.split('v')[1])
+        else:
+            self.api_version_string = utils.get_api_version_string(self.vxm_ip, self.api_version_number, module_path, LOGGER)
+
+        call_string = self.api_version_string + '_satellite_node_expansion_post'
+        LOGGER.info("Using utility method: %s\n", call_string)
+        api_satellite_node_expansion_post = getattr(api_instance, call_string)
+        return api_satellite_node_expansion_post(request_body)
 
     def start_expansion(self, expansion_json):
         request_body = expansion_json
@@ -328,9 +372,9 @@ class VxRailSatelliteNode():
             vxrail_ansible_utility.ApiClient(self.configuration))
         try:
             # start cluster expansion
-            response = api_instance.v1_satellite_node_expansion_post(request_body)
+            response = self.get_versioned_response_start_expansion(api_instance, "/host-folder/expansion", request_body)
         except ApiException as e:
-            LOGGER.error("Exception when calling SatelliteNodeExpansionApi->v1_satellite_node_expansion_post: %s\n", e)
+            LOGGER.error("Exception when calling SatelliteNodeExpansionApi->%s_satellite_node_expansion_post: %s\n", self.api_version_string, e)
             return 'error'
         job_id = response.request_id
         return job_id
@@ -442,12 +486,18 @@ def main():
         dns_server=dict(required=True),
         ntp_server=dict(type='str', default=""),
         syslog_server=dict(type='str', default=""),
-        timeout=dict(type='int', default=30 * 60)
+        timeout=dict(type='int', default=30 * 60),
+        api_version_number=dict(type='int')
     )
     module = AnsibleModule(
         argument_spec=module_args,
         supports_check_mode=True,
     )
+
+    if not HAS_ANOTHER_LIBRARY:
+        module.fail_json(
+            msg=missing_required_lib('another_library'),
+            exception=ANOTHER_LIBRARY_IMPORT_ERROR)
 
     json_validation = VxRailSatelliteNode().validate()
     if not json_validation:

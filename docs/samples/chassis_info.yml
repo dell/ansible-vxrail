@@ -1,0 +1,21 @@
+---
+- name: Retrieve VxRail Chassis Information with /chassis and /chassis/{id} APIs
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+
+  tasks:
+    - name: Get Chassis Information
+      dellemc_vxrail_chassis_get:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        chassis_id: "{{ chassis_id | default(omit) }}"
+        api_version_number: "{{ api_version_number | default(omit) }}"
+      register: chassis_info
+
+    - name: Display Chassis Information
+      debug:
+        msg:  "{{chassis_info}}"

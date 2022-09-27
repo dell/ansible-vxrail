@@ -1,0 +1,17 @@
+---
+- name: Get vxrail auto discovery hosts
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+
+
+  tasks:
+    - name: Get auto discovery hosts
+      dellemc_vxrail_auto_discovery_hosts:
+        vxmip: "{{ vxmip }}"
+        api_version_number: "{{ api_version_number | default(omit) }}"
+      register: hosts_info
+
+    - name: Display auto discovery hosts
+      debug:
+        msg:  "{{ hosts_info }}"

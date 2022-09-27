@@ -1,5 +1,5 @@
 ---
-- name: Retrives name, status and host information for system virtual machines in the VxRail cluster
+- name: Retrieves name, status and host information for system virtual machines in the VxRail cluster
   hosts: localhost
   vars:
     vxmip: "{{ vxmip }}"
@@ -8,10 +8,12 @@
 
   tasks:
     - name: Get System VM Information
-      dellemc_vxrail_cluster_getvm_v1:
+      dellemc_vxrail_cluster_getvm:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
+        timeout: "{{ timeout | default(omit) }}"
+        api_version_number: "{{ api_version_number | default(omit) }}"
       register: system_vm_info
 
     - name: Display System VM Information

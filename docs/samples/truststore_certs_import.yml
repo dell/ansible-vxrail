@@ -1,0 +1,22 @@
+---
+- name: Import certficates into the VXM trust store
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+    certs: "{{ certs }}"
+
+  tasks:
+    - name: Return the API status code
+      dellemc_vxrail_certificates_importcertsintotruststore:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        certs: "{{ certs }}"
+        api_version_number: "{{ api_version_number | default(omit) }}"
+      register: Result
+
+    - name: Display the API status code
+      debug:
+        msg:  "{{ Result }}"

@@ -1,0 +1,22 @@
+---
+- name: Retrieve Cluster Layer3 Segment Information By Label
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+    segment_label: "{{ segment_label }}"
+
+  tasks:
+    - name: Get Cluster Layer3 Segment By Label
+      dellemc_vxrail_cluster_layer3_get_segment_bylabel:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        segment_label: "{{ segment_label }}"
+        api_version_number: "{{ api_version_number | default(omit) }}"
+      register: segment_bylabel_info
+
+    - name: Display Cluster Layer3 Segment Information By Label
+      debug:
+        msg:  "{{segment_bylabel_info}}"

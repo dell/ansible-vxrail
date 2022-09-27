@@ -9,13 +9,15 @@
 
   tasks:
     - name: Change Telemetry Tier
-      dellemc_vxrail_telemetry_tier_change_v1:
+      dellemc_vxrail_telemetry_tier_change:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
         tier: "{{ tier }}"
+        timeout: "{{ timeout | default(omit) }}"
+        api_version_number: "{{ api_version_number | default(omit) }}"
       register: telemetry_change
 
     - name: Display Telemetry Tier Change
       debug:
-        msg:  "{{telemetry_change}}"
+        msg:  "{{ telemetry_change }}"

@@ -8,7 +8,7 @@ namespace: dellemc
 name: vxrail
 
 # The version of the collection. Must be compatible with semantic versioning
-version: 1.3.0
+version: 1.4.0
 
 # The path to the Markdown (.md) readme file. This path is relative to the root of the collection
 readme: README.md
@@ -57,11 +57,12 @@ issues: mailto:ansible.team@dell.com
 # artifact. A pattern is matched from the relative path of the file or directory of the collection directory. This
 # uses 'fnmatch' to match the files or directories. Some directories and files like 'galaxy.yml', '*.pyc', '*.retry',
 # and '.git' are always filtered
-build_ignore: 
+build_ignore:
   - '.drone.yml'
   - 'scripts'
   - 'sanity-test-requirements.txt'
   - '.poxio'
   - '.flake8'
   - '.gitlint'
-  - 'build-output' 
+  - 'build-output'
+  - 'docs/Product Guide.md'

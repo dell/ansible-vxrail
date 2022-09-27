@@ -1,0 +1,23 @@
+---
+- name: Retrieve VxRail VC Mode Information
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+    timeout: "{{ timeout }}"
+    api_version_number: "{{ api_version_number }}"
+
+  tasks:
+    - name: Get VC Mode Information
+      dellemc_vxrail_vc_getmode:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        timeout: "{{ timeout | default(omit) }}"
+        api_version_number: "{{ api_version_number | default(omit) }}"
+      register: vc_mode_info
+
+    - name: Display VC Mode Info
+      debug:
+        msg:  "{{vc_mode_info}}"

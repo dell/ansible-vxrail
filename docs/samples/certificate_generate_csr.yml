@@ -1,0 +1,36 @@
+---
+- name: Generate a Certificate Signing Request
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+    country: "{{ country }}"
+    state: "{{ state }}"
+    locality: "{{ locality }}"
+    organization: "{{ organization }}"
+    organization_unit: "{{ organization_unit }}"
+    common_name: "{{ common_name }}"
+    email_address: "{{ email_address }}"
+    subject_alt_name: "{{ subject_alt_name }}"
+
+  tasks:
+    - name: Generate a Certificate Signing Request
+      dellemc_vxrail_certificate_generate_csr:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        country: "{{ country }}"
+        state: "{{ state }}"
+        locality: "{{ locality }}"
+        organization: "{{ organization }}"
+        organization_unit: "{{ organization_unit }}"
+        common_name: "{{ common_name }}"
+        email_address: "{{ email_address }}"
+        subject_alt_name: "{{ subject_alt_name }}"
+        api_version_number: "{{ api_version_number | default(omit) }}"
+      register: generate_csr
+
+    - name: Display CSR information
+      debug:
+        msg:  "{{ generate_csr }}"

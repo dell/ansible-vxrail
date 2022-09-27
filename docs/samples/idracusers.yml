@@ -9,11 +9,13 @@
 
   tasks:
     - name: Get iDRAC Users
-      dellemc_vxrail_idrac_getusers_v1:
+      dellemc_vxrail_idrac_getusers:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
         sn: "{{ sn }}"
+        timeout: "{{ timeout | default(omit) }}"
+        api_version_number: "{{ api_version_number | default(omit) }}"
       register: iDRAC_Users
     - name: Display Idrac Users
       debug:

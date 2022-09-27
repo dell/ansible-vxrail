@@ -1,0 +1,20 @@
+---
+- name: Get automated renewal configurations of the certificate with /cluster/certificates/scep/config
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+
+  tasks:
+    - name: Get automated renewal configurations
+      dellemc_vxrail_certificates_get_scep_config:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        api_version_number: "{{ api_version_number | default(omit) }}"
+      register: scep_config
+
+    - name: Display automated renewal configurations 
+      debug:
+        msg:  "{{scep_config}}"

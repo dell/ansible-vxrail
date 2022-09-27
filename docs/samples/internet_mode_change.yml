@@ -9,11 +9,13 @@
 
   tasks:
     - name: Change Internet Mode Information
-      dellemc_vxrail_internet_mode_change_v1:
+      dellemc_vxrail_system_internet_mode_change:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
         is_dark_site: "{{ is_dark_site }}"
+        api_version_number: "{{ api_version_number | default(omit) }}"
+        timeout: "{{ timeout | default(omit) }}"
       register: internet_mode_change_info
 
     - name: Display Internet Mode Change
