@@ -1,0 +1,22 @@
+---
+- name: Return the status of remove certificate
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+    fingerprint: "{{ fingerprint }}"
+
+  tasks:
+    - name: Remove the certificate according to the fingerprint
+      dellemc_vxrail_certificates_removecertificate:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        fingerprint: "{{ fingerprint }}"
+        api_version_number: "{{ api_version_number | default(omit) }}"
+      register: Result
+
+    - name: Display the result of certificate removal
+      debug:
+        msg:  "{{ Result }}"

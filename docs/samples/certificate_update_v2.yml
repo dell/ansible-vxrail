@@ -1,0 +1,38 @@
+---
+- name: Update the VxRail Manager certificate with v2/certificates/import-vxm API
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+    cert: "{{ cert }}"
+    root_cert_chain: "{{ root_cert_chain }}"
+    private_key: "{{ private_key }}"
+    password: "{{ password }}"
+
+  tasks:
+    - name: Update the VxRail Manager certificate
+      dellemc_vxrail_certificate_update:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        cert: "{{ cert }}"
+        root_cert_chain: "{{ root_cert_chain }}"
+        private_key: "{{ private_key }}"
+        password: "{{ password }}"
+        api_version_number: 2
+      async: 1800
+      poll: 0
+      register: certificate_update_status
+
+    - name: Check if certificate update job is completed...The certificate update is still ongoing.
+      async_status:
+        jid: "{{ certificate_update_status.ansible_job_id }}"
+      register: job_result
+      until: job_result.finished
+      retries: 100
+      delay: 30
+
+    - name: Get certificate update result
+      debug:
+        msg:  "{{ job_result }}"

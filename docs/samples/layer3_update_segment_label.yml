@@ -1,0 +1,24 @@
+---
+- name: Update Cluster Layer3 Segment Label Information
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+    segment_label: "{{ segment_label }}"
+    new_segment_label: "{{ new_segment_label }}"
+
+  tasks:
+    - name: Update Cluster Layer3 Segment Label
+      dellemc_vxrail_cluster_layer3_update_segment_label:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        segment_label: "{{ segment_label }}"
+        new_segment_label: "{{ new_segment_label }}"
+        api_version_number: "{{ api_version_number | default(omit) }}"
+      register: segment_label_update_info
+
+    - name: Display Update Cluster Layer3 Segment Label Information
+      debug:
+        msg:  "{{segment_label_update_info}}"

@@ -5,17 +5,18 @@
     vxmip: "{{ vxmip }}"
     vcadmin: "{{ vcadmin }}"
     vcpasswd: "{{ vcpasswd }}"
-    components: "{{ components }}"
     servers: "{{ servers }}"
 
   tasks:
     - name: Change DNS Settings
-      dellemc_vxrail_system_dns_change_v1:
+      dellemc_vxrail_system_dns_change:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
-        components: "{{ components }}"
+        components: "{{ components | default(omit) }}"
         servers: "{{ servers }}"
+        api_version_number: "{{ api_version_number | default(omit) }}"
+        timeout: "{{ timeout | default(omit) }}"
       register: dns_change_info
 
     - name: Display DNS Change

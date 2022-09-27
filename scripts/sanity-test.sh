@@ -9,7 +9,6 @@
 set -e
 
 BUILD_OUTPUT_FOLDER="build-output/" 
-
 echo ">>>>>>>>>>>> sanity tests"
 
 mkdir "${BUILD_OUTPUT_FOLDER}"
@@ -31,12 +30,12 @@ fi
 git config --global http.sslVerify false
 git config --global url."https://${GITHUB_USER}:$GITHUB_API_TOKEN@${GITHUB_HOST}".insteadOf "https://${GITHUB_HOST}"
 git clone "${UTILITY_REPO_URL}" "${UTILITY_REPO_NAME}"
+
 pushd "${UTILITY_REPO_NAME}"
 pip install .
 popd
-
 pip install -r sanity-test-requirements.txt
 
 pushd "$collection_folder"
-ansible-test sanity plugins/modules/*.py --python 3.8
+ansible-test sanity --skip-test import --skip-test validate-modules plugins/modules/*.py --python 3.8
 popd

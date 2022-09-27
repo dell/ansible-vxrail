@@ -1,0 +1,40 @@
+---
+- name: Upgrade host folder
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+    action: "{{ action }}"
+    folder_id: "{{ folder_id }}"
+    target_version: "{{ target_version }}"
+    failure_rate_var: "{{ failure_rate | default(omit) }}"
+    concurrent_size_var: "{{ concurrent_size | default(omit) }}"
+
+  tasks:
+    - name: Start host folders upgrade
+      dellemc_vxrail_host_folder_upgrade:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        action: "{{ action }}"
+        folder_id: "{{ folder_id }}"
+        target_version: "{{ target_version }}"
+        failure_rate: "{{ failure_rate_var }}"
+        concurrent_size: "{{ concurrent_size_var }}"
+        api_version_number: "{{ api_version_number | default(omit) }}"
+      async: 1800
+      poll: 0
+      register: upgrade_status
+
+    - name: Check if host folder upgrade job is completed...The host folder upgrade is still ongoing.
+      async_status:
+        jid: "{{ upgrade_status.ansible_job_id }}"
+      register: job_result
+      until: job_result.finished
+      retries: 60
+      delay: 30
+
+    - name: Get host folder upgrade Result
+      debug:
+        msg:  "{{job_result}}"

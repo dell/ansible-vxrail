@@ -9,11 +9,13 @@
 
   tasks:
     - name: Get iDRAC Network Settings
-      dellemc_vxrail_idrac_getnetwork_v1:
+      dellemc_vxrail_idrac_getnetwork:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
         sn: "{{ sn }}"
+        timeout: "{{ timeout | default(omit) }}"
+        api_version_number: "{{ api_version_number | default(omit) }}"
       register: idrac_info
     - name: Display Idrac Network Settings
       debug:

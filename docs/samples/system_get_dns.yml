@@ -1,0 +1,21 @@
+---
+- name: Retrieve VxRail System DNS Information
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+
+  tasks:
+    - name: Get System DNS Information
+      dellemc_vxrail_system_get_dns:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        api_version_number: "{{ api_version_number | default(omit) }}"
+        timeout: "{{ timeout | default(omit) }}"
+      register: system_dns_info
+
+    - name: Display System DNS Information
+      debug:
+        msg:  "{{system_dns_info}}"

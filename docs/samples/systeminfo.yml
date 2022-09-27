@@ -1,0 +1,21 @@
+---
+- name: Retrieve VxRail System Information with GET /system APIs
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+
+  tasks:
+    - name: Get VxRail System Information
+      dellemc_vxrail_getsysteminfo:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        timeout: "{{ timeout  | default(omit) }}"
+        api_version_number: "{{ api_version_number | default(omit) }}"
+      register: system_info
+
+    - name: Display System Information
+      debug:
+        msg:  "{{system_info}}"

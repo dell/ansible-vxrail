@@ -8,10 +8,12 @@
 
   tasks:
     - name: Get Cluster Hosts Information
-      dellemc_vxrail_system_getclusterhosts_v2:
+      dellemc_vxrail_system_getclusterhosts:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
+        timeout: "{{ timeout | default(omit) }}"
+        api_version_number: "{{ api_version_number | default(omit) }}"
       register: hosts_info
 
     - name: Display Cluster Hosts Information

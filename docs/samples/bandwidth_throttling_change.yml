@@ -1,0 +1,22 @@
+---
+- name: Change bandwidth throttling
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+    level: "{{ level }}"
+
+  tasks:
+    - name: Change bandwidth throttling
+      dellemc_vxrail_bandwidth_throttling_change:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        api_version_number: "{{ api_version_number | default(omit) }}"
+        level: "{{ level }}"
+      register: bandwidth_throttling_change
+
+    - name: Display bandwidth throttling change
+      debug:
+        msg:  "{{ bandwidth_throttling_change }}"

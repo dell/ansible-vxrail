@@ -1,0 +1,22 @@
+---
+- name: Return all of fingerprints of certificates that stored in VXM trust store
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+    fingerprint: "{{ fingerprint }}"
+
+  tasks:
+    - name: Return a certificate content
+      dellemc_vxrail_certificates_getcontent:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        fingerprint: "{{ fingerprint }}"
+        api_version_number: "{{ api_version_number | default(omit) }}"
+      register: content_info
+
+    - name: Display a certificate content
+      debug:
+        msg:  "{{content_info}}"

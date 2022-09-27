@@ -1,0 +1,29 @@
+---
+- name: Update automated renewal configurations of the certificate with /cluster/certificates/scep/config
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+    caserver_url: "{{ caserver_url }}"
+    challenge_password: "{{ challenge_password }}"
+    scep_on: "{{ scep_on }}"
+    scep_renewal_interval_in_minutes: "{{ scep_renewal_interval_in_minutes }}"
+    scep_days_before_expire: "{{ scep_days_before_expire }}"
+  tasks:
+    - name: Update automated renewal configurations
+      dellemc_vxrail_certificates_update_scep_config:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        caserver_url: "{{ caserver_url }}"
+        challenge_password: "{{ challenge_password }}"
+        scep_on: "{{ scep_on }}"
+        scep_renewal_interval_in_minutes: "{{ scep_renewal_interval_in_minutes }}"
+        scep_days_before_expire: "{{ scep_days_before_expire }}"
+        api_version_number: "{{ api_version_number | default(omit) }}"
+      register: scep_config
+
+    - name: Update automated renewal configurations 
+      debug:
+        msg:  "{{scep_config}}"

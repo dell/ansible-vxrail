@@ -1,0 +1,28 @@
+---
+- name: Verify the VxRail Manager certificate
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+    cert: "{{ cert }}"
+    root_cert_chain: "{{ root_cert_chain }}"
+    private_key: "{{ private_key }}"
+    password: "{{ password }}"
+
+  tasks:
+    - name: Verify the VxRail Manager certificate
+      dellemc_vxrail_certificate_validate:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        cert: "{{ cert }}"
+        root_cert_chain: "{{ root_cert_chain }}"
+        private_key: "{{ private_key }}"
+        password: "{{ password }}"
+        api_version_number: "{{ api_version_number | default(omit) }}"
+      register: certificate_validate
+
+    - name: Verify the VxRail Manager certificate
+      debug:
+        msg:  "{{ certificate_validate }}"
