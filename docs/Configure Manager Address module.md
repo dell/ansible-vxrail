@@ -1,6 +1,6 @@
-**Telemetry Tier Change Module for Dell EMC VxRail**
+**Configure Manager Address Module for Dell EMC VxRail**
 =========================================
-### Product Guide 1.4.0
+### Product Guide 1.5.0
 
 > © 2021 Dell Inc. or its subsidiaries. All rights reserved. Dell 
 > EMC, and other trademarks are trademarks of Dell Inc. or its 
@@ -8,13 +8,12 @@
 
 Synopsis
 --------
-This module will change the system's telemetry tier.
-  
+This module will change the VxRail Manager IP prior to cluster build.
+
 Supported Endpoints
 --------
 
-* POST /telemetry/tier
-  
+* POST /network/vxrail-manager
 
 Parameters
 ----------
@@ -76,10 +75,10 @@ Parameters
                                         <div>The password for the administrator account provided in vcadmin</div>
                                                     </td>
         </tr>
-<tr>
+		<tr>
                                                             <td colspan="1">
                 <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
-                <b>tier</b>
+                <b>new_ip</b>
                 <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
                 <div style="font-size: small">
                     <span style="color: purple">type=string</span>
@@ -90,7 +89,58 @@ Parameters
                                                                                                                                                         </td>
                                                             <td>
                                         <div></div>
-                                        <div>The telemetry tier to set. Values are: LIGHT, BASIC, ADVANCED, NONE</div>
+                                        <div>The new IP address to assign to the VxRail manager</div>
+                                                    </td>
+        </tr>
+        <tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
+                <b>gateway</b>
+                <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                    <br>
+                    <span style="color: red">required=true</span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div></div>
+                                        <div>The gateway IP for the new manager address</div>
+                                                    </td>
+        </tr>
+        <tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
+                <b>netmask</b>
+                <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                    <br>
+                    <span style="color: red">required=true</span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div></div>
+                                        <div>The subnet mask for the new manager address</div>
+                                                    </td>
+        </tr>
+        <tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
+                <b>vlan_id</b>
+                <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                    <br>
+                    <span style="color: red">required=true</span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div></div>
+                                        <div>The VLAN ID for the new manager address</div>
                                                     </td>
         </tr>
 <tr>
@@ -110,7 +160,7 @@ Parameters
                                                                         </td>
                                                             <td>
                                         <div></div>
-                                        <div>Time out value for getting system telemetry information, the default value is 60 seconds</div>
+                                        <div>Time out value for configuring the VxRail Manager address, the default value is 60 seconds</div>
                                         <div></div>
                                                     </td>
         </tr>
@@ -132,25 +182,29 @@ Parameters
                                         <div></div>
                                                     </td>
         </tr>
-                    </table>
+</table>
 
 Notes
 -----
-- This module calls any existing version of the /telemetry/tier API, please ensure your VxRail cluster supports this API.
-- Can check Log file /tmp/vxrail_ansible_telemetry_tier_change.log for more details about execution result.
+- Ensure that the cluster is in an un-built state. You cannot change VxRail Manager IP after the cluster building is started, completed or failed.
+- This module calls any existing version of the /network/vxrail-manager API, please ensure your VxRail cluster supports this API.
+- Can check Log file /tmp/vxrail_ansible_network_manager_configure.log for more details about execution result.
 
 
 Examples
 --------
 
 ``` yaml+jinja
-  - name: Changes the VxRail Telemetry Tier. Version specified by api_version_number
-    dellemc_vxrail_telemetry_tier_change:
+  - name: Configure the VxRail Manager IP address. Version specified by api_version_number
+    dellemc_vxrail_network_manager_configure:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
-        tier: "{{ tier }}"
-        timeout : "{{ timeout }}"
+        new_ip: "{{ new_ip }}"
+        gateway: "{{ gateway }}"
+        netmask: "{{ netmask }}"
+        vlan_id: "{{ vlan_id }}"
+        timeout: "{{ timeout }}"
         api_version_number: "{{ api_version_number }}"
 ```
 
@@ -185,34 +239,50 @@ The following are the fields unique to this module:
                             <tr>
                             <td colspan="3">
                 <div class="ansibleOptionAnchor" id="return-hostgroup_details"></div>
-                <b>telemetry_tier_change</b>
+                <b>Network_Manager_Configure</b>
                 <a class="ansibleOptionLink" href="#return-hostgroup_details" title="Permalink to this return value"></a>
                 <div style="font-size: small">
                   <span style="color: purple">complex</span>
                                       </div>
                                 </td>
-            <td>When cluster exists.</td>
+            <td>When the manager IP is configurable.</td>
             <td>v1</td>
             <td>
-                                        <div>The new telemetry tier of the cluster.</div>
+                                        <div>Details about the VxRail Manager address reconfiguration.</div>
                                     <br/>
                                 </td>
         </tr>
-
-<tr>
+                                    <tr>
                                 <td class="elbow-placeholder">&nbsp;</td>
                             <td colspan="2">
-                <div class="ansibleOptionAnchor" id="return-hostgroup_details/num_of_initiators"></div>
-                <b>level</b>
-                <a class="ansibleOptionLink" href="#return-hostgroup_details/num_of_initiators" title="Permalink to this return value"></a>
+                <div class="ansibleOptionAnchor" id="return-hostgroup_details/consistent_lun"></div>
+                <b>state</b>
+                <a class="ansibleOptionLink" href="#return-hostgroup_details/consistent_lun" title="Permalink to this return value"></a>
                 <div style="font-size: small">
                   <span style="color: purple">type=string</span>
-                                 </div>
+                                      </div>
                                 </td>
             <td>success</td>
             <td>v1</td>
             <td>
-                                        <div>The new telemetry tier of the system. Values: LIGHT, BASIC, ADVANCED, NONE</div>
+                                        <div>The state of the address configuring operation.</div>
+                                    <br/>
+                                </td>
+        </tr>
+        <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="return-hostgroup_details/consistent_lun"></div>
+                <b>message</b>
+                <a class="ansibleOptionLink" href="#return-hostgroup_details/consistent_lun" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>v1</td>
+            <td>
+                                        <div>A message describing the state of the configuring operation.</div>
                                     <br/>
                                 </td>
         </tr>
@@ -221,4 +291,4 @@ The following are the fields unique to this module:
 Authors
 -------
 
--   VxRail Development Team &lt;<ansible.team@dell.com>&gt;
+- VxRail Development Team &lt;<ansible.team@dell.com>&gt;

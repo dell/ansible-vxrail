@@ -1,22 +1,23 @@
 ---
-- name: Retrieve VxRail iDRAC Users Information
+- name: Upload advisory meta bundle
   hosts: localhost
   vars:
     vxmip: "{{ vxmip }}"
     vcadmin: "{{ vcadmin }}"
     vcpasswd: "{{ vcpasswd }}"
-    sn: "{{ sn }}"
+    meta_bundle: "{{ meta_bundle }}"
 
   tasks:
-    - name: Get iDRAC Users
-      dellemc_vxrail_idrac_getusers:
+    - name: Start to upload advisory meta bundle
+      dellemc_vxrail_lcm_advisory_meta_bundle:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
-        sn: "{{ sn }}"
+        meta_bundle: "{{ meta_bundle }}"
         timeout: "{{ timeout | default(omit) }}"
         api_version_number: "{{ api_version_number | default(omit) }}"
-      register: iDRAC_Users
-    - name: Display Idrac Users
+      register: upload_advisory_meta_bundle
+
+    - name: Display advisory meta bundle Result
       debug:
-        msg:  "{{ iDRAC_Users }}"
+        msg: "{{upload_advisory_meta_bundle}}"

@@ -358,7 +358,7 @@ class VxRailHosts():
             vxrail_ansible_utility.ApiClient(self.configuration))
         try:
             # get specific host information by sn
-            response = self.get_versioned_response(api_instance, "/hosts/{sn}")
+            response = self.get_versioned_response(api_instance, "GET /hosts/{sn}")
         except ApiException as e:
             LOGGER.error("Exception when calling HostInformationApi->%s_hosts_sn_get: %s\n", self.api_version_string, e)
             return 'error'
@@ -386,6 +386,13 @@ class VxRailHosts():
         host_info['tpm_present'] = data.tpm_present
         host_info['operational_status'] = data.operational_status
         host_info['power_status'] = data.power_status
+
+        if self.api_version_number >= 10:
+            host_info['part_number'] = data.part_number
+            if data.gpus:
+                host_info['gpus'] = self._get_info_list(self._generate_gpu_info_from_response_data, data.gpus)
+            else:
+                host_info['gpus'] = []
 
         # Only found in v5+
         if self.api_version_number >= 5:
@@ -437,7 +444,8 @@ class VxRailHosts():
         boot_device_info['id'] = data.id
         boot_device_info['sn'] = data.sn
         boot_device_info['device_model'] = data.device_model
-        boot_device_info['sata_type'] = data.sata_type
+        if self.api_version_number < 10:
+            boot_device_info['sata_type'] = data.sata_type
         boot_device_info['power_on_hours'] = data.power_on_hours
         boot_device_info['power_cycle_count'] = data.power_cycle_count
         boot_device_info['max_erase_count'] = data.max_erase_count
@@ -448,6 +456,11 @@ class VxRailHosts():
         boot_device_info['bootdevice_type'] = data.bootdevice_type
         boot_device_info['block_size'] = data.block_size
         boot_device_info['slot'] = data.slot
+
+        # Only found in v10+
+        if self.api_version_number >= 10:
+            boot_device_info['device_type'] = data.device_type
+            boot_device_info['protocol'] = data.protocol
 
         # Only found in v4+
         if self.api_version_number >= 4:
@@ -550,6 +563,10 @@ class VxRailHosts():
         firmware_info['boss_version'] = data.boss_version
         firmware_info['cpld_version'] = data.cpld_version
 
+        # Only found in v10+
+        if self.api_version_number >= 10:
+            firmware_info['idsdm_version'] = data.idsdm_version
+
         # Only found in v5+
         if self.api_version_number >= 5:
             firmware_info['perc_version'] = data.perc_version
@@ -603,6 +620,14 @@ class VxRailHosts():
         security_status_info['value'] = data.value
 
         return security_status_info
+
+    def _generate_gpu_info_from_response_data(self, data):
+        gpu_info = {}
+        gpu_info['type'] = data.type
+        gpu_info['slot'] = data.slot
+        gpu_info['vendor_description'] = data.vendor_description
+        gpu_info['supplier'] = data.supplier
+        return gpu_info
 
 
 def main():

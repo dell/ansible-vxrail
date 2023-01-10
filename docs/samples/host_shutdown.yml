@@ -1,0 +1,36 @@
+---
+- name: Shut Down a specific VxRail Host
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+    host_sn: "{{ host_sn }}"
+
+  tasks:
+    - name: Perform Host Shutdown
+      dellemc_vxrail_host_shutdown:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        host_sn: "{{ host_sn }}"
+        dryrun: "{{ dryrun | default(omit) }}"
+        evacuate_poweredoff_vms: "{{ evacuate_poweredoff_vms | default(omit) }}"
+        timeout: "{{ timeout | default(omit) }}"
+        api_version_number: "{{ api_version_number | default(omit) }}"
+      async: 1800
+      poll: 0
+      register: request_info
+
+    - name: Check if host shutdown job is completed
+      async_status:
+        jid: "{{ request_info.ansible_job_id }}"
+      register: job_result
+      until: job_result.finished
+      retries: 100
+      delay: 30
+
+    - name: Display Host Shutdown Information
+      debug:
+        msg:  "{{ job_result }}"
+        

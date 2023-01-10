@@ -10,16 +10,16 @@ __metaclass__ = type
 
 DOCUMENTATION = r'''
 ---
-module: dellemc_vxrail_telemetry_tier_change
+module: dellemc_vxrail_network_manager_configure
 
-short_description: Change VxRail Telemetry Tier
+short_description: Configures the VxRail Manager IP address
 
 # If this is part of a collection, you need to use semantic versioning,
 # i.e. the version is of the form "2.5.0" and not "2.4".
-version_added: "1.3.0"
+version_added: "1.5.0"
 
 description:
-- This module will change the system's Telemetry tier.
+- This module will change the VxRail Manager IP prior to cluster build.
 options:
 
   vxmip:
@@ -40,9 +40,27 @@ options:
     required: True
     type: str
 
-  tier:
+  new_ip:
     description:
-      The telemetry tier to set. Values are LIGHT, BASIC, ADVANCED, NONE
+      The new IP address to assign to the VxRail manager
+    required: True
+    type: str
+
+  gateway:
+    description:
+      The gateway IP for the new manager address
+    required: True
+    type: str
+
+  netmask:
+    description:
+      The subnet mask for the new manager address
+    required: True
+    type: str
+
+  vlan_id:
+    description:
+      The VLAN ID for the new manager address
     required: True
     type: str
 
@@ -54,7 +72,7 @@ options:
 
   timeout:
     description:
-      Time out value for getting telemetry information, the default value is 60 seconds
+      Time out value for setting VxRail IP information, the default value is 60 seconds
     required: false
     type: int
     default: 60
@@ -65,25 +83,29 @@ author:
 '''
 
 EXAMPLES = r'''
-  - name: Changes the VxRail Telemetry Tier
-    dellemc_vxrail_telemetry_tier_change:
+  - name: Configure the VxRail Manager IP address
+    dellemc_vxrail_network_manager_configure:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
-        tier: "{{ tier }}"
-        timeout : "{{ timeout }}"
+        new_ip: "{{ new_ip }}"
+        gateway: "{{ gateway }}"
+        netmask: "{{ netmask }}"
+        vlan_id: "{{ vlan_id }}"
+        timeout: "{{ timeout }}"
         api_version_number: "{{ api_version_number }}"
 '''
 
 RETURN = r'''
-Telemetry_Tier_Change:
-  description: Change the current telemetry tier for the system. Returns the value that was set.
+Network_Manager_Configure:
+  description: This module will change the VxRail Manager IP prior to cluster build.
   returned: always
   type: dict
   sample: >-
-        {
-            "level": "BASIC"
-        }
+    {
+        "state": "PENDING",
+        "message": "The request was sent successfully and it needs time to complete in background, please try new VxRail Manager IP after a minute or more."
+    }
 '''
 
 import logging
@@ -93,19 +115,18 @@ import vxrail_ansible_utility
 from vxrail_ansible_utility.rest import ApiException
 from ansible_collections.dellemc.vxrail.plugins.module_utils import dellemc_vxrail_ansible_utils as utils
 
-LOGGER = utils.get_logger("dellemc_vxrail_telemetry_tier_change", "/tmp/vxrail_ansible_telemetry_tier_change.log",
-                          log_devel=logging.DEBUG)
+LOG_FILE_PATH = "/tmp/vxrail_ansible_network_manager_configure.log"
+LOGGER = utils.get_logger("dellemc_vxrail_network_manager_configure", LOG_FILE_PATH, log_devel=logging.DEBUG)
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
 class VxrailClusterUrls():
-    cluster_url = 'https://{}/rest/vxm'
 
     def __init__(self, vxm_ip):
         self.vxm_ip = vxm_ip
 
     def set_host(self):
-        return VxrailClusterUrls.cluster_url.format(self.vxm_ip)
+        return f"https://{self.vxm_ip}/rest/vxm"
 
 
 class VxRailCluster():
@@ -114,8 +135,12 @@ class VxRailCluster():
         self.timeout = module.params.get('timeout')
         self.vc_admin = module.params.get('vcadmin')
         self.vc_password = module.params.get('vcpasswd')
-        self.tier = module.params.get('tier').upper()
+        self.new_ip = module.params.get('new_ip')
+        self.gateway = module.params.get('gateway')
+        self.netmask = module.params.get('netmask')
+        self.vlan_id = module.params.get('vlan_id')
         self.api_version_number = module.params.get('api_version_number')
+
         self.system_url = VxrailClusterUrls(self.vxm_ip)
         # Configure HTTP basic authorization: basicAuth
         self.configuration = vxrail_ansible_utility.Configuration()
@@ -125,38 +150,46 @@ class VxRailCluster():
         self.configuration.host = self.system_url.set_host()
         self.api_version_string = "v?"
 
-    def get_versioned_response(self, api_instance, module_path, tier_info):
+    def get_versioned_response(self, api_instance, module_path, manager_change_info):
         # Set api version string and version number if undefined
         if self.api_version_number is None:
             self.api_version_string = utils.get_highest_api_version_string(self.vxm_ip, module_path, LOGGER)
             self.api_version_number = int(self.api_version_string.split('v')[1])
         else:
-            self.api_version_string = utils.get_api_version_string(self.vxm_ip, self.api_version_number,
-                                                                   module_path,
+            self.api_version_string = utils.get_api_version_string(self.vxm_ip, self.api_version_number, module_path,
                                                                    LOGGER)
 
-        # Calls versioned method as attribute (ex: v1_post_telemetry_tier_setting_information)
-        call_string = self.api_version_string + "_post_telemetry_tier_setting_information"
+        # Calls versioned method as attribute (ex: v1_network_vxm_post)
+        call_string = self.api_version_string + '_network_vxm_post'
         LOGGER.info("Using utility method: %s\n", call_string)
-        telemetry_tier_post = getattr(api_instance, call_string)
-        return telemetry_tier_post(tier_info)
+        network_vxm_post = getattr(api_instance, call_string)
+        return network_vxm_post(manager_change_info)
 
-    def post_telemetry_tier(self):
-        tier_info = {}
-        tier_info['level'] = self.tier
+    def post_manager_ip(self):
+        manager_return_info = {}
+        manager_change_info = {
+            "ip": self.new_ip,
+            "gateway": self.gateway,
+            "netmask": self.netmask,
+            "vlan_id": self.vlan_id
+        }
+        LOGGER.info("Sending Configuration: %s", manager_change_info)
+
         # create an instance of the API class
-        api_instance = vxrail_ansible_utility.TelemetryReportingApi(
+        api_instance = vxrail_ansible_utility.PreInstallationStaticIPApi(
             vxrail_ansible_utility.ApiClient(self.configuration))
         try:
-            # post telemetry information
-            response = self.get_versioned_response(api_instance, "/telemetry/tier", tier_info)
+            # post manager configuration
+            response = self.get_versioned_response(api_instance, "POST /network/vxrail-manager", manager_change_info)
         except ApiException as e:
-            LOGGER.error("Exception when calling TelemetryReportingApi->post_telemetry_tier_setting_information: %s\n",
-                         e)
+            LOGGER.error("Exception when calling PreInstallationStaticIPApi->%s_network_vxm_post: %s\n",
+                         self.api_version_string, e)
             return 'error'
-        LOGGER.info("%s/telemetry/tier POST api response: %s\n", self.api_version_string, response)
-        LOGGER.info("Telemetry Tier set to: %s\n", self.tier)
-        return dict(tier_info.items())
+        LOGGER.info("%s/network/vxrail-manager POST api response: %s\n", self.api_version_string, response)
+        data = response
+        manager_return_info['message'] = data.message
+        manager_return_info['state'] = data.state
+        return dict(manager_return_info.items())
 
 
 def main():
@@ -168,20 +201,23 @@ def main():
         vxmip=dict(required=True),
         vcadmin=dict(required=True),
         vcpasswd=dict(required=True, no_log=True),
-        tier=dict(required=True),
-        timeout=dict(type='int', default=60),
-        api_version_number=dict(type='int')
+        new_ip=dict(required=True),
+        gateway=dict(required=True),
+        netmask=dict(required=True),
+        vlan_id=dict(required=True, type='str'),
+        api_version_number=dict(type='int'),
+        timeout=dict(type='int', default=60)
     )
     module = AnsibleModule(
         argument_spec=module_args,
         supports_check_mode=True,
     )
-    result = VxRailCluster().post_telemetry_tier()
+    result = VxRailCluster().post_manager_ip()
     if result == 'error':
-        module.fail_json(msg="Call POST /telemetry/tier API failed,please see log file "
-                             "/tmp/vxrail_ansible_telemetry_tier_change.log for more error details.")
-    vx_facts = {'Telemetry_Tier_Change': result}
-    vx_facts_result = dict(changed=True, Telemetry_API=vx_facts)
+        module.fail_json(
+            msg=f"Call POST /network/vxrail-manager API failed,please see log file {LOG_FILE_PATH} for more error details.")
+    vx_facts = {'Network_Manager_Configure': result}
+    vx_facts_result = dict(changed=True, NETWORK_MANAGER_API=vx_facts)
     module.exit_json(**vx_facts_result)
 
 

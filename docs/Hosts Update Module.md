@@ -1,20 +1,18 @@
-**Telemetry Tier Change Module for Dell EMC VxRail**
+**Hosts Update Module for Dell EMC VxRail**
 =========================================
-### Product Guide 1.4.0
+### Product Guide 1.5.0
 
 > © 2021 Dell Inc. or its subsidiaries. All rights reserved. Dell 
 > EMC, and other trademarks are trademarks of Dell Inc. or its 
-> subsidiaries. Other trademarks may be trademarks of their respective owners.
+> subsidiaries. Other trademarks may be trademarks of their respective owners. 
 
 Synopsis
 --------
-This module will change the system's telemetry tier.
-  
+This module will update the geographical location of the specified host.
+
 Supported Endpoints
 --------
-
-* POST /telemetry/tier
-  
+* PATCH /hosts/{sn}
 
 Parameters
 ----------
@@ -59,7 +57,7 @@ Parameters
                                         <div>Administrative account of the vCenter Server the VxRail Manager is registered to</div>
                                                     </td>
         </tr>
-<tr>
+                            <tr>
                                                             <td colspan="1">
                 <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
                 <b>vcpasswd</b>
@@ -76,10 +74,10 @@ Parameters
                                         <div>The password for the administrator account provided in vcadmin</div>
                                                     </td>
         </tr>
-<tr>
+                            <tr>
                                                             <td colspan="1">
                 <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
-                <b>tier</b>
+                <b>host_sn</b>
                 <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
                 <div style="font-size: small">
                     <span style="color: purple">type=string</span>
@@ -87,70 +85,107 @@ Parameters
                     <span style="color: red">required=true</span>                    </div>
                                                     </td>
                             <td>
-                                                                                                                                                        </td>
+                                                                        </td>
                                                             <td>
                                         <div></div>
-                                        <div>The telemetry tier to set. Values are: LIGHT, BASIC, ADVANCED, NONE</div>
+                                        <div>The serial number of the host to update</div>
                                                     </td>
         </tr>
-<tr>
+                            <tr>
                                                             <td colspan="1">
-                <div class="ansibleOptionAnchor" id="parameter-state"></div>
-                <b>timeout</b>
-                <a class="ansibleOptionLink" href="#parameter-state" title="Permalink to this option"></a>
+                <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
+                <b>rack_name</b>
+                <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
                 <div style="font-size: small">
-                    <span style="color: purple">type=integer</span>
+                    <span style="color: purple">type=string</span>
                     <br>
-                    <span style="color: red"></span>                    </div>
+                    <span style="color: red">required=false</span>                    </div>
+                                                    </td>
+                            <td>
+                                                                        </td>
+                                                            <td>
+                                        <div></div>
+                                        <div>The updated rack name to assign the host</div>
+                                                    </td>
+        </tr>
+                            <tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
+                <b>order_number</b>
+                <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=int</span>
+                    <br>
+                    <span style="color: red">required=false</span>                    </div>
+                                                    </td>
+                            <td>
+                                                                        </td>
+                                                            <td>
+                                        <div></div>
+                                        <div>The updated order number to assign the host</div>
+                                                    </td>
+        </tr>
+                            <tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
+                <b>timeout</b>
+                <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=int</span>
+                    <br>
+                    <span style="color: red">required=false</span>                    </div>
                                                     </td>
                             <td>
                                                                                                                         <ul style="margin: 0; padding: 0"><b>Default:</b>
-                                                                                                                                                            <li>60s</li>
+                                                                                                                                                            <li>1800s</li>
                                                                                 </ul>
                                                                         </td>
                                                             <td>
                                         <div></div>
-                                        <div>Time out value for getting system telemetry information, the default value is 60 seconds</div>
-                                        <div></div>
+                                        <div>Time out value for getting system infomation</div>
                                                     </td>
         </tr>
-<tr>
+        <tr>
                                                             <td colspan="1">
-                <div class="ansibleOptionAnchor" id="parameter-state"></div>
+                <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
                 <b>api_version_number</b>
-                <a class="ansibleOptionLink" href="#parameter-state" title="Permalink to this option"></a>
+                <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
                 <div style="font-size: small">
-                    <span style="color: purple">type=integer</span>
+                    <span style="color: purple">type=int</span>
                     <br>
-                    <span style="color: red"></span>                    </div>
+                    <span style="color: red">required=false</span>                    </div>
                                                     </td>
                             <td>
+                                                                                                                        <ul style="margin: 0; padding: 0"><b></b>
+                                                                                </ul>
                                                                         </td>
                                                             <td>
                                         <div></div>
                                         <div>The version of API to call. If omitted, will use highest version on the system.</div>
-                                        <div></div>
                                                     </td>
         </tr>
                     </table>
 
 Notes
 -----
-- This module calls any existing version of the /telemetry/tier API, please ensure your VxRail cluster supports this API.
-- Can check Log file /tmp/vxrail_ansible_telemetry_tier_change.log for more details about execution result.
-
+- Make sure your VxRail environment supports the API that you use
+- Ensure the input host_sn is a host within the cluster
+- Can check Log file:
+/tmp/vxrail_ansible_hosts_update.log
 
 Examples
 --------
 
 ``` yaml+jinja
-  - name: Changes the VxRail Telemetry Tier. Version specified by api_version_number
-    dellemc_vxrail_telemetry_tier_change:
+    - name: Update the geographical location of a host. Version specified by api_version_number.
+      dellemc_vxrail_hosts_update:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
-        tier: "{{ tier }}"
         timeout : "{{ timeout }}"
+        host_sn: "{{ host_sn }}"
+        rack_name: "{{ rack_name }}"
+        order_number: "{{ order_number }}"
         api_version_number: "{{ api_version_number }}"
 ```
 
@@ -163,7 +198,6 @@ The following are the fields unique to this module:
     <tr>
         <th colspan="3">Key</th>
         <th>Returned</th>
-        <th>Minimum API Version</th>
         <th width="100%">Description</th>
     </tr>
                 <tr>
@@ -176,43 +210,55 @@ The following are the fields unique to this module:
                                       </div>
                                 </td>
             <td>always</td>
-            <td>all</td>
             <td>
                                         <div>Whether or not the resource has changed.</div>
                                     <br/>
                                 </td>
         </tr>
-                            <tr>
+<tr>
                             <td colspan="3">
                 <div class="ansibleOptionAnchor" id="return-hostgroup_details"></div>
-                <b>telemetry_tier_change</b>
+                <b>Hosts_Update_API</b>
                 <a class="ansibleOptionLink" href="#return-hostgroup_details" title="Permalink to this return value"></a>
                 <div style="font-size: small">
                   <span style="color: purple">complex</span>
                                       </div>
                                 </td>
-            <td>When cluster exists.</td>
-            <td>v1</td>
+            <td>When a host update request has been created.</td>
             <td>
-                                        <div>The new telemetry tier of the cluster.</div>
+                                        <div>The information of request sent to the cluster for updating the geographical host information.</div>
                                     <br/>
                                 </td>
         </tr>
-
 <tr>
                                 <td class="elbow-placeholder">&nbsp;</td>
                             <td colspan="2">
                 <div class="ansibleOptionAnchor" id="return-hostgroup_details/num_of_initiators"></div>
-                <b>level</b>
+                <b>Request_ID</b>
                 <a class="ansibleOptionLink" href="#return-hostgroup_details/num_of_initiators" title="Permalink to this return value"></a>
                 <div style="font-size: small">
                   <span style="color: purple">type=string</span>
                                  </div>
                                 </td>
             <td>success</td>
-            <td>v1</td>
             <td>
-                                        <div>The new telemetry tier of the system. Values: LIGHT, BASIC, ADVANCED, NONE</div>
+                                        <div>The Host Update Request ID</div>
+                                    <br/>
+                                </td>
+        </tr>
+<tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="return-hostgroup_details/num_of_initiators"></div>
+                <b>Request_Status</b>
+                <a class="ansibleOptionLink" href="#return-hostgroup_details/num_of_initiators" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                                 </div>
+                                </td>
+            <td>When a host's geographical information is successfully updated</td>
+            <td>
+                                        <div>The Host Update Request Status</div>
                                     <br/>
                                 </td>
         </tr>

@@ -1,0 +1,29 @@
+---
+- name: Generate LCM Advisory report
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+
+  tasks:
+    - name: Start to generate lcm advisory report
+      dellemc_vxrail_lcm_advisory_report:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        timeout: "{{ timeout | default(omit) }}"
+        api_version_number: "{{ api_version_number | default(omit) }}"
+      async: 1800
+      poll: 0
+      register: lcm_advisory_report
+    - name: Check if LCM advisory report is generated...The generation is still ongoing.
+      async_status:
+        jid: "{{ lcm_advisory_report.ansible_job_id }}"
+      register: job_result
+      until: job_result.finished
+      retries: 100
+      delay: 30
+    - name: Get LCM Advisory report Result
+      debug:
+        msg:  "{{job_result}}"

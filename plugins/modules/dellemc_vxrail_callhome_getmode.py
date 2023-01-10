@@ -8,16 +8,16 @@ __metaclass__ = type
 
 DOCUMENTATION = r'''
 ---
-module: dellemc_vxrail_idrac_getusers
+module: dellemc_vxrail_callhome_getmode
 
-short_description: Get list of the iDRAC user accounts on the specified host.
+short_description: Retrieve the callhome mode.
 
 # If this is part of a collection, you need to use semantic versioning,
 # i.e. the version is of the form "2.5.0" and not "2.4".
-version_added: "1.4.0"
+version_added: "1.5.0"
 
 description:
-  - "This module will get list of the iDRAC user accounts on the specified host."
+- This module will retrieve the call home mode.
 options:
 
   vxmip:
@@ -38,15 +38,9 @@ options:
     required: True
     type: str
 
-  sn:
-    description:
-      The serial number of the host to be queried
-    required: True
-    type: str
-
   timeout:
     description:
-      Time out value for getting iDRAC network settings, the default value is 60 seconds
+      Time out value for getting Callhome information, the default value is 60 seconds
     required: false
     type: int
     default: 60
@@ -58,41 +52,30 @@ options:
     type: int
 
 author:
-  - VxRail Development Team(@VxRailDevTeam) <ansible.team@dell.com>
+    - VxRail Development Team(@VxRailDevTeam) <ansible.team@dell.com>
+
 '''
 
 EXAMPLES = r'''
-  - name: Get iDRAC User Accounts
-    dellemc_vxrail_idrac_getusers:
+  - name: Get callhome mode information
+    dellemc_vxrail_callhome_getmode:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
-        sn: "{{ sn }}"
         timeout: "{{ timeout }}"
         api_version_number: "{{ api_version_number }}"
 '''
 
 RETURN = r'''
-iDRAC_Users:
-  description: iDRAC user accounts
+CallHome_Mode:
+  description: The current callhome mode
   returned: always
   type: dict
   sample: >-
-                {
-                    "id": 2,
-                    "name": "root",
-                    "privilege": "ADMIN"
-                },
-                {
-                    "id": 15,
-                    "name": "vxpsvc",
-                    "privilege": "ADMIN"
-                },
-                {
-                    "id": 16,
-                    "name": "PTAdmin",
-                    "privilege": "ADMIN"
-                }
+        {
+                "is_muted": true
+            }
+
 '''
 
 import logging
@@ -102,9 +85,7 @@ import vxrail_ansible_utility
 from vxrail_ansible_utility.rest import ApiException
 from ansible_collections.dellemc.vxrail.plugins.module_utils import dellemc_vxrail_ansible_utils as utils
 
-
-LOG_FILE_NAME = "/tmp/vxrail_ansible_idrac_getusers.log"
-LOGGER = utils.get_logger("dellemc_vxrail_idrac_getusers", LOG_FILE_NAME, log_devel=logging.DEBUG)
+LOGGER = utils.get_logger("dellemc_vxrail_callhome_getmode", "/tmp/vxrail_ansible_callhome_getmode.log", log_devel=logging.DEBUG)
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
@@ -124,7 +105,6 @@ class VxRailCluster():
         self.timeout = module.params.get('timeout')
         self.vc_admin = module.params.get('vcadmin')
         self.vc_password = module.params.get('vcpasswd')
-        self.sn = module.params.get('sn')
         self.api_version_number = module.params.get('api_version_number')
         self.system_url = VxrailClusterUrls(self.vxm_ip)
         # Configure HTTP basic authorization: basicAuth
@@ -144,30 +124,26 @@ class VxRailCluster():
         else:
             self.api_version_string = utils.get_api_version_string(self.vxm_ip, self.api_version_number, module_path, LOGGER)
 
-        call_string = self.api_version_string + '_hosts_sn_idrac_user_get'
+        # Calls versioned method as attribute (ex: v1_callhome_mode_get)
+        call_string = self.api_version_string + "_callhome_mode_get"
         LOGGER.info("Using utility method: %s\n", call_string)
-        api_system_get = getattr(api_instance, call_string)
-        return api_system_get(self.sn)
+        callhome_mode_info = getattr(api_instance, call_string)
+        return callhome_mode_info()
 
-    def get_idrac_users(self):
+    def get_callhome_mode(self):
+        CallHomeModeInfo = {}
         # create an instance of the API class
-        response = ''
-        api_instance = vxrail_ansible_utility.HostIDRACConfigurationApi(vxrail_ansible_utility.ApiClient(self.configuration))
+        api_instance = vxrail_ansible_utility.CallHomeModeApi(vxrail_ansible_utility.ApiClient(self.configuration))
         try:
-            # query host idrac users information
-            response = self.get_versioned_response(api_instance, "/hosts/{sn}/idrac/users")
+            # query CallHome Mode information
+            response = self.get_versioned_response(api_instance, "/callhome/mode")
         except ApiException as e:
-            LOGGER.error("Exception when calling HostIDRACConfigurationApi->%s_hosts_sn_idrac_users_get: %s\n", self.api_version_string, e)
+            LOGGER.error("Exception when calling CallHomeModeApi->calhome_mode_get: %s\n", e)
             return 'error'
-        LOGGER.info("%s/hosts/{sn}/idrac/users api response: %s\n", self.api_version_string, response)
-        idrac_users = {}
-        idrac_users_list = []
-        for i in range(len(response)):
-            idrac_users['id'] = response[i].id
-            idrac_users['name'] = response[i].name
-            idrac_users['privilege'] = response[i].privilege
-            idrac_users_list.append(dict(idrac_users.items()))
-        return idrac_users_list
+        LOGGER.info("%s/callhome/mode api response: %s\n", self.api_version_string, response)
+        data = response
+        CallHomeModeInfo['is_muted'] = data.is_muted
+        return dict(CallHomeModeInfo.items())
 
 
 def main():
@@ -179,19 +155,19 @@ def main():
         vxmip=dict(required=True),
         vcadmin=dict(required=True),
         vcpasswd=dict(required=True, no_log=True),
-        timeout=dict(type='int', default=60),
         api_version_number=dict(type='int'),
-        sn=dict(required=True)
+        timeout=dict(type='int', default=60)
     )
     module = AnsibleModule(
         argument_spec=module_args,
         supports_check_mode=True,
     )
-    result = VxRailCluster().get_idrac_users()
+    result = VxRailCluster().get_callhome_mode()
     if result == 'error':
-        module.fail_json(msg="/hosts/{sn}/idrac/users API call failed, please see log file /tmp/vxrail_ansible_idrac_getusers.log for details.")
-    vx_facts = {'iDRAC_Users': result}
-    vx_facts_result = dict(changed=False, iDRAC_Users_API=vx_facts)
+        module.fail_json(msg="Call GET /callhome/mode API failed,"
+                             "please see log file /tmp/vxrail_ansible_callhome_getmode.log for more error details.")
+    vx_facts = {'CallHome_Mode': result}
+    vx_facts_result = dict(changed=False, CallHome_Mode_API=vx_facts)
     module.exit_json(**vx_facts_result)
 
 

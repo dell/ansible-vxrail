@@ -1,22 +1,21 @@
 ---
-- name: Retrieve VxRail iDRAC Users Information
+- name: Retrieve precheck service version information
   hosts: localhost
   vars:
     vxmip: "{{ vxmip }}"
     vcadmin: "{{ vcadmin }}"
     vcpasswd: "{{ vcpasswd }}"
-    sn: "{{ sn }}"
 
   tasks:
-    - name: Get iDRAC Users
-      dellemc_vxrail_idrac_getusers:
+    - name: Get precheck service version information
+      dellemc_vxrail_system_getprecheckversion:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
-        sn: "{{ sn }}"
         timeout: "{{ timeout | default(omit) }}"
         api_version_number: "{{ api_version_number | default(omit) }}"
-      register: iDRAC_Users
-    - name: Display Idrac Users
+      register: precheck_version
+
+    - name: Display precheck service version information
       debug:
-        msg:  "{{ iDRAC_Users }}"
+        msg:  "{{precheck_version}}"

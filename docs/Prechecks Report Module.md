@@ -1,4 +1,4 @@
-**Chassis Module for Dell EMC VxRail**
+**Prechecks Report Module for Dell EMC VxRail**
 =========================================
 ### Product Guide 1.5.0
 
@@ -8,14 +8,13 @@
 
 Synopsis
 --------
-This module will retrieve all VxRail Chassis Information for the user-specified VxRail chassis.
+This module will retrieve a list of pre-check reports, which include the current running status and historical results. This module can also retrieve a particular pre-check report by spcifying the Request ID of the pre-check operation.
 
 Supported Endpoints
 --------
 
-* GET /chassis
-* GET /chassis/{chassis_id}
-
+* GET /system/prechecks/results
+* GET /system/prechecks/{id}/result
 
 Parameters
 ----------
@@ -79,23 +78,19 @@ Parameters
         </tr>
 <tr>
                                                             <td colspan="1">
-                <div class="ansibleOptionAnchor" id="parameter-state"></div>
-                <b>chassis_id</b>
-                <a class="ansibleOptionLink" href="#parameter-state" title="Permalink to this option"></a>
+                <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
+                <b>id</b>
+                <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
                 <div style="font-size: small">
-                    <span style="color: purple">type=integer</span>
+                    <span style="color: purple">type=string</span>
                     <br>
                     <span style="color: red"></span>                    </div>
                                                     </td>
                             <td>
-                                                                                                                        <ul style="margin: 0; padding: 0"><b>Default:</b>
-                                                                                                                                                            <li>all</li>
-                                                                                </ul>
-                                                                        </td>
+                                                                                                                                                        </td>
                                                             <td>
                                         <div></div>
-                                        <div>Chassis id to retrieve specific chassis information, the default value is all</div>
-                                        <div></div>
+                                        <div>Request ID (request_id) of the pre-check operation</div>
                                                     </td>
         </tr>
 <tr>
@@ -115,7 +110,7 @@ Parameters
                                                                         </td>
                                                             <td>
                                         <div></div>
-                                        <div>Time out value for getting system infomation, the default value is 60 seconds</div>
+                                        <div>Time out value for getting precheck results infomation, the default value is 60 seconds</div>
                                         <div></div>
                                                     </td>
         </tr>
@@ -141,31 +136,21 @@ Parameters
 
 Notes
 -----
-
 - Make sure your VxRail environment supports the API that you use
-- Module dellemc_vxrail_chassis_get.py calls any existing version of GET /chassis and /chassis/{chassis_id} API
-- Details on execution of module dellemc_vxrail_chassis_get.py can be checked in the logs /tmp/vxrail_ansible_chassis.log
-
+- Module dellemc_vxrail_system_getprechecksreport.py can call any existing version of GET /system/prechecks/results and GET /system/prechecks/{id}/result API  
+- Details on execution of module dellemc_vxrail_system_getprechecksreport.py can be checked in the logs /tmp/vxrail_ansible_system_getprechecksreport.log
 
 
 Examples
 --------
 
 ``` yaml+jinja
-  - name: Retrieves all VxRail Chassis Information with /chassis api. Version specified by api_version_number
-    dellemc_vxrail_chassis_get:
+  - name: Retrieve prechecks report. Specify id to get a particular prechecks report and specify api_version_number to query a particular API version.
+    dellemc_vxrail_system_getprechecksreport:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
-        timeout : "{{ timeout }}"
-        api_version_number: "{{ api_version_number }}"
-        
-    - name: Retrieves specific VxRail Chassis Information with /chassis/{chassis_id} api. Version specified by api_version_number
-    dellemc_vxrail_chassis_get:
-        vxmip: "{{ vxmip }}"
-        vcadmin: "{{ vcadmin }}"
-        vcpasswd: "{{ vcpasswd }}"
-        chassis_id: "{{ chassis_id }}"
+        id: "{{ id }}"
         timeout : "{{ timeout }}"
         api_version_number: "{{ api_version_number }}"
 
@@ -175,11 +160,12 @@ Return Values
 -------------
 
 The following are the fields unique to this module:
+
 <table border=0 cellpadding=0 class="documentation-table">
     <tr>
         <th colspan="3">Key</th>
         <th>Returned</th>
-		<th>Minimum API Version</th>
+		<th>Minimum API Version</th> 
         <th width="100%">Description</th>
     </tr>
                 <tr>
@@ -201,16 +187,16 @@ The following are the fields unique to this module:
                             <tr>
                             <td colspan="3">
                 <div class="ansibleOptionAnchor" id="return-hostgroup_details"></div>
-                <b>chassis_information</b>
+                <b>report_list</b>
                 <a class="ansibleOptionLink" href="#return-hostgroup_details" title="Permalink to this return value"></a>
                 <div style="font-size: small">
                   <span style="color: purple">complex</span>
                                       </div>
                                 </td>
-            <td>When cluster exists.</td>
+            <td>When prechecks reports exist.</td>
 			<td>v1</td>
             <td>
-                                        <div>Details of Vxrail System</div>
+                                        <div>List of pre-check reports, which include the current running status and historical results. List of prechecks reports returned when request id is not specified. If a request id is specified, then only one prechecks report is returned.</div>
                                     <br/>
                                 </td>
         </tr>
@@ -227,7 +213,7 @@ The following are the fields unique to this module:
             <td>success</td>
 			<td>v1</td>
             <td>
-                                        <div>chassis id</div>
+                                        <div>Request ID (request_id) of the pre-check operation</div>
                                     <br/>
                                 </td>
         </tr>
@@ -235,7 +221,7 @@ The following are the fields unique to this module:
                                 <td class="elbow-placeholder">&nbsp;</td>
                             <td colspan="2">
                 <div class="ansibleOptionAnchor" id="return-hostgroup_details/disabled_flags"></div>
-                <b>sn</b>
+                <b>profile</b>
                 <a class="ansibleOptionLink" href="#return-hostgroup_details/disabled_flags" title="Permalink to this return value"></a>
                 <div style="font-size: small">
                   <span style="color: purple">type=string</span>
@@ -245,7 +231,7 @@ The following are the fields unique to this module:
             <td>success</td>
 			<td>v1</td>
             <td>
-                                        <div>chassis sn</div>
+                                        <div>Profile name</div>
                                     <br/>
                                 </td>
         </tr>
@@ -253,7 +239,7 @@ The following are the fields unique to this module:
                                 <td class="elbow-placeholder">&nbsp;</td>
                             <td colspan="2">
                 <div class="ansibleOptionAnchor" id="return-hostgroup_details/enabled_flags"></div>
-                <b>part_number</b>
+                <b>status</b>
                 <a class="ansibleOptionLink" href="#return-hostgroup_details/enabled_flags" title="Permalink to this return value"></a>
                 <div style="font-size: small">
                   <span style="color: purple">type=string</span>
@@ -263,7 +249,7 @@ The following are the fields unique to this module:
             <td>success</td>
 			<td>v1</td>
             <td>
-                                        <div>chassis part number</div>
+                                        <div>Pre-check status</div>
                                     <br/>
                                 </td>
         </tr>
@@ -271,7 +257,7 @@ The following are the fields unique to this module:
                                 <td class="elbow-placeholder">&nbsp;</td>
                             <td colspan="2">
                 <div class="ansibleOptionAnchor" id="return-hostgroup_details/host"></div>
-                <b>description</b>
+                <b>progress</b>
                 <a class="ansibleOptionLink" href="#return-hostgroup_details/host" title="Permalink to this return value"></a>
                 <div style="font-size: small">
                   <span style="color: purple">type=string</span>
@@ -281,7 +267,7 @@ The following are the fields unique to this module:
             <td>success</td>
 			<td>v1</td>
             <td>
-                                        <div>chassis description</div>
+                                        <div>Pre-check progress</div>
                                     <br/>
                                 </td>
         </tr>
@@ -289,7 +275,7 @@ The following are the fields unique to this module:
                                 <td class="elbow-placeholder">&nbsp;</td>
                             <td colspan="2">
                 <div class="ansibleOptionAnchor" id="return-hostgroup_details/hostGroupId"></div>
-                <b>service_tag</b>
+                <b>total_severity</b>
                 <a class="ansibleOptionLink" href="#return-hostgroup_details/hostGroupId" title="Permalink to this return value"></a>
                 <div style="font-size: small">
                   <span style="color: purple">type=string</span>
@@ -298,7 +284,7 @@ The following are the fields unique to this module:
             <td>success</td>
 			<td>v1</td>
             <td>
-                                        <div>chassis service tag</div>
+                                        <div>Severity level of the pre-check status</div>
                                     <br/>
                                 </td>
         </tr>
@@ -306,17 +292,17 @@ The following are the fields unique to this module:
                                 <td class="elbow-placeholder">&nbsp;</td>
                             <td colspan="2">
                 <div class="ansibleOptionAnchor" id="return-hostgroup_details/maskingview"></div>
-                <b>psnt</b>
+                <b>complete_check_count</b>
                 <a class="ansibleOptionLink" href="#return-hostgroup_details/maskingview" title="Permalink to this return value"></a>
                 <div style="font-size: small">
-                  <span style="color: purple">type=string</span>
+                  <span style="color: purple">type=integer</span>
                   <br>
                   <span style="color: purple"></span>                    </div>
                                 </td>
             <td>success</td>
 			<td>v1</td>
             <td>
-                                        <div>chassis psnt</div>
+                                        <div>Number of pre-check tasks completed</div>
                                     <br/>
                                 </td>
         </tr>
@@ -324,61 +310,8 @@ The following are the fields unique to this module:
                                 <td class="elbow-placeholder">&nbsp;</td>
                             <td colspan="2">
                 <div class="ansibleOptionAnchor" id="return-hostgroup_details/num_of_hosts"></div>
-                <b>model</b>
+                <b>total_success_count</b>
                 <a class="ansibleOptionLink" href="#return-hostgroup_details/num_of_hosts" title="Permalink to this return value"></a>
-                <div style="font-size: small">
-                  <span style="color: purple">type=string</span>
-                                      </div>
-                                </td>
-            <td>success</td>
-			<td>v1</td>
-            <td>
-                                        <div>chassis model</div>
-                                    <br/>
-                                </td>
-        </tr>
-                            <tr>
-                                <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="2">
-                <div class="ansibleOptionAnchor" id="return-hostgroup_details/num_of_initiators"></div>
-                <b>render_category</b>
-                <a class="ansibleOptionLink" href="#return-hostgroup_details/num_of_initiators" title="Permalink to this return value"></a>
-                <div style="font-size: small">
-                  <span style="color: purple">type=string</span>
-                  <br>
-                  <span style="color: purple"></span>                    </div>
-                                </td>
-            <td>success</td>
-			<td>v1</td>
-            <td>
-                                        <div>chassis render category</div>
-                                    <br/>
-                                </td>
-        </tr>
-                            <tr>
-                                <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="2">
-                <div class="ansibleOptionAnchor" id="return-hostgroup_details/num_of_masking_views"></div>
-                <b>hosts</b>
-                <a class="ansibleOptionLink" href="#return-hostgroup_details/num_of_masking_views" title="Permalink to this return value"></a>
-                <div style="font-size: small">
-                  <span style="color: purple">type=list</span>
-                  <br>
-                  <span style="color: purple">elements=HostBasicInfoV3</span>                    </div>
-                                </td>
-            <td>success</td>
-			<td>v1</td>
-            <td>
-                                        <div>host basic infomation</div>
-                                    <br/>
-                                </td>
-        </tr>
-                            <tr>
-                                <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="2">
-                <div class="ansibleOptionAnchor" id="return-hostgroup_details/port_flags_override"></div>
-                <b>generation</b>
-                <a class="ansibleOptionLink" href="#return-hostgroup_details/port_flags_override" title="Permalink to this return value"></a>
                 <div style="font-size: small">
                   <span style="color: purple">type=integer</span>
                                       </div>
@@ -386,95 +319,58 @@ The following are the fields unique to this module:
             <td>success</td>
 			<td>v1</td>
             <td>
-                                        <div>chassis generation</div>
-                                    <br/>
-                                </td>
-        </tr>
-                            <tr>
-                                <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="2">
-                <div class="ansibleOptionAnchor" id="return-hostgroup_details/type"></div>
-                <b>health</b>
-                <a class="ansibleOptionLink" href="#return-hostgroup_details/type" title="Permalink to this return value"></a>
-                <div style="font-size: small">
-                  <span style="color: purple">type=string</span>
-                                      </div>
-                                </td>
-            <td>success</td>
-			<td>v1</td>
-            <td>
-                                        <div>chassis health status</div>
+                                        <div>Number of pre-check tasks successfully completed</div>
                                     <br/>
                                 </td>
         </tr>
  <tr>
                                 <td class="elbow-placeholder">&nbsp;</td>
                             <td colspan="2">
-                <div class="ansibleOptionAnchor" id="return-hostgroup_details/type"></div>
-                <b>missing</b>
-                <a class="ansibleOptionLink" href="#return-hostgroup_details/type" title="Permalink to this return value"></a>
+                <div class="ansibleOptionAnchor" id="return-hostgroup_details/num_of_hosts"></div>
+                <b>total_warn_count</b>
+                <a class="ansibleOptionLink" href="#return-hostgroup_details/num_of_hosts" title="Permalink to this return value"></a>
                 <div style="font-size: small">
-                  <span style="color: purple">type=boolean</span>
+                  <span style="color: purple">type=integer</span>
                                       </div>
                                 </td>
             <td>success</td>
 			<td>v1</td>
             <td>
-                                        <div>The upgrade status of the VxRail appliance software</div>
+                                        <div>Total number of pre-check warnings</div>
                                     <br/>
                                 </td>
         </tr>
-<tr>
+                            <tr>
                                 <td class="elbow-placeholder">&nbsp;</td>
                             <td colspan="2">
                 <div class="ansibleOptionAnchor" id="return-hostgroup_details/num_of_initiators"></div>
-                <b>power_supplies</b>
+                <b>total_error_count</b>
                 <a class="ansibleOptionLink" href="#return-hostgroup_details/num_of_initiators" title="Permalink to this return value"></a>
                 <div style="font-size: small">
-                  <span style="color: purple">type=list</span>
-                  <br>
-                  <span style="color: purple">elements=PowerSupplyInfo</span>                    </div>
+                  <span style="color: purple">type=integer</span>                   </div>
                                 </td>
             <td>success</td>
 			<td>v1</td>
             <td>
-                                        <div>Information about the chassis power supplies</div>
+                                        <div>Total number of pre-check errors</div>
                                     <br/>
                                 </td>
         </tr>
-<tr>
+                            <tr>
                                 <td class="elbow-placeholder">&nbsp;</td>
                             <td colspan="2">
-                <div class="ansibleOptionAnchor" id="return-hostgroup_details/num_of_initiators"></div>
-                <b>bay</b>
-                <a class="ansibleOptionLink" href="#return-hostgroup_details/num_of_initiators" title="Permalink to this return value"></a>
+                <div class="ansibleOptionAnchor" id="return-hostgroup_details/num_of_masking_views"></div>
+                <b>results</b>
+                <a class="ansibleOptionLink" href="#return-hostgroup_details/num_of_masking_views" title="Permalink to this return value"></a>
                 <div style="font-size: small">
-                  <span style="color: purple">type=boolean</span>
+                  <span style="color: purple">type=list</span>
                   <br>
-                  <span style="color: purple"></span>                    </div>
+                  <span style="color: purple">elements=PrecheckReportItem</span>                    </div>
                                 </td>
             <td>success</td>
-			<td>v4</td>
+			<td>v1</td>
             <td>
-                                        <div>Information about bay</div>
-                                    <br/>
-                                </td>
-        </tr>
-<tr>
-                                <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="2">
-                <div class="ansibleOptionAnchor" id="return-hostgroup_details/num_of_initiators"></div>
-                <b>witness</b>
-                <a class="ansibleOptionLink" href="#return-hostgroup_details/num_of_initiators" title="Permalink to this return value"></a>
-                <div style="font-size: small">
-                  <span style="color: purple">type=WitnessBasicInfoV1</span>
-                  <br>
-                  <span style="color: purple"></span>                    </div>
-                                </td>
-            <td>success</td>
-			<td>v5</td>
-            <td>
-                                        <div>Information about witness sled</div>
+                                        <div>More information about pre-checks</div>
                                     <br/>
                                 </td>
         </tr>

@@ -1,23 +1,25 @@
 #!/usr/bin/python
 # Copyright 2021 Dell Inc. or its subsidiaries. All Rights Reserved
 
+
 # Copyright: (c) 2018, Terry Jones <terry.jones@example.org>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 from __future__ import (absolute_import, division, print_function)
+
 __metaclass__ = type
 
 DOCUMENTATION = r'''
 ---
-module: dellemc_vxrail_idrac_getusers
+module: dellemc_vxrail_lcm_advisory_meta_bundle
 
-short_description: Get list of the iDRAC user accounts on the specified host.
+short_description: Upload a metadata bundle for local advisory analysis
 
 # If this is part of a collection, you need to use semantic versioning,
 # i.e. the version is of the form "2.5.0" and not "2.4".
-version_added: "1.4.0"
+version_added: "1.5.0"
 
 description:
-  - "This module will get list of the iDRAC user accounts on the specified host."
+- This module will upload a metadata bundle for local advisory analysis.
 options:
 
   vxmip:
@@ -38,61 +40,50 @@ options:
     required: True
     type: str
 
-  sn:
+  meta_bundle:
     description:
-      The serial number of the host to be queried
+      the meta bundle file location
     required: True
     type: str
-
-  timeout:
-    description:
-      Time out value for getting iDRAC network settings, the default value is 60 seconds
-    required: false
-    type: int
-    default: 60
 
   api_version_number:
     description:
       A specific version number to use for the API call. If not included, will use the highest version by default
-    required: false
+    required: False
     type: int
 
+  timeout:
+    description:
+      Time out value for cancelling the host shutdown, the default value is 60 seconds
+    required: false
+    type: int
+    default: 1800
+
 author:
-  - VxRail Development Team(@VxRailDevTeam) <ansible.team@dell.com>
+    - VxRail Development Team(@VxRailDevTeam) <ansible.team@dell.com>
+
 '''
 
 EXAMPLES = r'''
-  - name: Get iDRAC User Accounts
-    dellemc_vxrail_idrac_getusers:
+    - name: Start to upload advisory meta bundle
+      dellemc_vxrail_lcm_advisory_meta_bundle:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
-        sn: "{{ sn }}"
+        meta_bundle: "{{ meta_bundle }}"
         timeout: "{{ timeout }}"
         api_version_number: "{{ api_version_number }}"
 '''
 
 RETURN = r'''
-iDRAC_Users:
-  description: iDRAC user accounts
+Advisory_Meta_Bundle_API:
+  description: Upload advisory meta bundle.
   returned: always
   type: dict
   sample: >-
-                {
-                    "id": 2,
-                    "name": "root",
-                    "privilege": "ADMIN"
-                },
-                {
-                    "id": 15,
-                    "name": "vxpsvc",
-                    "privilege": "ADMIN"
-                },
-                {
-                    "id": 16,
-                    "name": "PTAdmin",
-                    "privilege": "ADMIN"
-                }
+        {
+            "Result": "It has successfully uploaded a metadata bundle for local advisory analysis."
+        }
 '''
 
 import logging
@@ -102,9 +93,12 @@ import vxrail_ansible_utility
 from vxrail_ansible_utility.rest import ApiException
 from ansible_collections.dellemc.vxrail.plugins.module_utils import dellemc_vxrail_ansible_utils as utils
 
+# Defining global variables
+API = "/lcm/advisory-report"
+MODULE = "dellemc_vxrail_lcm_advisory_meta_bundle"
+LOG_FILE_PATH = "/tmp/vxrail_ansible_lcm_advisory_meta_bundle.log"
 
-LOG_FILE_NAME = "/tmp/vxrail_ansible_idrac_getusers.log"
-LOGGER = utils.get_logger("dellemc_vxrail_idrac_getusers", LOG_FILE_NAME, log_devel=logging.DEBUG)
+LOGGER = utils.get_logger(MODULE, LOG_FILE_PATH, log_devel=logging.DEBUG)
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
@@ -124,7 +118,7 @@ class VxRailCluster():
         self.timeout = module.params.get('timeout')
         self.vc_admin = module.params.get('vcadmin')
         self.vc_password = module.params.get('vcpasswd')
-        self.sn = module.params.get('sn')
+        self.meta_bundle = module.params.get('meta_bundle')
         self.api_version_number = module.params.get('api_version_number')
         self.system_url = VxrailClusterUrls(self.vxm_ip)
         # Configure HTTP basic authorization: basicAuth
@@ -133,6 +127,7 @@ class VxRailCluster():
         self.configuration.password = self.vc_password
         self.configuration.verify_ssl = False
         self.configuration.host = self.system_url.set_host()
+        # Added for auto-version detection
         self.api_version_string = "v?"
 
     # Obtains the response for the given module path with specified api_version_number or highest found version
@@ -144,54 +139,46 @@ class VxRailCluster():
         else:
             self.api_version_string = utils.get_api_version_string(self.vxm_ip, self.api_version_number, module_path, LOGGER)
 
-        call_string = self.api_version_string + '_hosts_sn_idrac_user_get'
+        # Calls versioned method as attribute (ex: v1_lcm_advisory_meta_bundle_post)
+        # call_string = self.api_version_string + '_lcm_advisory_meta_bundle_post'
+        call_string = 'lcm_advisory_meta_bundle_post'
         LOGGER.info("Using utility method: %s\n", call_string)
-        api_system_get = getattr(api_instance, call_string)
-        return api_system_get(self.sn)
+        api_generate_advisory_meta_bundle_post = getattr(api_instance, call_string)
+        return api_generate_advisory_meta_bundle_post(meta_bundle=self.meta_bundle)
 
-    def get_idrac_users(self):
+    def upload_meta_bundle(self):
         # create an instance of the API class
-        response = ''
-        api_instance = vxrail_ansible_utility.HostIDRACConfigurationApi(vxrail_ansible_utility.ApiClient(self.configuration))
+        api_instance = vxrail_ansible_utility.CVSPublicApi(vxrail_ansible_utility.ApiClient(self.configuration))
         try:
-            # query host idrac users information
-            response = self.get_versioned_response(api_instance, "/hosts/{sn}/idrac/users")
+            # upload meta bundle
+            response = self.get_versioned_response(api_instance, "Post /lcm/advisory-meta-bundle")
         except ApiException as e:
-            LOGGER.error("Exception when calling HostIDRACConfigurationApi->%s_hosts_sn_idrac_users_get: %s\n", self.api_version_string, e)
+            LOGGER.error("Exception when calling CVSPublicApi->%s_lcm_advisory_meta_bundle_post: %s\n", self.api_version_string, e)
             return 'error'
-        LOGGER.info("%s/hosts/{sn}/idrac/users api response: %s\n", self.api_version_string, response)
-        idrac_users = {}
-        idrac_users_list = []
-        for i in range(len(response)):
-            idrac_users['id'] = response[i].id
-            idrac_users['name'] = response[i].name
-            idrac_users['privilege'] = response[i].privilege
-            idrac_users_list.append(dict(idrac_users.items()))
-        return idrac_users_list
+        return response
 
 
 def main():
     ''' Entry point into execution flow '''
-    result = ''
     global module
     # define available arguments/parameters a user can pass to the module
     module_args = dict(
         vxmip=dict(required=True),
         vcadmin=dict(required=True),
         vcpasswd=dict(required=True, no_log=True),
-        timeout=dict(type='int', default=60),
-        api_version_number=dict(type='int'),
-        sn=dict(required=True)
+        meta_bundle=dict(required=True),
+        api_version_number=dict(type='int', required=False),
+        timeout=dict(type='int', default=1800)
     )
     module = AnsibleModule(
         argument_spec=module_args,
         supports_check_mode=True,
     )
-    result = VxRailCluster().get_idrac_users()
+    result = VxRailCluster().upload_meta_bundle()
     if result == 'error':
-        module.fail_json(msg="/hosts/{sn}/idrac/users API call failed, please see log file /tmp/vxrail_ansible_idrac_getusers.log for details.")
-    vx_facts = {'iDRAC_Users': result}
-    vx_facts_result = dict(changed=False, iDRAC_Users_API=vx_facts)
+        module.fail_json(msg=f"Uploading a metadata bundle for local advisory analysis has failed. Please see the {LOG_FILE_PATH} for more details")
+    vx_facts = {'Result': 'It has successfully uploaded a metadata bundle for local advisory analysis.'}
+    vx_facts_result = dict(changed=True, Advisory_Meta_Bundle_API=vx_facts)
     module.exit_json(**vx_facts_result)
 
 
