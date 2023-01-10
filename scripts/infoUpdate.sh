@@ -9,7 +9,12 @@
 echo '************************** update readme.md and galaxy.yml **************************'
 target_word=$1
 tag=$2
-target_index=$(grep -Pon '(\| [a-z 0-9\<\>\.]+){5} \|' README.md | cut --delimiter=":" --fields=1)
-sed -i "${target_index}s/.*/${target_word}/g" README.md
-sed -i "s/version:.*/version: ${tag}/g" galaxy.yml
-cat README.md
+target_index=$(grep -Pon '(\| [a-z 0-9\<\>\.\+]+){5} \|' README.md | cut --delimiter=":" --fields=1)
+if [[ -z $target_index ]]; then
+    echo "Target index not found"
+    exit 1
+else
+    sed -i "${target_index}s/.*/${target_word}/g" README.md
+    sed -i "s/version:.*/version: ${tag}/g" galaxy.yml
+    cat README.md
+fi

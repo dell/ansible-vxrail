@@ -3,9 +3,7 @@
 
 from __future__ import (absolute_import, division, print_function)
 import logging
-import urllib3
 import ast
-from ansible.module_utils.basic import AnsibleModule
 import vxrail_ansible_utility
 from vxrail_ansible_utility.rest import ApiException
 import urllib.error
@@ -26,7 +24,7 @@ __metaclass__ = type
 This method is to initialize logger and return the logger object
 parameters:
      - module_name: Name of module to be part of log message.
-     - log_file_name: name of the file in which the log meessages get
+     - log_file_name: name of the file in which the log messages get
       appended.
      - log_devel: log level.
 returns logger object
@@ -76,6 +74,8 @@ parameters:
      - vxm_ip: The IP Address of the VxRail Manager to query.
      - api_version_number: The version number to use. Returns the highest available version if set to None.
      - module_path: The API path for a specified module (ex: "/hosts" or "/system/initialize/status").
+                    The path can also specify a particular method to use in the form of a 2-word string.
+                    (ex: "GET /hosts/{sn}" or "PATCH /hosts/{sn}")
      - logger: A logger object to record the functionality.
 returns The API version string to use in future API calls.
 '''
@@ -99,6 +99,8 @@ This method is to return the highest API version string (ex: "v4") for the speci
 parameters:
      - vxm_ip: The IP Address of the VxRail Manager to query.
      - module_path: The API path for a specified module (ex: "/hosts" or "/system/initialize/status").
+                    The path can also specify a particular method to use in the form of a 2-word string.
+                    (ex: "GET /hosts/{sn}" or "PATCH /hosts/{sn}")
      - logger: A logger object to record the functionality.
 returns The API version string to use in future API calls.
 '''
@@ -145,11 +147,23 @@ class APIVersionHandler:
         if schema == -1:
             self.logger.info("Error collecting API schema from the VxRail Manager")
             return False
+
+        # Split module if method specified (ex: "GET /hosts/{sn}" or "PATCH /hosts/{sn}")
+        split_module = module_path.split(" ")
+        method = None
+        if len(split_module) == 2:
+            method, module_path = split_module
+            self.logger.info(f"Method specified as: {method}")
+
         paths = schema['paths'].keys()
         valid_paths = []
         for path in paths:
             if path.endswith(module_path):
-                valid_paths.append(path.split('/')[1])
+                if method is not None:
+                    if method.lower() in schema['paths'][path]:
+                        valid_paths.append(path.split('/')[1])
+                else:
+                    valid_paths.append(path.split('/')[1])
         if len(valid_paths) < 1:
             self.logger.error(f"Path {module_path} not found in API schema.")
             return False
@@ -174,11 +188,23 @@ class APIVersionHandler:
     def get_highest_module_version_from_schema(self, schema, module_path):
         def sort_versions(v):
             return int(v.split('v')[1])
+
+        # Split module if method specified (ex: "GET /hosts/{sn}" or "PATCH /hosts/{sn}")
+        split_module = module_path.split(" ")
+        method = None
+        if len(split_module) == 2:
+            method, module_path = split_module
+            self.logger.info(f"Method specified as: {method}")
+
         paths = schema['paths'].keys()
         valid_paths = []
         for path in paths:
             if path.endswith(module_path):
-                valid_paths.append(path.split('/')[1])
+                if method is not None:
+                    if method.lower() in schema['paths'][path]:
+                        valid_paths.append(path.split('/')[1])
+                else:
+                    valid_paths.append(path.split('/')[1])
         valid_paths.sort(key=sort_versions)
         if len(valid_paths) < 1:
             self.logger.error(f"Path {module_path} not found in API schema.")
@@ -240,44 +266,6 @@ class APIVersionHandler:
 
 ''' VxRail Ansible Utility for GET v1/requests/{id} API'''
 
-# Defining global variables
-API = "/v1/requests/request_id"
-MODULE = "dellemc_vxrail_ansible_request_utils"
-LOG_FILE_PATH = "/tmp/vxrail_ansible_getrequestinfo_v1.log"
-
-LOGGER = get_logger(MODULE, LOG_FILE_PATH, log_devel=logging.DEBUG)
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-
-'''
-This method is used to retrieve status information of any long running operation
-parameters:
-     - request_id: Long running operation request ID.
-returns result_response object
-'''
-
-
-def get_request_details(request_id):
-    global module
-    # define available arguments/parameters a user can pass to the module
-    # make sure the arguments are consistent with the module that uses the get_request_details utility
-    module_args = dict(
-        vxmip=dict(required=True),
-        vcadmin=dict(required=True),
-        vcpasswd=dict(required=True, no_log=True),
-        dryrun=dict(type='bool', required=False, default='False'),
-        timeout=dict(type='int', default=1800),
-        api_version_number=dict(type='int')
-    )
-    module = AnsibleModule(
-        argument_spec=module_args,
-        supports_check_mode=True,
-    )
-    result_response = VxRailRequest().get_request_status(request_id)
-    if result_response == 'error':
-        module.fail_json(msg="Call v1/requests/request_id API failed,please see log file /tmp/vxrail_ansible_getrequestinfo_v1.log for more error details.")
-    return result_response
-
-
 '''
 This method is used to convert the response object from RequestStatusApi into a list of dictionary
 parameters:
@@ -312,6 +300,21 @@ def get_request_info(response):
     return statusInfolist
 
 
+'''
+This method is used to retrieve status information of any long running operation
+parameters:
+     - request_id: Long running operation request ID.
+returns result_response object
+'''
+
+
+def get_request_status(vxm_ip, vcadmin, vcpasswd, request_id, logger, timeout=60):
+    result_response = VxRailRequest(vxm_ip, vcadmin, vcpasswd, logger, timeout).get_request_response(request_id)
+    if result_response == 'error':
+        logger.error("Call v1/requests/request_id API failed,please see log file /tmp/vxrail_ansible_getrequestinfo_v1.log for more error details.")
+    return result_response
+
+
 class VxrailSystemUrls():
     cluster_url = 'https://{}/rest/vxm'
 
@@ -323,12 +326,12 @@ class VxrailSystemUrls():
 
 
 class VxRailRequest():
-    def __init__(self):
-        self.vxm_ip = module.params.get('vxmip')
-        self.timeout = module.params.get('timeout')
-        self.vc_admin = module.params.get('vcadmin')
-        self.vc_password = module.params.get('vcpasswd')
-        self.dryrun_info = module.params.get('dryrun')
+    def __init__(self, vxmip, vcadmin, vcpasswd, logger, timeout=60):
+        self.vxm_ip = vxmip
+        self.timeout = timeout
+        self.vc_admin = vcadmin
+        self.vc_password = vcpasswd
+        self.logger = logger
         self.system_url = VxrailSystemUrls(self.vxm_ip)
         # Configure HTTP basic authorization: basicAuth
         self.configuration = vxrail_ansible_utility.Configuration()
@@ -337,13 +340,13 @@ class VxRailRequest():
         self.configuration.verify_ssl = False
         self.configuration.host = self.system_url.set_host()
 
-    def get_request_status(self, request_id):
+    def get_request_response(self, request_id):
         job_id = request_id
         # create an instance of the API class
         api_instance = vxrail_ansible_utility.RequestStatusApi(vxrail_ansible_utility.ApiClient(self.configuration))
         try:
             response = api_instance.v1_request_id_get(job_id)
         except ApiException as e:
-            LOGGER.error("Exception when calling v1_requests_id_get: %s\n", e)
+            self.logger.error("Exception when calling v1_requests_id_get: %s\n", e)
             return 'error'
         return response

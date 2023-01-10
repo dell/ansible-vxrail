@@ -1,0 +1,27 @@
+---
+- name: Change Call home Mode
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+    is_muted: "{{ is_muted }}"
+
+  tasks:
+    - name: Change Call home Mode
+      dellemc_vxrail_callhome_change_mode:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        is_muted: "{{ is_muted }}"
+        timeout: "{{ timeout | default(omit) }}"
+        api_version_number: "{{ api_version_number | default(omit) }}"
+      register: callhome_mode
+
+    - name: Display Callhome Mode Change Information
+      debug:
+        var: is_muted
+
+    - name: Display Callhome Mode Change Result
+      debug:
+        msg: "{{callhome_mode}}"

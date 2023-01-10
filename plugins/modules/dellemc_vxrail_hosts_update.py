@@ -1,78 +1,101 @@
 #!/usr/bin/python
-# Copyright 2021 Dell Inc. or its subsidiaries. All Rights Reserved
-
+# Copyright 2022 Dell Inc. or its subsidiaries. All Rights Reserved
 
 # Copyright: (c) 2018, Terry Jones <terry.jones@example.org>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 from __future__ import (absolute_import, division, print_function)
+
 __metaclass__ = type
 
 DOCUMENTATION = r'''
 ---
-module: dellemc_vxrail_cluster_shutdown
-short_description: Perform cluster shutdown or dryrun shutdown
+module: dellemc_vxrail_hosts_update
+
+short_description: Update the geographical location of a host
+
 # If this is part of a collection, you need to use semantic versioning,
 # i.e. the version is of the form "2.5.0" and not "2.4".
-version_added: "1.4.0"
+version_added: "1.5.0"
+
 description:
-- This module will shut down a cluster or perform a shutdown dry run.
+- This module will update the geographical location of the specified host.
 options:
+
   vxmip:
     description:
       The IP address of the VxRail Manager System
     required: True
     type: str
+
   vcadmin:
     description:
       Administrative account of the vCenter Server the VxRail Manager is registered to
     required: True
     type: str
+
   vcpasswd:
     description:
       The password for the administrator account provided in vcadmin
     required: True
     type: str
+
+  host_sn:
+    description:
+      Serial number of the host to update
+    required: True
+    type: str
+
+  rack_name:
+    description:
+      The updated rack name to assign the host
+    required: False
+    type: str
+
+  order_number:
+    description:
+      The updated order number to assign the host
+    required: False
+    type: int
+
+  api_version_number:
+    description:
+      A specific version number to use for the API call. If not included, will use the highest version by default
+    required: False
+    type: int
+
   timeout:
     description:
-      Time out value for getting cluster shutdown request id, the default value is 1800 seconds
+      Time out value for updating host geographical information, the default value is 60 seconds
     required: false
     type: int
     default: 1800
-  dryrun:
-    description:
-      Perform an optional dry run to check whether it is safe to shut down. The default value is false.
-    required: false
-    type: bool
-    default: False
-  api_version_number:
-    description:
-      The version of API to call. If omitted, will use highest version on the system.
-    required: false
-    type: int
 
 author:
     - VxRail Development Team(@VxRailDevTeam) <ansible.team@dell.com>
+
 '''
 
 EXAMPLES = r'''
-  - name: Perform Cluster Shutdown
-    dellemc_vxrail_cluster_shutdown:
+  - name: Update the geographical location of the specified host
+    dellemc_vxrail_system_update_proxy:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
-        timeout : "{{ timeout }}"
-        dryrun: "{{ dryrun }}"
+        host_sn: "{{ host_sn }}"
+        rack_name: "{{ rack_name }}"
+        order_number: "{{ order_number }}"
         api_version_number: "{{ api_version_number }}"
+        timeout: "{{ timeout }}"
 '''
 
 RETURN = r'''
-Cluster_Shutdown_API:
-  description: cluster shutdown information
+Hosts_Update:
+  description: Update the VxRail System Proxy settings. Returns the values that were updated.
   returned: always
   type: dict
   sample: >-
     {
-            "Request_ID": "8b7539c2-bcb8-48cf-897d-1f50ab39227f",
+            "Request_ID": "SBI_1",
             "Request_Status": "COMPLETED"
         }
 '''
@@ -86,9 +109,9 @@ import time
 from ansible_collections.dellemc.vxrail.plugins.module_utils import dellemc_vxrail_ansible_utils as utils
 
 # Defining global variables
-API = "/cluster/shutdown"
-MODULE = "dellemc_vxrail_shutcluster"
-LOG_FILE_PATH = "/tmp/vxrail_ansible_cluster_shutdown.log"
+API = "PATCH /hosts/{sn}"
+MODULE = "dellemc_vxrail_hosts_update"
+LOG_FILE_PATH = "/tmp/vxrail_ansible_hosts_update.log"
 
 LOGGER = utils.get_logger(MODULE, LOG_FILE_PATH, log_devel=logging.DEBUG)
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -110,7 +133,9 @@ class VxRailCluster():
         self.timeout = module.params.get('timeout')
         self.vc_admin = module.params.get('vcadmin')
         self.vc_password = module.params.get('vcpasswd')
-        self.dryrun_info = module.params.get('dryrun')
+        self.host_sn = module.params.get('host_sn')
+        self.rack_name = module.params.get('rack_name')
+        self.order_number = module.params.get('order_number')
         self.api_version_number = module.params.get('api_version_number')
         self.system_url = VxrailClusterUrls(self.vxm_ip)
         # Configure HTTP basic authorization: basicAuth
@@ -131,22 +156,27 @@ class VxRailCluster():
         else:
             self.api_version_string = utils.get_api_version_string(self.vxm_ip, self.api_version_number, module_path, LOGGER)
 
-        # Calls versioned method as attribute (ex: v1_cluster_shutdown_post)
-        call_string = self.api_version_string + '_cluster_shutdown_post'
+        # Calls versioned method as attribute (ex: v1_hosts_sn_patch)
+        call_string = self.api_version_string + '_hosts_sn_patch'
         LOGGER.info("Using utility method: %s\n", call_string)
-        api_cluster_shutdown_post = getattr(api_instance, call_string)
-        dryrun_json = {}
-        dryrun_json['dryrun'] = self.dryrun_info
-        return api_cluster_shutdown_post(body=dryrun_json)
+        api_host_update_patch = getattr(api_instance, call_string)
+        host_patch_info = {}
+        host_patch_spec = {}
+        if self.rack_name is not None:
+            host_patch_spec["rack_name"] = self.rack_name
+        if self.order_number is not None:
+            host_patch_spec["order_number"] = self.order_number
+        host_patch_info["geo_location"] = host_patch_spec
+        return api_host_update_patch(body=host_patch_info, sn=self.host_sn)
 
-    def post_cluster_shutdown(self):
+    def patch_host(self):
         # create an instance of the API class
-        api_instance = vxrail_ansible_utility.ClusterShutdownApi(vxrail_ansible_utility.ApiClient(self.configuration))
+        api_instance = vxrail_ansible_utility.HostInformationApi(vxrail_ansible_utility.ApiClient(self.configuration))
         try:
-            # start cluster shutdown
-            response = self.get_versioned_response(api_instance, "/cluster/shutdown")
+            # start host update
+            response = self.get_versioned_response(api_instance, "PATCH /hosts/{sn}")
         except ApiException as e:
-            LOGGER.error("Exception when calling ClusterShutdownApi->%s_cluster_shutdown_post: %s\n", self.api_version_string, e)
+            LOGGER.error("Exception when calling HostInformationApi->%s_host_sn_patch: %s\n", self.api_version_string, e)
             return 'error'
         requestid = response.request_id
         return requestid
@@ -161,23 +191,29 @@ def main():
         vxmip=dict(required=True),
         vcadmin=dict(required=True),
         vcpasswd=dict(required=True, no_log=True),
-        dryrun=dict(type='bool', required=False, default='False'),
-        api_version_number=dict(type='int'),
+        host_sn=dict(required=True),
+        rack_name=dict(required=False),
+        order_number=dict(type='int', required=False),
+        api_version_number=dict(type='int', required=False),
         timeout=dict(type='int', default=1800)
     )
     module = AnsibleModule(
         argument_spec=module_args,
         supports_check_mode=True,
     )
-    result_request_id = VxRailCluster().post_cluster_shutdown()
+    result_request_id = VxRailCluster().patch_host()
     if result_request_id == 'error':
         module.fail_json(msg=f"Call {API} API failed,please see log file {LOG_FILE_PATH} for more error details.")
-    LOGGER.info('Cluster Shutdown request_id: %s.', result_request_id)
-    dryrun = module.params.get('dryrun')
+    LOGGER.info('Host Update request_id: %s.', result_request_id)
+    host_sn = module.params.get('host_sn')
+    rack_name = module.params.get('rack_name')
+    order_number = module.params.get('order_number')
     vxmip = module.params.get('vxmip')
     vcadmin = module.params.get('vcadmin')
     vcpasswd = module.params.get('vcpasswd')
-    LOGGER.info('Cluster Shutdown dryrun: %s.', dryrun)
+    LOGGER.info('Host SN: %s', host_sn)
+    LOGGER.info('Host rack name: %s.', rack_name)
+    LOGGER.info('Order number: %s.', order_number)
     task_state = 0
     time_out = 0
     initial_timeout = module.params.get('timeout')
@@ -186,32 +222,27 @@ def main():
     result_response = utils.get_request_status(vxm_ip=vxmip, vcadmin=vcadmin, vcpasswd=vcpasswd, logger=LOGGER, request_id=result_request_id)
     if result_response == 'error':
         module.fail_json(msg="Call v1/requests/request_id API failed,please see "
-                             "log file /tmp/vxrail_ansible_cluster_shutdown.log for more error details.")
+                             "log file /tmp/vxrail_ansible_hosts_update.log for more error details.")
     else:
-        LOGGER.info('No issues found in call to v1/requests/request_id API. Begin checking status of cluster shutdown operation.')
+        LOGGER.info('No issues found in call to v1/requests/request_id API. Begin checking status of host update operation.')
     while task_state not in ('COMPLETED', 'FAILED') and time_out < initial_timeout:
         result_response = utils.get_request_status(vxm_ip=vxmip, vcadmin=vcadmin, vcpasswd=vcpasswd, logger=LOGGER, request_id=result_request_id)
         task_state = result_response.state
         LOGGER.info('Request_status: %s', task_state)
-        ''' call frequently to capture 'COMPLETED' status before cluster shut down'''
+        ''' call frequently to capture 'COMPLETED' status before host update'''
         time_out = time_out + 1
         time.sleep(1)
     error_message = result_response.error
     if task_state == 'COMPLETED' and not error_message:
+        LOGGER.info("Host Update Completed")
+        output_msg = "Host update has completed. Please see the logs at /tmp/vxrail_ansible_hosts_update.log for more details"
         vx_facts = {'Request_ID': result_request_id, 'Request_Status': task_state}
-        if dryrun:
-            LOGGER.info("Cluster Shutdown Dryrun Completed")
-            vx_facts_result = dict(changed=False, Cluster_Shutdown_API=vx_facts, msg="Cluster Shutdown Dryrun has completed. Please see the "
-                                                                                     "logs at /tmp/vxrail_ansible_cluster_shutdown.log for more details")
-        else:
-            LOGGER.info("Cluster Shutdown Completed")
-            vx_facts_result = dict(changed=True, Cluster_Shutdown_API=vx_facts, msg="Cluster Shutdown has completed. Please see the "
-                                                                                    "logs at /tmp/vxrail_ansible_cluster_shutdown.log for more details")
+        vx_facts_result = dict(changed=True, Hosts_Update_API=vx_facts, msg=output_msg)
     else:
-        LOGGER.info("Cluster Shutdown or Dryrun has Failed")
+        LOGGER.info("Host update has Failed")
+        output_msg = "Please see the /tmp/vxrail_ansible_hosts_update.log for more details"
         vx_facts = {'Request_ID': result_request_id}
-        vx_facts_result = dict(failed=True, Cluster_Shutdown_API=vx_facts, msg="Please see the /tmp/vxrail_ansible_cluster_shutdown.log "
-                                                                               "for more details")
+        vx_facts_result = dict(failed=True, Hosts_Update_API=vx_facts, msg=output_msg)
     LOGGER.info('Request_info: %s', result_response)
     module.exit_json(**vx_facts_result)
 

@@ -1,22 +1,22 @@
 ---
-- name: Retrieve VxRail iDRAC Users Information
+- name: Retrieve prechecks report. Specify id to get a particular prechecks report.
   hosts: localhost
   vars:
     vxmip: "{{ vxmip }}"
     vcadmin: "{{ vcadmin }}"
     vcpasswd: "{{ vcpasswd }}"
-    sn: "{{ sn }}"
 
   tasks:
-    - name: Get iDRAC Users
-      dellemc_vxrail_idrac_getusers:
+    - name: Get prechecks report
+      dellemc_vxrail_system_getprechecksreport:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
-        sn: "{{ sn }}"
+        id: "{{ id | default(omit) }}"
         timeout: "{{ timeout | default(omit) }}"
         api_version_number: "{{ api_version_number | default(omit) }}"
-      register: iDRAC_Users
-    - name: Display Idrac Users
+      register: prechecks_results
+
+    - name: Display precheck report
       debug:
-        msg:  "{{ iDRAC_Users }}"
+        msg:  "{{prechecks_results}}"

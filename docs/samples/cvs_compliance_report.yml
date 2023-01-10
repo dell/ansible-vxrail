@@ -1,0 +1,29 @@
+---
+- name: Generate cvs compliance report
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+
+  tasks:
+    - name: Start to generate cvs compliance report
+      dellemc_vxrail_cvs_compliance_report:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        timeout: "{{ timeout | default(omit) }}"
+        api_version_number: "{{ api_version_number | default(omit) }}"
+      async: 1800
+      poll: 0
+      register: cvs_compliance_report
+    - name: Check if cvs compliance report is generated...The generation is still ongoing.
+      async_status:
+        jid: "{{ cvs_compliance_report.ansible_job_id }}"
+      register: job_result
+      until: job_result.finished
+      retries: 100
+      delay: 30
+    - name: Get cvs compliance report Result
+      debug:
+        msg:  "{{job_result}}"

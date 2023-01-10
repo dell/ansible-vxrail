@@ -1,0 +1,21 @@
+---
+- name: Cancel a failed cluster expansion
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+
+  tasks:
+    - name: Cancel the failed cluster expansion
+      dellemc_vxrail_cluster_expansion_cancel:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        api_version_number: "{{ api_version_number | default(omit) }}"
+        timeout: "{{ timeout | default(omit) }}"
+      register: expansion_cancel_result
+
+    - name: Display Expansion Cancellation Result
+      debug:
+        msg:  "{{ expansion_cancel_result }}"

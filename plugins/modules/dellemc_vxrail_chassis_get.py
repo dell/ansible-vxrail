@@ -346,6 +346,14 @@ class VxRailHosts():
         chassis_info['render_category'] = data.render_category
         chassis_info['generation'] = data.generation
 
+        # Only found in v5+
+        if self.api_version_number >= 5:
+            chassis_info['chassis_manager_fw_version'] = data.chassis_manager_fw_version
+            if data.witness and len(data.witness) > 0:
+                chassis_info['witness'] = self._generate_witness_info_from_response_data(data.witness[0])
+            else:
+                chassis_info['witness'] = None
+
         # Only found in v4+
         if self.api_version_number >= 4:
             chassis_info['bay'] = data.bay
@@ -392,6 +400,87 @@ class VxRailHosts():
             host_info['geo_location'] = utils.field_not_found(2)
 
         return host_info
+
+    def _generate_witness_info_from_response_data(self, data):
+        witness_info = {}
+        witness_info['sn'] = data.sn
+        witness_info['psnt'] = data.psnt
+        witness_info['moid'] = data.moid
+        witness_info['hostname'] = data.hostname
+        witness_info['os_version'] = data.os_version
+        witness_info['bios_version'] = data.bios_version
+        witness_info['cpu'] = data.cpu
+        witness_info['power_status'] = data.power_status
+        witness_info['memory'] = data.memory
+        witness_info['witness_management'] = data.witness_management
+        if data.boot_devices:
+            witness_info['boot_devices'] = self._get_info_list(self._generate_boot_device_info_from_response_data,
+                                                               data.boot_devices)
+        if data.nics:
+            witness_info['nics'] = self._get_info_list(self._generate_nic_info_from_response_data,
+                                                       data.nics)
+        if data.disks:
+            witness_info['disks'] = self._get_info_list(self._generate_disks_info_from_response_data,
+                                                        data.disks)
+
+        return witness_info
+
+    def _generate_boot_device_info_from_response_data(self, data):
+        boot_device_info = {}
+        boot_device_info['id'] = data.id
+        boot_device_info['sn'] = data.sn
+        boot_device_info['device_model'] = data.device_model
+        boot_device_info['sata_type'] = data.sata_type
+        boot_device_info['device_type'] = data.device_type
+        boot_device_info['protocol'] = data.protocol
+        boot_device_info['power_on_hours'] = data.power_on_hours
+        boot_device_info['power_cycle_count'] = data.power_cycle_count
+        boot_device_info['max_erase_count'] = data.max_erase_count
+        boot_device_info['avr_erase_count'] = data.avr_erase_count
+        boot_device_info['capacity'] = data.capacity
+        boot_device_info['health'] = data.health
+        boot_device_info['firmware_version'] = data.firmware_version
+        boot_device_info['bootdevice_type'] = data.bootdevice_type
+        boot_device_info['block_size'] = data.block_size
+        boot_device_info['slot'] = data.slot
+        boot_device_info['status'] = data.status
+        boot_device_info['part_number'] = data.part_number
+        boot_device_info['manufacturer'] = data.manufacturer
+        boot_device_info['controller_firmware'] = data.controller_firmware
+        boot_device_info['controller_model'] = data.controller_model
+        boot_device_info['controller_status'] = data.controller_status
+
+        return boot_device_info
+
+    def _generate_nic_info_from_response_data(self, data):
+        nic_info = {}
+        nic_info['id'] = data.id
+        nic_info['mac'] = data.mac
+        nic_info['link_status'] = data.link_status
+        nic_info['link_speed'] = data.link_speed
+        nic_info['slot'] = data.slot
+        nic_info['firmware_family_version'] = data.firmware_family_version
+        nic_info['type'] = data.type
+        if data.drivers is not None:
+            nic_info['drivers'] = self._get_info_list(
+                self._generate_drivers_info_from_response_data, data.drivers)
+        nic_info['port'] = data.port
+
+        return nic_info
+
+    def _generate_drivers_info_from_response_data(self, data):
+        drivers_info = {}
+        drivers_info['driver_name'] = data.driver_name
+        drivers_info['driver_version'] = data.driver_version
+        return drivers_info
+
+    def _generate_disks_info_from_response_data(self, data):
+        disks_info = {}
+        disks_info['id'] = data.sn
+        disks_info['sn'] = data.sn
+        disks_info['disk_type'] = data.disk_type
+        disks_info['capacity'] = data.capacity
+        return disks_info
 
     def _generate_power_supplies_info_from_response_data(self, data):
         nic_info = {}

@@ -1,0 +1,19 @@
+---
+- name: Get Customer Supplied Host Information
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    hosts: "{{ hosts }}"
+
+  tasks:
+    - name: Return Nodes by Customer Supplied Management IP
+      dellemc_vxrail_customer_supplied_hosts:
+        vxmip: "{{ vxmip }}"
+        hosts: "{{ hosts }}"
+        api_version_number: "{{ api_version_number | default(omit) }}"
+        timeout: "{{ timeout | default(omit) }}"
+      register: customer_hosts_info
+
+    - name: Display Customer Supplied Node Information
+      debug:
+        msg:  "{{customer_hosts_info}}"

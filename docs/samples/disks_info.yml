@@ -1,0 +1,22 @@
+---
+- name: Retrieve VxRail Disk Information
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+
+  tasks:
+    - name: Get VxRail Disk Information
+      dellemc_vxrail_get_disks:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        disk_sn: "{{ disk_sn | default(omit) }}"
+        api_version_number: "{{ api_version_number | default(omit) }}"
+        timeout: "{{ timeout | default(omit) }}"
+      register: disks_info
+
+    - name: Display VxRail Disk Information
+      debug:
+        msg:  "{{disks_info}}"

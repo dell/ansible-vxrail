@@ -1,7 +1,6 @@
 #!/usr/bin/python
 # Copyright 2021 Dell Inc. or its subsidiaries. All Rights Reserved
 
-
 # Copyright: (c) 2018, Terry Jones <terry.jones@example.org>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 from __future__ import (absolute_import, division, print_function)
@@ -9,70 +8,106 @@ __metaclass__ = type
 
 DOCUMENTATION = r'''
 ---
-module: dellemc_vxrail_cluster_shutdown
-short_description: Perform cluster shutdown or dryrun shutdown
+module: dellemc_vxrail_idrac_adduser
+
+short_description: Create an iDRAC user account.
+
 # If this is part of a collection, you need to use semantic versioning,
 # i.e. the version is of the form "2.5.0" and not "2.4".
-version_added: "1.4.0"
+version_added: "1.5.0"
+
 description:
-- This module will shut down a cluster or perform a shutdown dry run.
+  - "This module will create an iDRAC user account."
 options:
+
   vxmip:
     description:
       The IP address of the VxRail Manager System
     required: True
     type: str
+
   vcadmin:
     description:
       Administrative account of the vCenter Server the VxRail Manager is registered to
     required: True
     type: str
+
   vcpasswd:
     description:
       The password for the administrator account provided in vcadmin
     required: True
     type: str
+
+  sn:
+    description:
+      The serial number of the host to be queried
+    required: True
+    type: str
+
   timeout:
     description:
-      Time out value for getting cluster shutdown request id, the default value is 1800 seconds
-    required: false
+      Time out value for creating iDRAC user account, the default value is 300 seconds
+    required: False
     type: int
-    default: 1800
-  dryrun:
-    description:
-      Perform an optional dry run to check whether it is safe to shut down. The default value is false.
-    required: false
-    type: bool
-    default: False
+    default: 300
+
   api_version_number:
     description:
-      The version of API to call. If omitted, will use highest version on the system.
-    required: false
+      A specific version number to use for the API call. If not included, will use the highest version by default
+    required: False
     type: int
 
+  id:
+    description:
+      The iDRAC user slot ID
+    required: False
+    type: int
+
+  name:
+    description:
+      The iDRAC user name
+    required: True
+    type: str
+
+  password:
+    description:
+      The iDRAC user password
+    required: True
+    type: str
+
+  privilege:
+    description:
+      The permissions (privilege) of the iDRAC user. Allowed values are ADMIN, OPER and READONLY.
+    required: True
+    type: str
+
 author:
-    - VxRail Development Team(@VxRailDevTeam) <ansible.team@dell.com>
+  - VxRail Development Team(@VxRailDevTeam) <ansible.team@dell.com>
 '''
 
 EXAMPLES = r'''
-  - name: Perform Cluster Shutdown
-    dellemc_vxrail_cluster_shutdown:
+  - name: Create iDRAC User Account
+    dellemc_vxrail_idrac_adduser:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
-        timeout : "{{ timeout }}"
-        dryrun: "{{ dryrun }}"
+        sn: "{{ sn }}"
+        timeout: "{{ timeout }}"
         api_version_number: "{{ api_version_number }}"
+        id: "{{ id }}"
+        name: "{{ name }}"
+        password: "{{ password }}"
+        privilege: "{{ privilege }}"
 '''
 
 RETURN = r'''
-Cluster_Shutdown_API:
-  description: cluster shutdown information
+Add_iDRAC_User_API:
+  description: create an iDRAC user account
   returned: always
   type: dict
   sample: >-
     {
-            "Request_ID": "8b7539c2-bcb8-48cf-897d-1f50ab39227f",
+            "Request_ID": "SBI_11",
             "Request_Status": "COMPLETED"
         }
 '''
@@ -80,15 +115,15 @@ Cluster_Shutdown_API:
 import logging
 import urllib3
 from ansible.module_utils.basic import AnsibleModule
+import time
 import vxrail_ansible_utility
 from vxrail_ansible_utility.rest import ApiException
-import time
 from ansible_collections.dellemc.vxrail.plugins.module_utils import dellemc_vxrail_ansible_utils as utils
 
 # Defining global variables
-API = "/cluster/shutdown"
-MODULE = "dellemc_vxrail_shutcluster"
-LOG_FILE_PATH = "/tmp/vxrail_ansible_cluster_shutdown.log"
+API = "/hosts/{sn}/idrac/users"
+MODULE = "dellemc_vxrail_idrac_adduser"
+LOG_FILE_PATH = "/tmp/vxrail_ansible_idrac_adduser.log"
 
 LOGGER = utils.get_logger(MODULE, LOG_FILE_PATH, log_devel=logging.DEBUG)
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -110,7 +145,11 @@ class VxRailCluster():
         self.timeout = module.params.get('timeout')
         self.vc_admin = module.params.get('vcadmin')
         self.vc_password = module.params.get('vcpasswd')
-        self.dryrun_info = module.params.get('dryrun')
+        self.sn = module.params.get('sn')
+        self.id = module.params.get('id')
+        self.name = module.params.get('name')
+        self.password = module.params.get('password')
+        self.privilege = module.params.get('privilege')
         self.api_version_number = module.params.get('api_version_number')
         self.system_url = VxrailClusterUrls(self.vxm_ip)
         # Configure HTTP basic authorization: basicAuth
@@ -119,7 +158,6 @@ class VxRailCluster():
         self.configuration.password = self.vc_password
         self.configuration.verify_ssl = False
         self.configuration.host = self.system_url.set_host()
-        # Added for auto-version detection
         self.api_version_string = "v?"
 
     # Obtains the response for the given module path with specified api_version_number or highest found version
@@ -131,87 +169,83 @@ class VxRailCluster():
         else:
             self.api_version_string = utils.get_api_version_string(self.vxm_ip, self.api_version_number, module_path, LOGGER)
 
-        # Calls versioned method as attribute (ex: v1_cluster_shutdown_post)
-        call_string = self.api_version_string + '_cluster_shutdown_post'
+        call_string = self.api_version_string + '_hosts_sn_idrac_user_post'
         LOGGER.info("Using utility method: %s\n", call_string)
-        api_cluster_shutdown_post = getattr(api_instance, call_string)
-        dryrun_json = {}
-        dryrun_json['dryrun'] = self.dryrun_info
-        return api_cluster_shutdown_post(body=dryrun_json)
 
-    def post_cluster_shutdown(self):
+        api_hosts_sn_idrac_user_post = getattr(api_instance, call_string)
+        idrac_user_json = {}
+        idrac_user_json['id'] = self.id
+        idrac_user_json['name'] = self.name
+        idrac_user_json['password'] = self.password
+        idrac_user_json['privilege'] = self.privilege
+        return api_hosts_sn_idrac_user_post(body=idrac_user_json, sn=self.sn)
+
+    def post_idrac_user(self):
         # create an instance of the API class
-        api_instance = vxrail_ansible_utility.ClusterShutdownApi(vxrail_ansible_utility.ApiClient(self.configuration))
+        response = ''
+        api_instance = vxrail_ansible_utility.HostIDRACConfigurationApi(vxrail_ansible_utility.ApiClient(self.configuration))
         try:
-            # start cluster shutdown
-            response = self.get_versioned_response(api_instance, "/cluster/shutdown")
+            # post host idrac user information
+            response = self.get_versioned_response(api_instance, "POST /hosts/{sn}/idrac/users")
         except ApiException as e:
-            LOGGER.error("Exception when calling ClusterShutdownApi->%s_cluster_shutdown_post: %s\n", self.api_version_string, e)
+            LOGGER.error("Exception when calling HostIDRACConfigurationApi->%s_hosts_sn_idrac_user_post: %s\n", self.api_version_string, e)
             return 'error'
+        LOGGER.info("%s/hosts/{sn}/idrac/users api response: %s\n", self.api_version_string, response)
         requestid = response.request_id
         return requestid
 
 
 def main():
     ''' Entry point into execution flow '''
-    result_request_id = ''
+    result = ''
     global module
     # define available arguments/parameters a user can pass to the module
     module_args = dict(
         vxmip=dict(required=True),
         vcadmin=dict(required=True),
         vcpasswd=dict(required=True, no_log=True),
-        dryrun=dict(type='bool', required=False, default='False'),
+        timeout=dict(type='int', default=300),
         api_version_number=dict(type='int'),
-        timeout=dict(type='int', default=1800)
+        sn=dict(required=True),
+        id=dict(type='int'),
+        name=dict(required=True),
+        password=dict(required=True, no_log=True),
+        privilege=dict(required=True)
     )
     module = AnsibleModule(
         argument_spec=module_args,
         supports_check_mode=True,
     )
-    result_request_id = VxRailCluster().post_cluster_shutdown()
-    if result_request_id == 'error':
-        module.fail_json(msg=f"Call {API} API failed,please see log file {LOG_FILE_PATH} for more error details.")
-    LOGGER.info('Cluster Shutdown request_id: %s.', result_request_id)
-    dryrun = module.params.get('dryrun')
+    result_request_id = VxRailCluster().post_idrac_user()
+    if result == 'error':
+        module.fail_json(msg="Call /hosts/{sn}/idrac/users API failed,please see log file /tmp/vxrail_ansible_idrac_adduser.log for more error details.")
+
+    LOGGER.info('iDRAC add user request_id: %s.', result_request_id)
     vxmip = module.params.get('vxmip')
     vcadmin = module.params.get('vcadmin')
     vcpasswd = module.params.get('vcpasswd')
-    LOGGER.info('Cluster Shutdown dryrun: %s.', dryrun)
     task_state = 0
     time_out = 0
     initial_timeout = module.params.get('timeout')
     LOGGER.info('Timeout setting: %s seconds.', initial_timeout)
-    # Check call to v1/requests/{request_id}
-    result_response = utils.get_request_status(vxm_ip=vxmip, vcadmin=vcadmin, vcpasswd=vcpasswd, logger=LOGGER, request_id=result_request_id)
-    if result_response == 'error':
-        module.fail_json(msg="Call v1/requests/request_id API failed,please see "
-                             "log file /tmp/vxrail_ansible_cluster_shutdown.log for more error details.")
-    else:
-        LOGGER.info('No issues found in call to v1/requests/request_id API. Begin checking status of cluster shutdown operation.')
     while task_state not in ('COMPLETED', 'FAILED') and time_out < initial_timeout:
         result_response = utils.get_request_status(vxm_ip=vxmip, vcadmin=vcadmin, vcpasswd=vcpasswd, logger=LOGGER, request_id=result_request_id)
         task_state = result_response.state
         LOGGER.info('Request_status: %s', task_state)
-        ''' call frequently to capture 'COMPLETED' status before cluster shut down'''
-        time_out = time_out + 1
-        time.sleep(1)
+        ''' call frequently to capture 'COMPLETED' status'''
+        time_out = time_out + 30
+        time.sleep(30)
     error_message = result_response.error
     if task_state == 'COMPLETED' and not error_message:
         vx_facts = {'Request_ID': result_request_id, 'Request_Status': task_state}
-        if dryrun:
-            LOGGER.info("Cluster Shutdown Dryrun Completed")
-            vx_facts_result = dict(changed=False, Cluster_Shutdown_API=vx_facts, msg="Cluster Shutdown Dryrun has completed. Please see the "
-                                                                                     "logs at /tmp/vxrail_ansible_cluster_shutdown.log for more details")
-        else:
-            LOGGER.info("Cluster Shutdown Completed")
-            vx_facts_result = dict(changed=True, Cluster_Shutdown_API=vx_facts, msg="Cluster Shutdown has completed. Please see the "
-                                                                                    "logs at /tmp/vxrail_ansible_cluster_shutdown.log for more details")
+        LOGGER.info("iDRAC user added")
+        vx_facts_result = dict(changed=True, Add_iDRAC_User_API=vx_facts, msg="iDRAC user add. Please see the logs at /tmp/vxrail_ansible_idrac_adduser.log "
+                                                                              "for more details")
     else:
-        LOGGER.info("Cluster Shutdown or Dryrun has Failed")
+        LOGGER.info("Failed to add iDRAC user")
         vx_facts = {'Request_ID': result_request_id}
-        vx_facts_result = dict(failed=True, Cluster_Shutdown_API=vx_facts, msg="Please see the /tmp/vxrail_ansible_cluster_shutdown.log "
-                                                                               "for more details")
+        vx_facts_result = dict(failed=True, Add_iDRAC_User_API=vx_facts, msg="Failed to add iDRAC user. Please see the /tmp/vxrail_ansible_idrac_adduser.log "
+                                                                             "for more details")
     LOGGER.info('Request_info: %s', result_response)
     module.exit_json(**vx_facts_result)
 

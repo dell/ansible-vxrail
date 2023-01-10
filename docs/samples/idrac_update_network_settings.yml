@@ -1,0 +1,43 @@
+---
+- name: Update iDRAC network settings
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+    sn: "{{ sn }}"
+    ip_address: "{{ ip_address }}"
+    netmask: "{{ netmask }}"
+    gateway: "{{ gateway }}"
+    vlan_id: "{{ vlan_id }}"
+
+  tasks:
+    - name: Update iDRAC network settings
+      dellemc_vxrail_idrac_updatenetwork:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        sn: "{{ sn }}"
+        ip_address: "{{ ip_address }}"
+        netmask: "{{ netmask }}"
+        gateway: "{{ gateway }}"
+        dhcp_enabled: "{{ dhcp_enabled | default(omit) }}"
+        vlan_id: "{{ vlan_id }}"
+        vlan_priority: "{{ vlan_priority | default(omit) }}"
+        timeout: "{{ timeout | default(omit) }}"
+        api_version_number: "{{ api_version_number | default(omit) }}"
+      async: 300
+      poll: 0
+      register: request_info
+
+    - name: Check if iDRAC network settings have been updated
+      async_status:
+        jid: "{{ request_info.ansible_job_id }}"
+      register: job_result
+      until: job_result.finished
+      retries: 10
+      delay: 30
+
+    - name: Display status of iDRAC network settings update request
+      debug:
+        msg:  "{{ job_result }}"

@@ -125,8 +125,8 @@ class VxRailCluster():
                                                                    module_path,
                                                                    LOGGER)
 
-        # Utility does not contain versioned methods for telemetry, use only existing one instead
-        call_string = "query_telemetry_tier_setting_information"
+        # Calls versioned method as attribute (ex: v1_query_telemetry_tier_setting_information)
+        call_string = self.api_version_string + "_query_telemetry_tier_setting_information"
         LOGGER.info("Using utility method: %s\n", call_string)
         telemetry_tier_get = getattr(api_instance, call_string)
         return telemetry_tier_get()

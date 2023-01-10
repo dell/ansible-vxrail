@@ -8,16 +8,16 @@ __metaclass__ = type
 
 DOCUMENTATION = r'''
 ---
-module: dellemc_vxrail_idrac_getusers
+module: dellemc_vxrail_system_getprecheckprofiles
 
-short_description: Get list of the iDRAC user accounts on the specified host.
+short_description: Retrieve the list precheck profiles.
 
 # If this is part of a collection, you need to use semantic versioning,
 # i.e. the version is of the form "2.5.0" and not "2.4".
-version_added: "1.4.0"
+version_added: "1.5.0"
 
 description:
-  - "This module will get list of the iDRAC user accounts on the specified host."
+- Get a list of available precheck profiles. Each profile represents a different type of precheck that you can perform.
 options:
 
   vxmip:
@@ -38,15 +38,9 @@ options:
     required: True
     type: str
 
-  sn:
-    description:
-      The serial number of the host to be queried
-    required: True
-    type: str
-
   timeout:
     description:
-      Time out value for getting iDRAC network settings, the default value is 60 seconds
+      Time out value for getting system precheck profiles information, the default value is 60 seconds
     required: false
     type: int
     default: 60
@@ -58,41 +52,44 @@ options:
     type: int
 
 author:
-  - VxRail Development Team(@VxRailDevTeam) <ansible.team@dell.com>
+    - VxRail Development Team(@VxRailDevTeam) <ansible.team@dell.com>
+
 '''
 
 EXAMPLES = r'''
-  - name: Get iDRAC User Accounts
-    dellemc_vxrail_idrac_getusers:
+  - name: Get system precheck profiles information
+    dellemc_vxrail_system_getprecheckprofiles:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
-        sn: "{{ sn }}"
         timeout: "{{ timeout }}"
         api_version_number: "{{ api_version_number }}"
 '''
 
 RETURN = r'''
-iDRAC_Users:
-  description: iDRAC user accounts
+Precheck_Profiles:
+  description: List precheck profiles
   returned: always
   type: dict
   sample: >-
-                {
-                    "id": 2,
-                    "name": "root",
-                    "privilege": "ADMIN"
-                },
-                {
-                    "id": 15,
-                    "name": "vxpsvc",
-                    "privilege": "ADMIN"
-                },
-                {
-                    "id": 16,
-                    "name": "PTAdmin",
-                    "privilege": "ADMIN"
-                }
+        {
+            "description": "This is to check if new node is compatible with the configured nodes in the cluster.
+            It is used in the scenario that user perform a validation before performing node expansion.
+            When the precheck is run by calling /v1/system/precheck with the profile, the parameter node_list is required",
+            "profile": "NODE_EXPANSION"
+        },
+        {
+            "description": "This is used to check pre-upgrade issues before performing VxRail System upgrade.
+            When the precheck is run by calling /v1/system/precheck with the profile, the parameters vxm_root_user,
+            vc_admin_user, vc_root_user, witness_spec and migration_spec are expected.",
+            "profile": "PRE_UPGRADE"
+        },
+        {
+            "description": "This is used for daily proactive precheck.  E.g. checking whether specific critical
+            VC/VSAN alarms have been triggered.   When the precheck is run by calling /v1/system/precheck with
+            the profile, the parameter vc_admin_user is optional.",
+            "profile": "PROACTIVE_HEALTH"
+        }
 '''
 
 import logging
@@ -102,9 +99,7 @@ import vxrail_ansible_utility
 from vxrail_ansible_utility.rest import ApiException
 from ansible_collections.dellemc.vxrail.plugins.module_utils import dellemc_vxrail_ansible_utils as utils
 
-
-LOG_FILE_NAME = "/tmp/vxrail_ansible_idrac_getusers.log"
-LOGGER = utils.get_logger("dellemc_vxrail_idrac_getusers", LOG_FILE_NAME, log_devel=logging.DEBUG)
+LOGGER = utils.get_logger("dellemc_vxrail_system_getprecheckprofiles", "/tmp/vxrail_ansible_system_getprecheckprofiles.log", log_devel=logging.DEBUG)
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
@@ -124,7 +119,6 @@ class VxRailCluster():
         self.timeout = module.params.get('timeout')
         self.vc_admin = module.params.get('vcadmin')
         self.vc_password = module.params.get('vcpasswd')
-        self.sn = module.params.get('sn')
         self.api_version_number = module.params.get('api_version_number')
         self.system_url = VxrailClusterUrls(self.vxm_ip)
         # Configure HTTP basic authorization: basicAuth
@@ -144,30 +138,29 @@ class VxRailCluster():
         else:
             self.api_version_string = utils.get_api_version_string(self.vxm_ip, self.api_version_number, module_path, LOGGER)
 
-        call_string = self.api_version_string + '_hosts_sn_idrac_user_get'
+        # Calls versioned method as attribute (ex: v1_system_prechecks_profiles_get)
+        call_string = self.api_version_string + '_system_prechecks_profiles_get'
         LOGGER.info("Using utility method: %s\n", call_string)
-        api_system_get = getattr(api_instance, call_string)
-        return api_system_get(self.sn)
+        system_prechecks_profiles = getattr(api_instance, call_string)
+        return system_prechecks_profiles()
 
-    def get_idrac_users(self):
+    def get_precheck_profiles(self):
         # create an instance of the API class
-        response = ''
-        api_instance = vxrail_ansible_utility.HostIDRACConfigurationApi(vxrail_ansible_utility.ApiClient(self.configuration))
+        api_instance = vxrail_ansible_utility.SystemPreCheckApi(vxrail_ansible_utility.ApiClient(self.configuration))
         try:
-            # query host idrac users information
-            response = self.get_versioned_response(api_instance, "/hosts/{sn}/idrac/users")
+            # query Prechecks Profiles API
+            response = self.get_versioned_response(api_instance, "/system/prechecks/profiles")
         except ApiException as e:
-            LOGGER.error("Exception when calling HostIDRACConfigurationApi->%s_hosts_sn_idrac_users_get: %s\n", self.api_version_string, e)
+            LOGGER.error("Exception when calling SystemPreCheckApi->%s_system_prechecks_profiles_get: %s\n", self.api_version_string, e)
             return 'error'
-        LOGGER.info("%s/hosts/{sn}/idrac/users api response: %s\n", self.api_version_string, response)
-        idrac_users = {}
-        idrac_users_list = []
+        LOGGER.info("%s/system/prechecks/profiles api response: %s\n", self.api_version_string, response)
+        PrecheckProfiles = {}
+        PrecheckProfiles_list = []
         for i in range(len(response)):
-            idrac_users['id'] = response[i].id
-            idrac_users['name'] = response[i].name
-            idrac_users['privilege'] = response[i].privilege
-            idrac_users_list.append(dict(idrac_users.items()))
-        return idrac_users_list
+            PrecheckProfiles['profile'] = response[i].profile
+            PrecheckProfiles['description'] = response[i].description
+            PrecheckProfiles_list.append(dict(PrecheckProfiles.items()))
+        return PrecheckProfiles_list
 
 
 def main():
@@ -179,19 +172,19 @@ def main():
         vxmip=dict(required=True),
         vcadmin=dict(required=True),
         vcpasswd=dict(required=True, no_log=True),
-        timeout=dict(type='int', default=60),
         api_version_number=dict(type='int'),
-        sn=dict(required=True)
+        timeout=dict(type='int', default=60)
     )
     module = AnsibleModule(
         argument_spec=module_args,
         supports_check_mode=True,
     )
-    result = VxRailCluster().get_idrac_users()
+    result = VxRailCluster().get_precheck_profiles()
     if result == 'error':
-        module.fail_json(msg="/hosts/{sn}/idrac/users API call failed, please see log file /tmp/vxrail_ansible_idrac_getusers.log for details.")
-    vx_facts = {'iDRAC_Users': result}
-    vx_facts_result = dict(changed=False, iDRAC_Users_API=vx_facts)
+        module.fail_json(msg="Call GET /system/prechecks/profiles API failed,"
+                             "please see log file /tmp/vxrail_ansible_system_getprecheckprofiles.log for more error details.")
+    vx_facts = {'Precheck_Profiles': result}
+    vx_facts_result = dict(changed=False, Precheck_Profiles_API=vx_facts)
     module.exit_json(**vx_facts_result)
 
 

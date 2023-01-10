@@ -1,0 +1,29 @@
+---
+- name: Change VxRail Manager IP Configuration
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+    new_ip: "{{ new_ip }}"
+    gateway: "{{ gateway }}"
+    netmask: "{{ netmask }}"
+    vlan_id: "{{ vlan_id }}"
+
+  tasks:
+    - name: Configure the VxRail Manager IP address
+      dellemc_vxrail_network_manager_configure:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        new_ip: "{{ new_ip }}"
+        gateway: "{{ gateway }}"
+        netmask: "{{ netmask }}"
+        vlan_id: "{{ vlan_id }}"
+        api_version_number: "{{ api_version_number | default(omit) }}"
+        timeout: "{{ timeout | default(omit) }}"
+      register: manager_change_info
+
+    - name: Display Manager Information
+      debug:
+        msg:  "{{manager_change_info}}"

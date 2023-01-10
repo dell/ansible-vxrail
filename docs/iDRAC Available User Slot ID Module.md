@@ -1,20 +1,19 @@
-**Telemetry Tier Change Module for Dell EMC VxRail**
-=========================================
-### Product Guide 1.4.0
+iDRAC Available User Slot ID Module
+=================
+### Product Guide 1.5
 
 > © 2021 Dell Inc. or its subsidiaries. All rights reserved. Dell 
 > EMC, and other trademarks are trademarks of Dell Inc. or its 
-> subsidiaries. Other trademarks may be trademarks of their respective owners.
+> subsidiaries. Other trademarks may be trademarks of their respective owners. 
 
 Synopsis
 --------
-This module will change the system's telemetry tier.
-  
+This module will retrieve a list of the available iDRAC user slot IDs.
+
 Supported Endpoints
 --------
 
-* POST /telemetry/tier
-  
+* GET /hosts/{sn}/idrac/available-user-ids
 
 Parameters
 ----------
@@ -79,7 +78,7 @@ Parameters
 <tr>
                                                             <td colspan="1">
                 <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
-                <b>tier</b>
+                <b>host_sn</b>
                 <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
                 <div style="font-size: small">
                     <span style="color: purple">type=string</span>
@@ -90,9 +89,7 @@ Parameters
                                                                                                                                                         </td>
                                                             <td>
                                         <div></div>
-                                        <div>The telemetry tier to set. Values are: LIGHT, BASIC, ADVANCED, NONE</div>
-                                                    </td>
-        </tr>
+                                        <div>The serial number of the host to be queried</div>
 <tr>
                                                             <td colspan="1">
                 <div class="ansibleOptionAnchor" id="parameter-state"></div>
@@ -110,25 +107,7 @@ Parameters
                                                                         </td>
                                                             <td>
                                         <div></div>
-                                        <div>Time out value for getting system telemetry information, the default value is 60 seconds</div>
-                                        <div></div>
-                                                    </td>
-        </tr>
-<tr>
-                                                            <td colspan="1">
-                <div class="ansibleOptionAnchor" id="parameter-state"></div>
-                <b>api_version_number</b>
-                <a class="ansibleOptionLink" href="#parameter-state" title="Permalink to this option"></a>
-                <div style="font-size: small">
-                    <span style="color: purple">type=integer</span>
-                    <br>
-                    <span style="color: red"></span>                    </div>
-                                                    </td>
-                            <td>
-                                                                        </td>
-                                                            <td>
-                                        <div></div>
-                                        <div>The version of API to call. If omitted, will use highest version on the system.</div>
+                                        <div>Time out value for getting iDRAC available user slot IDs, the default value is 60 seconds</div>
                                         <div></div>
                                                     </td>
         </tr>
@@ -136,22 +115,24 @@ Parameters
 
 Notes
 -----
-- This module calls any existing version of the /telemetry/tier API, please ensure your VxRail cluster supports this API.
-- Can check Log file /tmp/vxrail_ansible_telemetry_tier_change.log for more details about execution result.
+- Make sure your VxRail environment supports the API that you use
+- Module dellemc_vxrail_idrac_getavailableuserids.py can call any existing version of /hosts/{sn}/idrac/available-user-ids
+- Details on execution of module dellemc_vxrail_idrac_getavailableuserids.py can be checked in the logs /tmp/vxrail_ansible_idrac_getavailableuserids.log
 
 
 Examples
 --------
 
 ``` yaml+jinja
-  - name: Changes the VxRail Telemetry Tier. Version specified by api_version_number
-    dellemc_vxrail_telemetry_tier_change:
+  - name: Get iDRAC Users. Version specified by api_version_number.
+    dellemc_vxrail_idrac_getavailableuserids:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
-        tier: "{{ tier }}"
-        timeout : "{{ timeout }}"
+        host_sn: "{{ host_sn }}"
+        timeout: "{{ timeout }}"
         api_version_number: "{{ api_version_number }}"
+
 ```
 
 Return Values
@@ -185,34 +166,34 @@ The following are the fields unique to this module:
                             <tr>
                             <td colspan="3">
                 <div class="ansibleOptionAnchor" id="return-hostgroup_details"></div>
-                <b>telemetry_tier_change</b>
+                <b>IDRAC_USER_ID_API</b>
                 <a class="ansibleOptionLink" href="#return-hostgroup_details" title="Permalink to this return value"></a>
                 <div style="font-size: small">
                   <span style="color: purple">complex</span>
                                       </div>
                                 </td>
-            <td>When cluster exists.</td>
-            <td>v1</td>
+            <td>When iDRAC user slot IDs exists</td>
+            <td>always</td>
             <td>
-                                        <div>The new telemetry tier of the cluster.</div>
+                                        <div>Information about iDRAC available user slot IDs</div>
                                     <br/>
                                 </td>
         </tr>
-
-<tr>
+        <tr>
                                 <td class="elbow-placeholder">&nbsp;</td>
                             <td colspan="2">
-                <div class="ansibleOptionAnchor" id="return-hostgroup_details/num_of_initiators"></div>
-                <b>level</b>
-                <a class="ansibleOptionLink" href="#return-hostgroup_details/num_of_initiators" title="Permalink to this return value"></a>
+                <div class="ansibleOptionAnchor" id="return-hostgroup_details"></div>
+                <b>Available_User_Slot_IDs</b>
+                <a class="ansibleOptionLink" href="#return-hostgroup_details" title="Permalink to this return value"></a>
                 <div style="font-size: small">
-                  <span style="color: purple">type=string</span>
-                                 </div>
+                  <span style="color: purple">type=int</span>
+                                      </div>
                                 </td>
             <td>success</td>
             <td>v1</td>
             <td>
-                                        <div>The new telemetry tier of the system. Values: LIGHT, BASIC, ADVANCED, NONE</div>
+                                        <div>A list of iDRAC available user slot IDs</div>
+                                    <br/>
                                     <br/>
                                 </td>
         </tr>

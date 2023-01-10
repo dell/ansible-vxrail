@@ -1,0 +1,41 @@
+---
+- name: Add VxRail iDRAC User
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+    sn: "{{ sn }}"
+    name: "{{ name }}"
+    password: "{{ password }}"
+    privilege: "{{ privilege }}"
+
+  tasks:
+    - name: Add iDRAC User
+      dellemc_vxrail_idrac_adduser:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        sn: "{{ sn }}"
+        id: "{{ id | default(omit) }}"
+        name: "{{ name }}"
+        password: "{{ password }}"
+        privilege: "{{ privilege }}"
+        timeout: "{{ timeout | default(omit) }}"
+        api_version_number: "{{ api_version_number | default(omit) }}"
+      async: 300
+      poll: 0
+      register: request_info
+
+    - name: Check if iDRAC user account has been added
+      async_status:
+        jid: "{{ request_info.ansible_job_id }}"
+      register: job_result
+      until: job_result.finished
+      retries: 10
+      delay: 30
+
+    - name: Display status of iDRAC user account has been added
+      debug:
+        msg:  "{{ job_result }}"
+        

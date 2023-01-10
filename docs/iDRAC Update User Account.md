@@ -1,20 +1,19 @@
-**Telemetry Tier Change Module for Dell EMC VxRail**
-=========================================
-### Product Guide 1.4.0
+iDRAC Update User Account Information Module
+=================
+### Product Guide 1.5
 
 > © 2021 Dell Inc. or its subsidiaries. All rights reserved. Dell 
 > EMC, and other trademarks are trademarks of Dell Inc. or its 
-> subsidiaries. Other trademarks may be trademarks of their respective owners.
+> subsidiaries. Other trademarks may be trademarks of their respective owners. 
 
 Synopsis
 --------
-This module will change the system's telemetry tier.
-  
+This module will update the iDRAC user account information.
+
 Supported Endpoints
 --------
 
-* POST /telemetry/tier
-  
+* PUT /hosts/{sn}/idrac/users/{userId}
 
 Parameters
 ----------
@@ -79,7 +78,7 @@ Parameters
 <tr>
                                                             <td colspan="1">
                 <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
-                <b>tier</b>
+                <b>sn</b>
                 <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
                 <div style="font-size: small">
                     <span style="color: purple">type=string</span>
@@ -90,68 +89,139 @@ Parameters
                                                                                                                                                         </td>
                                                             <td>
                                         <div></div>
-                                        <div>The telemetry tier to set. Values are: LIGHT, BASIC, ADVANCED, NONE</div>
+                                        <div>The serial number of the host to be queried</div>
+<tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
+                <b>id</b>
+                <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=int</span>
+                    <br>
+                    <span style="color: red">required=true</span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div></div>
+                                        <div>The unique identifier of the iDRAC user. The available range is between 3 and 16.</div>
                                                     </td>
         </tr>
+        <tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
+                <b>name</b>
+                <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                    <br>
+                    <span style="color: red">required=true</span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div></div>
+                                        <div>The iDRAC user name.</div>
+                                                    </td>
+        </tr>
+        <tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
+                <b>password</b>
+                <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                    <br>
+                    <span style="color: red">required=true</span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div></div>
+                                        <div>The iDRAC user password.</div>
+                                                    </td>
+        </tr>
+        <tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
+                <b>privilege</b>
+                <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                    <br>
+                    <span style="color: red">required=true</span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div></div>
+                                        <div>The permissions (privilege) of the iDRAC user. Allowed values 'ADMIN', 'OPER', and 'READONLY'.</div>
+                                                    </td>
+        </tr>                                        
 <tr>
                                                             <td colspan="1">
                 <div class="ansibleOptionAnchor" id="parameter-state"></div>
                 <b>timeout</b>
                 <a class="ansibleOptionLink" href="#parameter-state" title="Permalink to this option"></a>
                 <div style="font-size: small">
-                    <span style="color: purple">type=integer</span>
+                    <span style="color: purple">type=int</span>
                     <br>
                     <span style="color: red"></span>                    </div>
                                                     </td>
                             <td>
                                                                                                                         <ul style="margin: 0; padding: 0"><b>Default:</b>
-                                                                                                                                                            <li>60s</li>
+                                                                                                                                                            <li>300s</li>
                                                                                 </ul>
                                                                         </td>
                                                             <td>
                                         <div></div>
-                                        <div>Time out value for getting system telemetry information, the default value is 60 seconds</div>
+                                        <div>Time out value for updating iDRAC user account information, the default value is 300 seconds</div>
                                         <div></div>
                                                     </td>
         </tr>
-<tr>
+        <tr>
                                                             <td colspan="1">
-                <div class="ansibleOptionAnchor" id="parameter-state"></div>
+                <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
                 <b>api_version_number</b>
-                <a class="ansibleOptionLink" href="#parameter-state" title="Permalink to this option"></a>
+                <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
                 <div style="font-size: small">
-                    <span style="color: purple">type=integer</span>
+                    <span style="color: purple">type=int</span>
                     <br>
-                    <span style="color: red"></span>                    </div>
+                    <span style="color: red">required=false</span>                    </div>
                                                     </td>
                             <td>
-                                                                        </td>
+                                                                                                                                                        </td>
                                                             <td>
                                         <div></div>
                                         <div>The version of API to call. If omitted, will use highest version on the system.</div>
-                                        <div></div>
                                                     </td>
         </tr>
                     </table>
 
 Notes
 -----
-- This module calls any existing version of the /telemetry/tier API, please ensure your VxRail cluster supports this API.
-- Can check Log file /tmp/vxrail_ansible_telemetry_tier_change.log for more details about execution result.
+- Make sure your VxRail environment supports the API that you use
+- Module dellemc_vxrail_idrac_update_useraccount.py can call any existing version of /hosts/{sn}/idrac/users/{userId}
+- Details on execution of module dellemc_vxrail_idrac_update_useraccount.py can be checked in the logs /tmp/vxrail_ansible_idrac_update_useraccount.log
 
 
 Examples
 --------
 
 ``` yaml+jinja
-  - name: Changes the VxRail Telemetry Tier. Version specified by api_version_number
-    dellemc_vxrail_telemetry_tier_change:
+  - name: Update iDRAC User Account Information. Version specified by api_version_number.
+    dellemc_vxrail_idrac_update_useraccount:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
-        tier: "{{ tier }}"
-        timeout : "{{ timeout }}"
+        sn: "{{ host_sn }}"
+        id: "{{ id }}"
+        name: "{{ name }}"
+        password: "{{ password }}"
+        privilege: "{{ privilege }}"
+        timeout: "{{ timeout }}"
         api_version_number: "{{ api_version_number }}"
+
 ```
 
 Return Values
@@ -185,34 +255,51 @@ The following are the fields unique to this module:
                             <tr>
                             <td colspan="3">
                 <div class="ansibleOptionAnchor" id="return-hostgroup_details"></div>
-                <b>telemetry_tier_change</b>
+                <b>Update_iDRAC_User_API</b>
                 <a class="ansibleOptionLink" href="#return-hostgroup_details" title="Permalink to this return value"></a>
                 <div style="font-size: small">
                   <span style="color: purple">complex</span>
                                       </div>
                                 </td>
-            <td>When cluster exists.</td>
-            <td>v1</td>
+            <td>When iDRAC update user request has been created.</td>
+            <td>all</td>
             <td>
-                                        <div>The new telemetry tier of the cluster.</div>
+                                        <div>The infomation of request sent to the system to update iDRAC user account.</div>
                                     <br/>
                                 </td>
         </tr>
-
-<tr>
+                                    <tr>
                                 <td class="elbow-placeholder">&nbsp;</td>
                             <td colspan="2">
-                <div class="ansibleOptionAnchor" id="return-hostgroup_details/num_of_initiators"></div>
-                <b>level</b>
-                <a class="ansibleOptionLink" href="#return-hostgroup_details/num_of_initiators" title="Permalink to this return value"></a>
+                <div class="ansibleOptionAnchor" id="return-hostgroup_details/consistent_lun"></div>
+                <b>Request_ID</b>
+                <a class="ansibleOptionLink" href="#return-hostgroup_details/consistent_lun" title="Permalink to this return value"></a>
                 <div style="font-size: small">
                   <span style="color: purple">type=string</span>
-                                 </div>
+                                      </div>
                                 </td>
             <td>success</td>
             <td>v1</td>
             <td>
-                                        <div>The new telemetry tier of the system. Values: LIGHT, BASIC, ADVANCED, NONE</div>
+                                        <div>The Request ID created by API to update the user information</div>
+                                    <br/>
+                                </td>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="return-hostgroup_details/disabled_flags"></div>
+                <b>Request_Status</b>
+                <a class="ansibleOptionLink" href="#return-hostgroup_details/disabled_flags" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                  <br>
+                  <span style="color: purple"></span>                    </div>
+                                </td>
+            <td>When iDRAC user update request is completed</td>
+            <td>v1</td>
+            <td>
+                                        <div>The status of request to update an iDRAC user account.</div>
                                     <br/>
                                 </td>
         </tr>

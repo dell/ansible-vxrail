@@ -1,22 +1,21 @@
 ---
-- name: Retrieve VxRail iDRAC Users Information
+- name: Retrieve VxRail System Precheck Profiles
   hosts: localhost
   vars:
     vxmip: "{{ vxmip }}"
     vcadmin: "{{ vcadmin }}"
     vcpasswd: "{{ vcpasswd }}"
-    sn: "{{ sn }}"
 
   tasks:
-    - name: Get iDRAC Users
-      dellemc_vxrail_idrac_getusers:
+    - name: Get System Precheck Profiles Information
+      dellemc_vxrail_system_getprecheckprofiles:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
-        sn: "{{ sn }}"
         timeout: "{{ timeout | default(omit) }}"
         api_version_number: "{{ api_version_number | default(omit) }}"
-      register: iDRAC_Users
-    - name: Display Idrac Users
+      register: precheck_profiles
+
+    - name: Display System Precheck Profiles Information
       debug:
-        msg:  "{{ iDRAC_Users }}"
+        msg:  "{{precheck_profiles}}"

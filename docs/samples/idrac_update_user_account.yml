@@ -1,0 +1,42 @@
+---
+- name: Update iDRAC user account information
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+    sn: "{{ sn }}"
+    id: "{{ id }}"
+    name: "{{ name }}"
+    password: "{{ password }}"
+    privilege: "{{ privilege }}"
+
+  tasks:
+    - name: Update iDRAC user account information
+      dellemc_vxrail_idrac_update_useraccount:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        sn: "{{ sn }}"
+        id: "{{ id }}"
+        name: "{{ name }}"
+        privilege: "{{ privilege }}"
+        password: "{{ password }}"
+        timeout: "{{ timeout | default(omit) }}"
+        api_version_number: "{{ api_version_number | default(omit) }}"
+      async: 300
+      poll: 0
+      register: request_info
+
+    - name: Check if iDRAC user account information has been updated
+      async_status:
+        jid: "{{ request_info.ansible_job_id }}"
+      register: job_result
+      until: job_result.finished
+      retries: 100
+      delay: 30
+
+    - name: Display if iDRAC user account information has been updated
+      debug:
+        msg:  "{{ job_result }}"
+        

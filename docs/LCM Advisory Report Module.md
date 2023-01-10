@@ -1,19 +1,20 @@
-**Telemetry Tier Change Module for Dell EMC VxRail**
+**LCM Advisory Report Module for Dell EMC VxRail**
 =========================================
-### Product Guide 1.4.0
+### Product Guide 1.5.0
 
 > © 2021 Dell Inc. or its subsidiaries. All rights reserved. Dell 
 > EMC, and other trademarks are trademarks of Dell Inc. or its 
-> subsidiaries. Other trademarks may be trademarks of their respective owners.
+> subsidiaries. Other trademarks may be trademarks of their respective owners. 
 
 Synopsis
 --------
-This module will change the system's telemetry tier.
+This module will generate an advisory report that contains information about all online and local lifecycle management updates.
   
 Supported Endpoints
 --------
 
-* POST /telemetry/tier
+* POST /lcm/advisory-report
+* GET /requests/{id}
   
 
 Parameters
@@ -76,23 +77,7 @@ Parameters
                                         <div>The password for the administrator account provided in vcadmin</div>
                                                     </td>
         </tr>
-<tr>
-                                                            <td colspan="1">
-                <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
-                <b>tier</b>
-                <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
-                <div style="font-size: small">
-                    <span style="color: purple">type=string</span>
-                    <br>
-                    <span style="color: red">required=true</span>                    </div>
-                                                    </td>
-                            <td>
-                                                                                                                                                        </td>
-                                                            <td>
-                                        <div></div>
-                                        <div>The telemetry tier to set. Values are: LIGHT, BASIC, ADVANCED, NONE</div>
-                                                    </td>
-        </tr>
+
 <tr>
                                                             <td colspan="1">
                 <div class="ansibleOptionAnchor" id="parameter-state"></div>
@@ -105,12 +90,12 @@ Parameters
                                                     </td>
                             <td>
                                                                                                                         <ul style="margin: 0; padding: 0"><b>Default:</b>
-                                                                                                                                                            <li>60s</li>
+                                                                                                                                                            <li>1800 seconds(30 minutes)</li>
                                                                                 </ul>
                                                                         </td>
                                                             <td>
                                         <div></div>
-                                        <div>Time out value for getting system telemetry information, the default value is 60 seconds</div>
+                                        <div>Time out value for LCM advisory report, the default value is 1800 seconds(30 minutes).</div>
                                         <div></div>
                                                     </td>
         </tr>
@@ -136,24 +121,24 @@ Parameters
 
 Notes
 -----
-- This module calls any existing version of the /telemetry/tier API, please ensure your VxRail cluster supports this API.
-- Can check Log file /tmp/vxrail_ansible_telemetry_tier_change.log for more details about execution result.
+- Make sure your VxRail environment supports the API that you use
+- Module dellemc_vxrail_lcm_advisory_report.py calls any existing version of Post /lcm/advisory-report API
+- Details on execution of module dellemc_vxrail_lcm_advisory_report.py can be checked in the logs /tmp/vxrail_ansible_lcm_advisory_report.log
 
 
 Examples
 --------
 
 ``` yaml+jinja
-  - name: Changes the VxRail Telemetry Tier. Version specified by api_version_number
-    dellemc_vxrail_telemetry_tier_change:
+ - name: Start to generate lcm advisory report, version specified by api_version_number
+    dellemc_vxrail_lcm_advisory_report:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
-        tier: "{{ tier }}"
         timeout : "{{ timeout }}"
         api_version_number: "{{ api_version_number }}"
+        
 ```
-
 Return Values
 -------------
 
@@ -161,13 +146,12 @@ The following are the fields unique to this module:
 
 <table border=0 cellpadding=0 class="documentation-table">
     <tr>
-        <th colspan="3">Key</th>
+        <th colspan="2">Key</th>
         <th>Returned</th>
-        <th>Minimum API Version</th>
         <th width="100%">Description</th>
     </tr>
                 <tr>
-                            <td colspan="3">
+                            <td colspan="2">
                 <div class="ansibleOptionAnchor" id="return-changed"></div>
                 <b>changed</b>
                 <a class="ansibleOptionLink" href="#return-changed" title="Permalink to this return value"></a>
@@ -176,47 +160,55 @@ The following are the fields unique to this module:
                                       </div>
                                 </td>
             <td>always</td>
-            <td>all</td>
             <td>
                                         <div>Whether or not the resource has changed.</div>
                                     <br/>
                                 </td>
         </tr>
                             <tr>
-                            <td colspan="3">
-                <div class="ansibleOptionAnchor" id="return-hostgroup_details"></div>
-                <b>telemetry_tier_change</b>
-                <a class="ansibleOptionLink" href="#return-hostgroup_details" title="Permalink to this return value"></a>
+                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="return-host_details"></div>
+                <b>LCM_Advisory_Report</b>
+                <a class="ansibleOptionLink" href="#return-host_details" title="Permalink to this return value"></a>
                 <div style="font-size: small">
-                  <span style="color: purple">complex</span>
+                  <span style="color: purple">type=list</span>
                                       </div>
                                 </td>
-            <td>When cluster exists.</td>
-            <td>v1</td>
+            <td>When LCM Advisory Report generates</td>
             <td>
-                                        <div>The new telemetry tier of the cluster.</div>
+                                        <div>LCM Advisory Report Status</div>
                                     <br/>
                                 </td>
         </tr>
-
-<tr>
+                                    <tr>
                                 <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="2">
-                <div class="ansibleOptionAnchor" id="return-hostgroup_details/num_of_initiators"></div>
-                <b>level</b>
-                <a class="ansibleOptionLink" href="#return-hostgroup_details/num_of_initiators" title="Permalink to this return value"></a>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-host_details/bw_limit"></div>
+                <b>request_id</b>
+                <a class="ansibleOptionLink" href="#return-host_details/bw_limit" title="Permalink to this return value"></a>
                 <div style="font-size: small">
                   <span style="color: purple">type=string</span>
-                                 </div>
+                                      </div>
                                 </td>
             <td>success</td>
-            <td>v1</td>
             <td>
-                                        <div>The new telemetry tier of the system. Values: LIGHT, BASIC, ADVANCED, NONE</div>
-                                    <br/>
+                                        <div>LCM Advisory Report (long-running) request returns a requestId.</div>
+<tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-host_details/bw_limit"></div>
+                <b>status</b>
+                <a class="ansibleOptionLink" href="#return-host_details/bw_limit" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                                      </div>
                                 </td>
-        </tr>
-                    </table>
+            <td>success</td>
+            <td>
+                                        <div>The current state of the execution</div>
+
+
+</table>
 
 Authors
 -------

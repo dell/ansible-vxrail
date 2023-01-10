@@ -1,6 +1,6 @@
-**Telemetry Tier Change Module for Dell EMC VxRail**
+**Cluster Expansion Cancel Module for Dell EMC VxRail**
 =========================================
-### Product Guide 1.4.0
+### Product Guide 1.5.0
 
 > © 2021 Dell Inc. or its subsidiaries. All rights reserved. Dell 
 > EMC, and other trademarks are trademarks of Dell Inc. or its 
@@ -8,12 +8,12 @@
 
 Synopsis
 --------
-This module will change the system's telemetry tier.
+This module will cancel a failed cluster expansion.
   
 Supported Endpoints
 --------
 
-* POST /telemetry/tier
+* POST /cluster/expansion/cancel
   
 
 Parameters
@@ -78,23 +78,6 @@ Parameters
         </tr>
 <tr>
                                                             <td colspan="1">
-                <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
-                <b>tier</b>
-                <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
-                <div style="font-size: small">
-                    <span style="color: purple">type=string</span>
-                    <br>
-                    <span style="color: red">required=true</span>                    </div>
-                                                    </td>
-                            <td>
-                                                                                                                                                        </td>
-                                                            <td>
-                                        <div></div>
-                                        <div>The telemetry tier to set. Values are: LIGHT, BASIC, ADVANCED, NONE</div>
-                                                    </td>
-        </tr>
-<tr>
-                                                            <td colspan="1">
                 <div class="ansibleOptionAnchor" id="parameter-state"></div>
                 <b>timeout</b>
                 <a class="ansibleOptionLink" href="#parameter-state" title="Permalink to this option"></a>
@@ -110,7 +93,7 @@ Parameters
                                                                         </td>
                                                             <td>
                                         <div></div>
-                                        <div>Time out value for getting system telemetry information, the default value is 60 seconds</div>
+                                        <div>Time out value for cancelling the failed cluster expansion, the default value is 60 seconds</div>
                                         <div></div>
                                                     </td>
         </tr>
@@ -136,20 +119,19 @@ Parameters
 
 Notes
 -----
-- This module calls any existing version of the /telemetry/tier API, please ensure your VxRail cluster supports this API.
-- Can check Log file /tmp/vxrail_ansible_telemetry_tier_change.log for more details about execution result.
+- This module calls any existing version of the /cluster/expansion/cancel API, please ensure your VxRail cluster supports this API.
+- Can check Log file /tmp/vxrail_ansible_cluster_expansion_cancel.log for more details about execution result.
 
 
 Examples
 --------
 
 ``` yaml+jinja
-  - name: Changes the VxRail Telemetry Tier. Version specified by api_version_number
-    dellemc_vxrail_telemetry_tier_change:
+  - name: Cancels a failed cluster expansion. Version specified by api_version_number
+    dellemc_cluster_expansion_cancel:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
-        tier: "{{ tier }}"
         timeout : "{{ timeout }}"
         api_version_number: "{{ api_version_number }}"
 ```
@@ -185,34 +167,32 @@ The following are the fields unique to this module:
                             <tr>
                             <td colspan="3">
                 <div class="ansibleOptionAnchor" id="return-hostgroup_details"></div>
-                <b>telemetry_tier_change</b>
+                <b>expansion_cancel</b>
                 <a class="ansibleOptionLink" href="#return-hostgroup_details" title="Permalink to this return value"></a>
                 <div style="font-size: small">
                   <span style="color: purple">complex</span>
                                       </div>
                                 </td>
-            <td>When cluster exists.</td>
+            <td>When cluster exists and an ongoing cluster expansion is in the FAILED state.</td>
             <td>v1</td>
             <td>
-                                        <div>The new telemetry tier of the cluster.</div>
+                                        <div>Returns success message if cancel is successful.</div>
                                     <br/>
                                 </td>
-        </tr>
-
-<tr>
+        <tr>
                                 <td class="elbow-placeholder">&nbsp;</td>
                             <td colspan="2">
                 <div class="ansibleOptionAnchor" id="return-hostgroup_details/num_of_initiators"></div>
-                <b>level</b>
+                <b>operation_successful</b>
                 <a class="ansibleOptionLink" href="#return-hostgroup_details/num_of_initiators" title="Permalink to this return value"></a>
                 <div style="font-size: small">
-                  <span style="color: purple">type=string</span>
+                  <span style="color: purple">type=boolean</span>
                                  </div>
                                 </td>
             <td>success</td>
             <td>v1</td>
             <td>
-                                        <div>The new telemetry tier of the system. Values: LIGHT, BASIC, ADVANCED, NONE</div>
+                                        <div>Returns True if cancel is successful.</div>
                                     <br/>
                                 </td>
         </tr>

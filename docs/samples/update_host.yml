@@ -1,0 +1,36 @@
+---
+- name: Update the geographical location of a host
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+    host_sn: "{{ host_sn }}"
+
+  tasks:
+    - name: Update the host location information
+      dellemc_vxrail_hosts_update:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        host_sn: "{{ host_sn }}"
+        rack_name: "{{ rack_name | default(omit) }}"
+        order_number: "{{ order_number | default(omit) }}"
+        timeout: "{{ timeout | default(omit) }}"
+        api_version_number: "{{ api_version_number | default(omit) }}"
+      async: 1800
+      poll: 0
+      register: request_info
+
+    - name: Check if host update job is completed
+      async_status:
+        jid: "{{ request_info.ansible_job_id }}"
+      register: job_result
+      until: job_result.finished
+      retries: 100
+      delay: 30
+
+    - name: Display Host Update Information
+      debug:
+        msg:  "{{ job_result }}"
+        

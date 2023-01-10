@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # Copyright 2021 Dell Inc. or its subsidiaries. All Rights Reserved
 
+
 # Copyright: (c) 2018, Terry Jones <terry.jones@example.org>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 from __future__ import (absolute_import, division, print_function)
@@ -8,16 +9,16 @@ __metaclass__ = type
 
 DOCUMENTATION = r'''
 ---
-module: dellemc_vxrail_idrac_getusers
+module: dellemc_vxrail_idrac_getavailableuserids
 
-short_description: Get list of the iDRAC user accounts on the specified host.
+short_description: Get a list of iDRAC user slot IDs
 
 # If this is part of a collection, you need to use semantic versioning,
 # i.e. the version is of the form "2.5.0" and not "2.4".
-version_added: "1.4.0"
+version_added: "1.5.0"
 
 description:
-  - "This module will get list of the iDRAC user accounts on the specified host."
+- This module will retrieve a list of the available iDRAC user slot IDs.
 options:
 
   vxmip:
@@ -38,61 +39,61 @@ options:
     required: True
     type: str
 
-  sn:
+  host_sn:
     description:
-      The serial number of the host to be queried
+      Serial number of the host to retrieve specific host information
     required: True
     type: str
 
   timeout:
     description:
-      Time out value for getting iDRAC network settings, the default value is 60 seconds
-    required: false
+      Time out value for getting the list of iDRAC user slot IDs, the default value is 60 seconds
+    required: False
     type: int
     default: 60
 
   api_version_number:
     description:
       A specific version number to use for the API call. If not included, will use the highest version by default
-    required: false
+    required: False
     type: int
 
 author:
-  - VxRail Development Team(@VxRailDevTeam) <ansible.team@dell.com>
+    - VxRail Development Team(@VxRailDevTeam) <ansible.team@dell.com>
+
 '''
 
 EXAMPLES = r'''
-  - name: Get iDRAC User Accounts
-    dellemc_vxrail_idrac_getusers:
+  - name: Retrieve available user slot IDs
+    dellemc_vxrail_idrac_getavailableuserids:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
-        sn: "{{ sn }}"
+        host_sn: "{{ host_sn }}"
         timeout: "{{ timeout }}"
         api_version_number: "{{ api_version_number }}"
 '''
 
 RETURN = r'''
-iDRAC_Users:
-  description: iDRAC user accounts
+IDRAC_USER_ID_API:
+  description: Get a list of iDRAC user slot IDs
   returned: always
   type: dict
   sample: >-
-                {
-                    "id": 2,
-                    "name": "root",
-                    "privilege": "ADMIN"
-                },
-                {
-                    "id": 15,
-                    "name": "vxpsvc",
-                    "privilege": "ADMIN"
-                },
-                {
-                    "id": 16,
-                    "name": "PTAdmin",
-                    "privilege": "ADMIN"
-                }
+    {
+            "Available_User_Slot_IDs": [
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                12,
+                13,
+                14
+            ]
+    }
 '''
 
 import logging
@@ -102,9 +103,8 @@ import vxrail_ansible_utility
 from vxrail_ansible_utility.rest import ApiException
 from ansible_collections.dellemc.vxrail.plugins.module_utils import dellemc_vxrail_ansible_utils as utils
 
-
-LOG_FILE_NAME = "/tmp/vxrail_ansible_idrac_getusers.log"
-LOGGER = utils.get_logger("dellemc_vxrail_idrac_getusers", LOG_FILE_NAME, log_devel=logging.DEBUG)
+LOGGER = utils.get_logger("dellemc_vxrail_idrac_getavailableuserids", "/tmp/vxrail_ansible_idrac_getavailableuserids.log",
+                          log_devel=logging.DEBUG)
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
@@ -124,7 +124,7 @@ class VxRailCluster():
         self.timeout = module.params.get('timeout')
         self.vc_admin = module.params.get('vcadmin')
         self.vc_password = module.params.get('vcpasswd')
-        self.sn = module.params.get('sn')
+        self.host_sn = module.params.get('host_sn')
         self.api_version_number = module.params.get('api_version_number')
         self.system_url = VxrailClusterUrls(self.vxm_ip)
         # Configure HTTP basic authorization: basicAuth
@@ -142,32 +142,27 @@ class VxRailCluster():
             self.api_version_string = utils.get_highest_api_version_string(self.vxm_ip, module_path, LOGGER)
             self.api_version_number = int(self.api_version_string.split('v')[1])
         else:
-            self.api_version_string = utils.get_api_version_string(self.vxm_ip, self.api_version_number, module_path, LOGGER)
+            self.api_version_string = utils.get_api_version_string(self.vxm_ip, self.api_version_number, module_path,
+                                                                   LOGGER)
 
-        call_string = self.api_version_string + '_hosts_sn_idrac_user_get'
+        # Calls versioned method as attribute (ex: v1_hosts_sn_idrac_id_get)
+        call_string = self.api_version_string + "_hosts_sn_idrac_id_get"
         LOGGER.info("Using utility method: %s\n", call_string)
-        api_system_get = getattr(api_instance, call_string)
-        return api_system_get(self.sn)
+        callhome_mode_change = getattr(api_instance, call_string)
+        return callhome_mode_change(self.host_sn)
 
-    def get_idrac_users(self):
+    def get_idrac_id(self):
         # create an instance of the API class
-        response = ''
         api_instance = vxrail_ansible_utility.HostIDRACConfigurationApi(vxrail_ansible_utility.ApiClient(self.configuration))
         try:
-            # query host idrac users information
-            response = self.get_versioned_response(api_instance, "/hosts/{sn}/idrac/users")
+            # Get iDRAC available user slot IDs
+            response = self.get_versioned_response(api_instance, "/hosts/{sn}/idrac/available-user-ids")
         except ApiException as e:
-            LOGGER.error("Exception when calling HostIDRACConfigurationApi->%s_hosts_sn_idrac_users_get: %s\n", self.api_version_string, e)
+            LOGGER.error("Exception when calling HostIDRACConfigurationApi->%s_hosts_sn_idrac_id_get: %s\n", self.api_version_string,
+                         e)
             return 'error'
-        LOGGER.info("%s/hosts/{sn}/idrac/users api response: %s\n", self.api_version_string, response)
-        idrac_users = {}
-        idrac_users_list = []
-        for i in range(len(response)):
-            idrac_users['id'] = response[i].id
-            idrac_users['name'] = response[i].name
-            idrac_users['privilege'] = response[i].privilege
-            idrac_users_list.append(dict(idrac_users.items()))
-        return idrac_users_list
+        LOGGER.info("%s/hosts/{sn}/idrac/available-user-ids api response: %s\n", self.api_version_string, response)
+        return response
 
 
 def main():
@@ -179,19 +174,20 @@ def main():
         vxmip=dict(required=True),
         vcadmin=dict(required=True),
         vcpasswd=dict(required=True, no_log=True),
-        timeout=dict(type='int', default=60),
+        host_sn=dict(type='str', required=True),
         api_version_number=dict(type='int'),
-        sn=dict(required=True)
+        timeout=dict(type='int', default=60)
     )
     module = AnsibleModule(
         argument_spec=module_args,
         supports_check_mode=True,
     )
-    result = VxRailCluster().get_idrac_users()
+    result = VxRailCluster().get_idrac_id()
     if result == 'error':
-        module.fail_json(msg="/hosts/{sn}/idrac/users API call failed, please see log file /tmp/vxrail_ansible_idrac_getusers.log for details.")
-    vx_facts = {'iDRAC_Users': result}
-    vx_facts_result = dict(changed=False, iDRAC_Users_API=vx_facts)
+        module.fail_json(msg="Call GET /hosts/{sn}/idrac/available-user-ids API failed,"
+                             "please see log file /tmp/vxrail_ansible_idrac_getavailableuserids.log for more error details.")
+    vx_facts = {"Available_User_Slot_IDs": result}
+    vx_facts_result = dict(changed=True, IDRAC_USER_ID_API=vx_facts)
     module.exit_json(**vx_facts_result)
 
 
