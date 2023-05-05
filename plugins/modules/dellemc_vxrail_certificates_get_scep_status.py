@@ -93,7 +93,7 @@ import json
 CLASS = "CertificatesApi"
 API = "Certificates_SCEP_Status_Get"
 FUNC = API.lower()
-URI = "/cluster/certificates/scep/status"
+URI = "Get /cluster/certificates/scep/status"
 RESULT = "SCEP_Status"
 LOG_FILE_NAME = f"/tmp/vxrail_ansible_{FUNC}.log"
 LOGGER = utils.get_logger(

@@ -11,14 +11,14 @@ DOCUMENTATION = r'''
 ---
 module: dellemc_vxrail_certificates_removecertificate
 
-short_description: Return a fingerprint list of the certificates that stored in VXM trust store.
+short_description: Remove the certificate according to the fingerprint.
 
 # If this is part of a collection, you need to use semantic versioning,
 # i.e. the version is of the form "2.5.0" and not "2.4".
 version_added: "1.4.0"
 
 description:
-- This module will return a fingerprint list.
+- This module will let you remove certificates from VXM trust store according to fingerprint.
 options:
 
   vxmip:
@@ -144,7 +144,7 @@ class VxRailSystem():
         api_instance = vxrail_ansible_utility.CertificatesApi(vxrail_ansible_utility.ApiClient(self.configuration))
         try:
             # Invoke api
-            self.get_versioned_response(api_instance, "/trust-store/certificates/{fingerprint}")
+            self.get_versioned_response(api_instance, "DELETE /trust-store/certificates/{fingerprint}")
         except ApiException as e:
             LOGGER.error("Exception when calling CertificatesApi->%s_trust_store_certificates_delete: %s\n", str(self.api_version_string), e)
             return 'error'

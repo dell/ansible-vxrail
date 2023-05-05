@@ -145,7 +145,7 @@ class VxRailRemoveSatelliteNode():
         api_instance = vxrail_ansible_utility.SatelliteNodeExpansionApi(vxrail_ansible_utility.ApiClient(self.configuration))
         try:
             # start Node Removal
-            self.get_versioned_response(api_instance, "/host-folder/hosts/{sn}", host_sn)
+            self.get_versioned_response(api_instance, "Delete /host-folder/hosts/{sn}", host_sn)
         except ApiException as e:
             LOGGER.error("Exception when calling SatelliteNodeRemoveApi->remove_satellite_host: %s\n", e)
             return "error"

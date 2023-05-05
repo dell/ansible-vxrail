@@ -1,0 +1,56 @@
+---
+- name: Perform a system precheck
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+    profile: "{{ profile }}"
+    vxm_root_username: "{{ vxm_root_username }}"
+    vxm_root_password: "{{ vxm_root_password }}"
+    vc_root_username: "{{ vc_root_username }}"
+    vc_root_password: "{{ vc_root_password }}"
+    #Optional, only for witness node,this part need to be specified.
+    witness_username: "{{ witness_username_var | default(omit) }}"
+    witness_password: "{{ witness_password_var | default(omit) }}"
+    auto_witness_upgrade: "{{ auto_witness_upgrade_var | default(omit) }}"
+    #Optional, only for the vCenter upgrade, this part need to be specified.
+    vc_temporary_ip: "{{ vc_temporary_ip_var | default(omit) }}"
+    vc_temporary_gateway: "{{ vc_temporary_gateway_var | default(omit) }}"
+    vc_temporary_netmask: "{{ vc_temporary_netmask_var | default(omit) }}"
+    #Optional, only for the NODE_EXPANSION precheck , this part need to be specified.
+    sn: "{{ sn_var | default(omit) }}"
+    version: "{{ version_var | default(omit) }}"
+    ip: "{{ ip_var | default(omit) }}"
+    root_user: "{{ root_user_var | default(omit) }}"
+    root_password: "{{ root_password_var | default(omit) }}"
+
+  tasks:
+    - name: Perform system precheck
+      dellemc_vxrail_system_precheck:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        profile: "{{ profile }}"
+        vxm_root_username: "{{ vxm_root_username }}"
+        vxm_root_password: "{{ vxm_root_password }}"
+        vc_root_username: "{{ vc_root_username }}"
+        vc_root_password: "{{ vc_root_password }}"
+        witness_username: "{{ witness_username | default(omit) }}"
+        witness_password: "{{ witness_password | default(omit) }}"
+        auto_witness_upgrade: "{{ auto_witness_upgrade | default(omit) }}"
+        vc_temporary_ip: "{{ vc_temporary_ip | default(omit) }}"
+        vc_temporary_gateway: "{{ vc_temporary_gateway | default(omit) }}"
+        vc_temporary_netmask: "{{ vc_temporary_netmask | default(omit) }}"
+        sn: "{{ sn | default(omit) }}"
+        version: "{{ version | default(omit) }}"
+        ip: "{{ ip | default(omit) }}"
+        root_user: "{{ root_user | default(omit) }}"
+        root_password: "{{ root_password | default(omit) }}"
+        timeout: "{{ timeout | default(omit) }}"
+        api_version_number: "{{ api_version_number | default(omit) }}"
+      register: request_id
+
+    - name: Display the request id of system precheck
+      debug:
+        msg:  "{{ request_id }}"

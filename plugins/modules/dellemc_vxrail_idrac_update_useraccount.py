@@ -187,7 +187,7 @@ class VxRailCluster():
         request_body = self.create_user_json()
         try:
             # put host idrac user information
-            response = self.get_versioned_response(api_instance, "/hosts/{sn}/idrac/users/{userId}", request_body, self.sn, self.id)
+            response = self.get_versioned_response(api_instance, "PUT /hosts/{sn}/idrac/users/{userId}", request_body, self.sn, self.id)
         except ApiException as e:
             LOGGER.error("Exception when calling HostIDRACConfigurationApi->%s_hosts_sn_idrac_user_id_put: %s\n", self.api_version_string, e)
             return 'error'

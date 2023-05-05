@@ -148,7 +148,7 @@ class VxRailCluster():
         api_instance = vxrail_ansible_utility.SystemNetworkApi(vxrail_ansible_utility.ApiClient(self.configuration))
         try:
             # put internet mode information
-            response = self.get_versioned_response(api_instance, "/system/internet-mode", internet_mode_info)
+            response = self.get_versioned_response(api_instance, "PUT /system/internet-mode", internet_mode_info)
         except ApiException as e:
             LOGGER.error("Exception when calling SystemNetworkApi->%s_system_internet_mode_put: %s\n",
                          self.api_version_string, e)

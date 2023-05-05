@@ -18,7 +18,7 @@ short_description: Return the API status code.
 version_added: "1.4.0"
 
 description:
-- This module will return a fingerprint list.
+- This module will let you to import certificates into the VXM trust store according to parameters list.
 options:
 
   vxmip:
@@ -147,7 +147,7 @@ class VxRailSystem():
         certs_info = {'certs': self.certs}
         try:
             # Invoke api
-            self.get_versioned_response(api_instance, "/trust-store/certificates", certs_info)
+            self.get_versioned_response(api_instance, "POST /trust-store/certificates", certs_info)
         except ApiException as e:
             LOGGER.error("Exception when calling CertificatesApi->%s_trust_store_certificates_post: %s\n", str(self.api_version_string), e)
             return 'error'

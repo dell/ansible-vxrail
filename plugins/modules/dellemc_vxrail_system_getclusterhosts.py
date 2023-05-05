@@ -162,7 +162,7 @@ class VxRailHosts():
             vxrail_ansible_utility.ApiClient(self.configuration))
         try:
             # get all cluster hosts information
-            response = self.get_versioned_response(api_instance, "/system/cluster-hosts")
+            response = self.get_versioned_response(api_instance, "GET /system/cluster-hosts")
         except ApiException as e:
             LOGGER.error(
                 "Exception when calling SystemInformationApi->%s_system_cluster_hosts_get: %s\n", self.api_version_string, e)

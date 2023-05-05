@@ -159,7 +159,7 @@ class VxRailCluster():
             vxrail_ansible_utility.ApiClient(self.configuration))
         try:
             # get segment health information
-            response = self.get_versioned_response(api_instance, '/cluster/layer3/segment/{segment-label}/health', self.segment_label)
+            response = self.get_versioned_response(api_instance, 'Get /cluster/layer3/segment/{segment-label}/health', self.segment_label)
         except ApiException as e:
             LOGGER.error(
                 "Exception when calling NetworkSegmentManagementApi->%s_cluster_layer3_segment_health_post: %s\n",

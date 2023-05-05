@@ -1,0 +1,29 @@
+---
+- name: Upload customized component via upload api
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+    customized_component: "{{ customized_component }}"
+    checksum: "{{ checksum }}"
+    type: "{{ type }}"
+    component_bundle: "{{ component_bundle }}"
+
+  tasks:
+    - name: Start to upload customized component
+      dellemc_vxrail_lcm_customized_component:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        customized_component: "{{ customized_component }}"
+        checksum: "{{ checksum }}"
+        type: "{{ type }}"
+        component_bundle: "{{ component_bundle }}"
+        timeout: "{{ timeout | default(omit) }}"
+        api_version_number: "{{ api_version_number | default(omit) }}"
+      register: upload_lcm_customized_component
+
+    - name: Display upload customized component result
+      debug:
+        msg: "{{ upload_lcm_customized_component }}"

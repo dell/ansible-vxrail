@@ -73,10 +73,10 @@ options:
 
   timeout:
     description:
-      Time out value for host folder upgrade, the default value is 1800 seconds
+      Time out value for host folder upgrade, the default value is 21600 seconds
     required: false
     type: int
-    default: 1800
+    default: 21600
 
   api_version_number:
     description:
@@ -199,9 +199,13 @@ class VxRailHostFolder():
         }
 
         if self.failure_rate is not None:
+            if 'control' not in request_body:
+                request_body['control'] = {}
             request_body['control']['failure_rate'] = self.failure_rate
 
         if self.concurrent_size is not None:
+            if 'control' not in request_body:
+                request_body['control'] = {}
             request_body['control']['concurrent_size'] = self.concurrent_size
 
         # create an instance of the API class
@@ -209,7 +213,7 @@ class VxRailHostFolder():
             vxrail_ansible_utility.ApiClient(self.configuration))
         try:
             # start host-folder upgrade
-            response = self.start_versioned_upgrade(api_instance, "/lcm/host-folder/upgrade", request_body)
+            response = self.start_versioned_upgrade(api_instance, "Post /lcm/host-folder/upgrade", request_body)
         except ApiException as e:
             LOGGER.error("Exception when calling HostFolderLCMApi->%s_lcm_folders_upgrade: %s\n", self.api_version_string, e)
             return 'error'
@@ -252,7 +256,7 @@ def main():
         target_version=dict(required=True),
         failure_rate=dict(type='int'),
         concurrent_size=dict(type='int'),
-        timeout=dict(type='int', default=30 * 60),
+        timeout=dict(type='int', default=30 * 720),
         api_version_number=dict(type='int')
     )
 
@@ -267,7 +271,8 @@ def main():
             exception=ANOTHER_LIBRARY_IMPORT_ERROR)
 
     if not VxRailHostFolder().validate():
-        module.fail_json(msg='The Parameters of hosts are not legal. '
+        module.fail_json(msg='The Parameters of hosts are not legal. Only when the action is UPGRADE, '
+                             'the variables failure_rate_var and concurrent_size_var are needed. '
                              'Please see the /tmp/vxrail_ansible_host_folder_upgrade.log for more details')
 
     LOGGER.info('----Start host folder upgrade.----')

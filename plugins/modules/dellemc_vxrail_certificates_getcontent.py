@@ -41,7 +41,7 @@ options:
 
   fingerprint:
     description:
-      Target certificate you want to remove
+      Target certificate's fingerprint you want to retrieve content from
     required: True
     type: str
 
@@ -145,7 +145,7 @@ class VxRailSystem():
         api_instance = vxrail_ansible_utility.CertificatesApi(vxrail_ansible_utility.ApiClient(self.configuration))
         try:
             # Invoke api
-            response = self.get_versioned_response(api_instance, "/trust-store/certificates/{fingerprint}")
+            response = self.get_versioned_response(api_instance, "GET /trust-store/certificates/{fingerprint}")
         except ApiException as e:
             LOGGER.error("Exception when calling CertificatesApi->%s_trust_store_certificates_get: %s\n", str(self.api_version_string), e)
             return 'error'

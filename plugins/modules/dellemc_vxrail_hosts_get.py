@@ -342,7 +342,7 @@ class VxRailHosts():
             vxrail_ansible_utility.ApiClient(self.configuration))
         try:
             # get all hosts information
-            response = self.get_versioned_response(api_instance, "/hosts")
+            response = self.get_versioned_response(api_instance, "Get /hosts")
         except ApiException as e:
             LOGGER.error("Exception when calling HostInformationApi->%s_hosts_get: %s\n", self.api_version_string, e)
             return 'error'
@@ -627,6 +627,15 @@ class VxRailHosts():
         gpu_info['slot'] = data.slot
         gpu_info['vendor_description'] = data.vendor_description
         gpu_info['supplier'] = data.supplier
+        # Only found in v12+
+        if self.api_version_number >= 12:
+            gpu_info['marketing_name'] = data.marketing_name
+            gpu_info['firmware_version'] = data.firmware_version
+            gpu_info['gpu_health'] = data.gpu_health
+            gpu_info['gpu_part_number'] = data.gpu_part_number
+            gpu_info['gpu_state'] = data.gpu_state
+            gpu_info['last_update_time'] = data.last_update_time
+            gpu_info['serial_number'] = data.serial_number
         return gpu_info
 
 

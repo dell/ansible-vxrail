@@ -149,7 +149,7 @@ class VxRailCluster():
         api_instance = vxrail_ansible_utility.CallHomeModeApi(vxrail_ansible_utility.ApiClient(self.configuration))
         try:
             # Change CallHome Mode
-            response = self.get_versioned_response(api_instance, "/callhome/mode")
+            response = self.get_versioned_response(api_instance, "Put /callhome/mode")
         except ApiException as e:
             LOGGER.error("Exception when calling CallHomeModeApi->%s_calhome_mode_put: %s\n", self.api_version_string,
                          e)

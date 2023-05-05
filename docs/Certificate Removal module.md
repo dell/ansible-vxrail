@@ -8,7 +8,7 @@
 
 Synopsis
 --------
-This module will let you to remove certificates from VXM trust store according to fingerprint.
+This module will let you remove certificates from VXM trust store according to fingerprint.
   
 Supported Endpoints
 --------
@@ -118,16 +118,16 @@ Parameters
 
 Notes
 -----
-- This module calls /trust-store/certificates/{fingerprint} api, make sure your VxRail environment support this api. 
-- Can check Log file /tmp/vxrail_ansible_getcertcontent.log for more details about execution result.
+- This module calls DELETE /trust-store/certificates/{fingerprint} api, make sure your VxRail environment support this api. 
+- Can check Log file /tmp/vxrail_ansible_removecertificate.log for more details about execution result.
 
 
 Examples
 --------
 
 ``` yaml+jinja
-    - name: Get a fingerprint list with api
-      dellemc_vxrail_certificates_getcontent:
+    - name: Remove the certificate according to the fingerprint
+      dellemc_vxrail_certificates_removecertificate:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
