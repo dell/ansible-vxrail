@@ -318,7 +318,7 @@ class VxRailCluster():
         request_body = self.create_segment_json()
         try:
             # post cluster layer3 segment label
-            response = self.get_versioned_response(api_instance, '/cluster/layer3/segment/{segment-label}', request_body, self.segment_label)
+            response = self.get_versioned_response(api_instance, 'Post /cluster/layer3/segment/{segment-label}', request_body, self.segment_label)
         except ApiException as e:
             LOGGER.error(
                 "Exception when calling NetworkSegmentManagementApi->%s_cluster_layer3_segment_label_post: %s\n",

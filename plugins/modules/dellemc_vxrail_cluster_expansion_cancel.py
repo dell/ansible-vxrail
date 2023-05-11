@@ -139,7 +139,7 @@ class VxRailCluster():
             vxrail_ansible_utility.ApiClient(self.configuration))
         try:
             # post expansion cancellation
-            response = self.get_versioned_response(api_instance, "/cluster/expansion/cancel")
+            response = self.get_versioned_response(api_instance, "POST /cluster/expansion/cancel")
         except ApiException as e:
             LOGGER.error("Exception when calling ClusterExpansionApi->%s_cluster_expansion_cancel_post: %s\n",
                          self.api_version_string, e)

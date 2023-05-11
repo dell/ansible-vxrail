@@ -182,7 +182,7 @@ class VxRailCluster():
         api_instance = vxrail_ansible_utility.ClusterInformationApi(vxrail_ansible_utility.ApiClient(self.configuration))
         try:
             # query cluster information
-            response = self.get_versioned_response(api_instance, "/cluster")
+            response = self.get_versioned_response(api_instance, "GET /cluster")
         except ApiException as e:
             LOGGER.error("Exception when calling ClusterInformationApi->%s_cluster_get: %s\n", self.api_version_string, e)
             return 'error'

@@ -1,0 +1,36 @@
+---
+- name: Retry Failed LCM Upgrade
+  hosts: localhost
+  vars:
+    ### Required ###
+    vxmip_var: "{{ vxmip }}"
+    vcadmin_var: "{{ vcadmin }}"
+    vcpasswd_var: "{{ vcpasswd }}"
+    ### Optional for script, specify the API version to perform the upgrade. If not specified, the default value is the highest available version. ###
+    api_version_number_var: "{{ api_version_number | default(omit) }}"
+    ### Optional for script, specify the timeout for the upgrade. If not specified, the default value is 6 hours. ###
+    timeout_var: "{{ timeout | default(omit) }}"
+
+
+  tasks:
+    - name: Retry the LCM Upgrade
+      dellemc_vxrail_lcm_retry:
+        vxmip: "{{ vxmip_var }}"
+        vcadmin: "{{ vcadmin_var }}"
+        vcpasswd: "{{ vcpasswd_var}}"
+        api_version_number: "{{ api_version_number_var | default(omit) }}"
+        timeout: "{{ timeout_var | default(omit) }}"
+      async: 25200
+      poll: 0
+      register: lcm_status
+    - name: Check if LCM Retry is completed...The upgrade is still ongoing.
+      async_status:
+        jid: "{{ lcm_status.ansible_job_id }}"
+      register: job_result
+      until: job_result.finished
+      retries: 210
+      delay: 120
+    - name: Get LCM Result
+      debug:
+        msg:  "{{job_result}}"
+

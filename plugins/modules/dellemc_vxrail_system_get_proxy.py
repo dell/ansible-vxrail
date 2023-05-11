@@ -144,7 +144,7 @@ class VxRailCluster():
         api_instance = vxrail_ansible_utility.SystemProxySettingsApi(vxrail_ansible_utility.ApiClient(self.configuration))
         try:
             # query proxy information
-            response = self.get_versioned_response(api_instance, "/system/proxy")
+            response = self.get_versioned_response(api_instance, "GET /system/proxy")
         except ApiException as e:
             LOGGER.error("Exception when calling SystemProxySettingsApi->%s_system_proxy_get: %s\n", self.api_version_string, e)
             return 'error'

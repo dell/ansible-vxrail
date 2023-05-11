@@ -152,7 +152,7 @@ class VxRailCluster():
         api_instance = vxrail_ansible_utility.HostIDRACConfigurationApi(vxrail_ansible_utility.ApiClient(self.configuration))
         try:
             # query host idrac network information
-            response = self.get_versioned_response(api_instance, "/hosts/{sn}/idrac/network")
+            response = self.get_versioned_response(api_instance, "GET /hosts/{sn}/idrac/network")
         except ApiException as e:
             LOGGER.error("Exception when calling HostIDRACConfigurationApi->%s_hosts_sn_idrac_network_get: %s\n", self.api_version_string, e)
             return 'error'

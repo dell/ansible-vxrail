@@ -264,7 +264,7 @@ class VxRailCluster():
         api_instance = vxrail_ansible_utility.ClusterExpansionApi(vxrail_ansible_utility.ApiClient(self.configuration))
         try:
             # start cluster expansion validation
-            response = self.get_versioned_response_validate(api_instance, "/cluster/expansion/validate", request_body)
+            response = self.get_versioned_response_validate(api_instance, "Post /cluster/expansion/validate", request_body)
         except ApiException as e:
             LOGGER.error("Exception when calling ClusterExpansionApi->%s_cluster_expansion_validate_post: %s\n", self.api_version_string, e)
             return 'error'

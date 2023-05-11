@@ -139,7 +139,7 @@ class VxRailSupport():
         api_instance = vxrail_ansible_utility.SupportAccountApi(vxrail_ansible_utility.ApiClient(self.configuration))
         try:
             # query v1 support account
-            response = self.get_versioned_response(api_instance, '/support/account')
+            response = self.get_versioned_response(api_instance, 'Get /support/account')
         except ApiException as e:
             LOGGER.error("Exception when calling SupportAccountApi->%s_support_account_get: %s\n",
                          self.api_version_string, e)

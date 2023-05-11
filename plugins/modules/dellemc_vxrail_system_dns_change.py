@@ -171,7 +171,7 @@ class VxRailCluster():
             vxrail_ansible_utility.ApiClient(self.configuration))
         try:
             # post dns information
-            response = self.get_versioned_response(api_instance, "/system/dns", dns_change_info)
+            response = self.get_versioned_response(api_instance, "POST /system/dns", dns_change_info)
         except ApiException as e:
             LOGGER.error("Exception when calling SystemInformationApi->%s_system_dns_post: %s\n",
                          self.api_version_string, e)

@@ -15,7 +15,7 @@ short_description: Perform a upgrade with lcm upgrade api
 
 # If this is part of a collection, you need to use semantic versioning,
 # i.e. the version is of the form "2.5.0" and not "2.4".
-version_added: "1.4.0"
+version_added: "1.6.0"
 
 description:
 - This module will perform the LCM full upgrade or partial upgrade via v4+ API of all VxRail software and hardware.
@@ -420,7 +420,7 @@ class VxRailLCM():
             # create an instance of the API class
             api_instance = vxrail_ansible_utility.LCMUpgradeApi(vxrail_ansible_utility.ApiClient(self.configuration))
             # start LCM with versioned api
-            api_version_string = self.get_versioned_response('/lcm/upgrade')
+            api_version_string = self.get_versioned_response('Post /lcm/upgrade')
             call_string = 'upgrade_' + api_version_string
             LOGGER.info("LCM upgrade version: %s", call_string)
             lcm_upgrade = getattr(api_instance, call_string)

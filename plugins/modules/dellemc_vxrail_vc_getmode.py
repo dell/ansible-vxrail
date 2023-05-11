@@ -135,7 +135,7 @@ class VxRailCluster():
         api_instance = vxrail_ansible_utility.VCenterServerModeApi(vxrail_ansible_utility.ApiClient(self.configuration))
         try:
             # query VC Mode information
-            response = self.get_versioned_response(api_instance, "/vc/mode")
+            response = self.get_versioned_response(api_instance, "GET /vc/mode")
         except ApiException as e:
             LOGGER.error("Exception when calling VCenterServerModeApi->%s_vc_vc_mode_get: %s\n", self.api_version_string, e)
             return 'error'

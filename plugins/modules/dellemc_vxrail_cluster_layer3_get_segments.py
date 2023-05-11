@@ -139,7 +139,7 @@ class VxRailCluster():
             vxrail_ansible_utility.ApiClient(self.configuration))
         try:
             # get segments list
-            response = self.get_versioned_response(api_instance, '/cluster/layer3/segments')
+            response = self.get_versioned_response(api_instance, 'Get /cluster/layer3/segments')
         except ApiException as e:
             LOGGER.error(
                 "Exception when calling NetworkSegmentManagementApi->%s_cluster_layer3_segments_get: %s\n",

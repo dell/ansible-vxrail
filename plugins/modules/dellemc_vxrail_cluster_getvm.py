@@ -147,7 +147,7 @@ class VxRailCluster():
         api_instance = vxrail_ansible_utility.VirtualMachineInformationApi(vxrail_ansible_utility.ApiClient(self.configuration))
         try:
             # query cluster system virtual machines information
-            response = self.get_versioned_response(api_instance, "/cluster/system-virtual-machines")
+            response = self.get_versioned_response(api_instance, "GET /cluster/system-virtual-machines")
         except ApiException as e:
             LOGGER.error("Exception when calling VirtualMachineInformationApi->%s_cluster_system_virtual_machines_get: %s\n", self.api_version_string, e)
             return 'error'

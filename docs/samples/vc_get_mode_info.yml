@@ -5,8 +5,6 @@
     vxmip: "{{ vxmip }}"
     vcadmin: "{{ vcadmin }}"
     vcpasswd: "{{ vcpasswd }}"
-    timeout: "{{ timeout }}"
-    api_version_number: "{{ api_version_number }}"
 
   tasks:
     - name: Get VC Mode Information

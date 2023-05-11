@@ -137,7 +137,7 @@ class VxRailCluster():
         api_instance = vxrail_ansible_utility.TelemetryReportingApi(vxrail_ansible_utility.ApiClient(self.configuration))
         try:
             # query telemetry information
-            response = self.get_versioned_response(api_instance, "/telemetry/tier")
+            response = self.get_versioned_response(api_instance, "GET /telemetry/tier")
         except ApiException as e:
             LOGGER.error("Exception when calling TelemetryReportingApi->query_telemetry_tier_setting_information: %s\n", e)
             return 'error'

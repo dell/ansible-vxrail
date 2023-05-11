@@ -213,7 +213,7 @@ class VxRailCluster():
         # create an instance of the API class
         api_instance = vxrail_ansible_utility.CertificatesApi(vxrail_ansible_utility.ApiClient(self.configuration))
         try:
-            response = self.get_versioned_response(api_instance, '/certificates/import-vxm')
+            response = self.get_versioned_response(api_instance, 'POST /certificates/import-vxm')
         except ApiException as e:
             LOGGER.error("Exception when calling CertificatesApi->%s_certificates_import_vxm_post: %s\n", self.api_version_string, e)
             return 'error'

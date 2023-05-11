@@ -147,7 +147,7 @@ class VxRailSystem():
         api_instance = vxrail_ansible_utility.SystemInformationApi(vxrail_ansible_utility.ApiClient(self.configuration))
         try:
             # query API
-            response = self.get_versioned_response(api_instance, "/system/ntp")
+            response = self.get_versioned_response(api_instance, "GET /system/ntp")
         except ApiException as e:
             LOGGER.error("Exception when calling SystemInformationApi->%s_system_ntp_get: %s\n", self.api_version_string, e)
             return 'error'

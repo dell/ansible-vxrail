@@ -158,7 +158,7 @@ class VxRailDay1():
             vxrail_ansible_utility.ApiClient(self.configuration))
         try:
             # start day1 FirstRun(ex:v1_system_initialize_post)
-            call_string = self.get_versioned_response(api_instance, '/system/initialize') + '_system_initialize_post'
+            call_string = self.get_versioned_response(api_instance, 'Post /system/initialize') + '_system_initialize_post'
             LOGGER.info("Using utility method: %s\n", call_string)
             api_initialize_post = getattr(api_instance, call_string)
             response = api_initialize_post(request_body)

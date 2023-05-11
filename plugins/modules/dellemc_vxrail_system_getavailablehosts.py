@@ -145,7 +145,7 @@ class VxRailSystem():
         api_instance = vxrail_ansible_utility.SystemInformationApi(vxrail_ansible_utility.ApiClient(self.configuration))
         try:
             # query system available hosts api
-            response = self.get_versioned_response(api_instance, "/system/available-hosts")
+            response = self.get_versioned_response(api_instance, "GET /system/available-hosts")
         except ApiException as e:
             LOGGER.error("Exception when calling SystemInformationApi->%s_system_available_hosts_get: %s\n", self.api_version_string, e)
             return 'error'

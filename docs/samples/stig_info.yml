@@ -1,0 +1,21 @@
+---
+- name: Retrieve information related to STIG regulations with GET /stig/info APIs
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+
+  tasks:
+    - name: Get information related to STIG regulations
+      dellemc_vxrail_stig_get_info:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        timeout: "{{ timeout | default(omit) }}"
+        api_version_number: "{{ api_version_number | default(omit) }}"
+      register: stig_info
+
+    - name: Display information related to STIG regulations
+      debug:
+        msg:  "{{stig_info}}"
