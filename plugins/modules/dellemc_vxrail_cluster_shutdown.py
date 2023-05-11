@@ -144,7 +144,7 @@ class VxRailCluster():
         api_instance = vxrail_ansible_utility.ClusterShutdownApi(vxrail_ansible_utility.ApiClient(self.configuration))
         try:
             # start cluster shutdown
-            response = self.get_versioned_response(api_instance, "/cluster/shutdown")
+            response = self.get_versioned_response(api_instance, "POST /cluster/shutdown")
         except ApiException as e:
             LOGGER.error("Exception when calling ClusterShutdownApi->%s_cluster_shutdown_post: %s\n", self.api_version_string, e)
             return 'error'

@@ -133,7 +133,7 @@ class VxRailCluster():
         # create an instance of the API class
         api_instance = vxrail_ansible_utility.BandwidthThrottlingInformationApi(vxrail_ansible_utility.ApiClient(self.configuration))
         try:
-            response = self.get_versioned_response(api_instance, 'system/bandwidth-throttling')
+            response = self.get_versioned_response(api_instance, 'Get system/bandwidth-throttling')
         except ApiException as e:
             LOGGER.error("Exception when calling BandwidthThrottlingInformationApi->get_%s_system_bandwidth_throttling: %s\n", self.api_version_string, e)
             return 'error'

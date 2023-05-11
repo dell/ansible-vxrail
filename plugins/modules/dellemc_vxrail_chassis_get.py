@@ -303,7 +303,7 @@ class VxRailHosts():
             vxrail_ansible_utility.ApiClient(self.configuration))
         try:
             # get all chassis information
-            response = self.get_versioned_response(api_instance, '/chassis')
+            response = self.get_versioned_response(api_instance, 'GET /chassis')
         except ApiException as e:
             LOGGER.error("Exception when calling ChassisInformationApi->%s_chassis_get: %s\n", self.api_version_string, e)
             return 'error'
@@ -319,7 +319,7 @@ class VxRailHosts():
             vxrail_ansible_utility.ApiClient(self.configuration))
         try:
             # get specific chassis information by chassis id
-            response = self.get_versioned_response(api_instance, '/chassis/{chassis_id}')
+            response = self.get_versioned_response(api_instance, 'GET /chassis/{chassis_id}')
         except ApiException as e:
             LOGGER.error("Exception when calling ChassisInformationApi->%s/chassis/{chassis_id}: %s\n", self.api_version_string, e)
             return 'error'

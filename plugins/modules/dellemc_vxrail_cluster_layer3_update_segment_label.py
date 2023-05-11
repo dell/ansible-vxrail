@@ -155,7 +155,7 @@ class VxRailCluster():
             vxrail_ansible_utility.ApiClient(self.configuration))
         try:
             # patch cluster layer3 segment label
-            response = self.get_versioned_response(api_instance, '/cluster/layer3/segment/{segment-label}', self.new_segment_label_body,
+            response = self.get_versioned_response(api_instance, 'Patch /cluster/layer3/segment/{segment-label}', self.new_segment_label_body,
                                                    self.segment_label)
         except ApiException as e:
             LOGGER.error(

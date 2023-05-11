@@ -173,7 +173,7 @@ class VxRailCluster():
         api_instance = vxrail_ansible_utility.HostInformationApi(vxrail_ansible_utility.ApiClient(self.configuration))
         try:
             # start host shutdown
-            response = self.get_versioned_response(api_instance, "/hosts/{sn}/shutdown")
+            response = self.get_versioned_response(api_instance, "POST /hosts/{sn}/shutdown")
         except ApiException as e:
             LOGGER.error("Exception when calling HostInformationApi->%s_host_sn_shutdown_post: %s\n", self.api_version_string, e)
             return 'error'

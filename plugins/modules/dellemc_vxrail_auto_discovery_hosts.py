@@ -372,7 +372,7 @@ class VxRailAutoDiscoveryHosts():
             vxrail_ansible_utility.ApiClient(self.configuration))
         try:
             # get all auto discovery  hosts information
-            response = self.get_versioned_response(api_instance, 'system/initialize/nodes')
+            response = self.get_versioned_response(api_instance, 'GET /system/initialize/nodes')
         except ApiException as response:
             LOGGER.error("Exception when calling VxRailInstallationApi->%s_system_initialize_nodes_get %s\n", self.api_version_string, response)
             return 'error'

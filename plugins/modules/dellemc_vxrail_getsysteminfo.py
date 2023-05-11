@@ -187,8 +187,11 @@ class VxRailSystem():
             self.api_version_number = int(self.api_version_string.split('v')[1])
         else:
             self.api_version_string = utils.get_api_version_string(self.vxm_ip, self.api_version_number, module_path, LOGGER)
-
-        call_string = 'query_vx_rail_manager_system_information_' + self.api_version_string
+        # Version 1 has different function format.
+        if self.api_version_number == 1:
+            call_string = 'v1_query_vx_rail_manager_system_information'
+        else:
+            call_string = 'query_vx_rail_manager_system_information_' + self.api_version_string
         LOGGER.info("Using utility method: %s\n", call_string)
         api_system_get = getattr(api_instance, call_string)
         return api_system_get()
@@ -200,7 +203,7 @@ class VxRailSystem():
         api_instance = vxrail_ansible_utility.SystemInformationApi(vxrail_ansible_utility.ApiClient(self.configuration))
         try:
             # query system information
-            response = self.get_versioned_response(api_instance, "/system")
+            response = self.get_versioned_response(api_instance, "GET /system")
         except ApiException as e:
             LOGGER.error("Exception when calling SystemInformationApi->query_vx_rail_manager_system_information_%s: %s\n", self.api_version_string, e)
             return 'error'
@@ -281,6 +284,7 @@ class VxRailSystem():
         else:
             systemInfos['shared_storage'] = []
             shared_storage = {}
+            systemInfo_shared_storage_list = []
             shared_storage['datastore_id'] = utils.field_not_found(4)
             shared_storage['name'] = utils.field_not_found(4)
             shared_storage['type'] = utils.field_not_found(4)

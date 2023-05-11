@@ -138,7 +138,7 @@ class VxRailCluster():
         api_instance = vxrail_ansible_utility.CallHomeOperationsApi(vxrail_ansible_utility.ApiClient(self.configuration))
         try:
             # Disable CallHome Server
-            response = self.get_versioned_response(api_instance, "/callhome/disable")
+            response = self.get_versioned_response(api_instance, "Delete /callhome/disable")
         except ApiException as e:
             LOGGER.error("Exception when calling CallHomeOperationsApi->%s_callhome_disable_delete: %s\n", self.api_version_string,
                          e)

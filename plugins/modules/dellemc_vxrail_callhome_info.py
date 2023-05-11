@@ -147,7 +147,7 @@ class VxRailCallhome():
         api_instance = vxrail_ansible_utility.CallHomeOperationsApi(vxrail_ansible_utility.ApiClient(self.configuration))
         try:
             # query callhome information
-            response = self.get_versioned_response(api_instance, "/callhome/info")
+            response = self.get_versioned_response(api_instance, "Get /callhome/info")
         except ApiException as e:
             LOGGER.error("Exception when calling CallHomeOperationsApi->%s_callhome_info_get: %s\n", self.api_version_string, e)
             return 'error'

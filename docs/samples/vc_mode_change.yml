@@ -1,0 +1,34 @@
+---
+- name: Change the VxRail vCenter mode
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+    vc_mode: "{{ vc_mode }}"
+    psc_mode: "{{ psc_mode }}"
+
+  tasks:
+    - name: Start to change the VxRail vCenter mode
+      dellemc_vxrail_vc_mode_change:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        vc_mode: "{{ vc_mode }}"
+        psc_mode: "{{ psc_mode }}"
+        timeout: "{{ timeout | default(omit) }}"
+        api_version_number: "{{ api_version_number | default(omit) }}"
+      async: 1800
+      poll: 0
+      register: vc_mode_info
+    - name: Check if VC mode is converted...The conversion is still ongoing.
+      async_status:
+        jid: "{{ vc_mode_info.ansible_job_id }}"
+      register: job_result
+      until: job_result.finished
+      retries: 100
+      delay: 30
+    - name: Get changing VC mode Result
+      debug:
+        msg: "{{job_result}}"
+

@@ -149,7 +149,7 @@ class VxRailCluster():
         api_instance = vxrail_ansible_utility.SystemPreCheckApi(vxrail_ansible_utility.ApiClient(self.configuration))
         try:
             # query Prechecks Profiles API
-            response = self.get_versioned_response(api_instance, "/system/prechecks/profiles")
+            response = self.get_versioned_response(api_instance, "GET /system/prechecks/profiles")
         except ApiException as e:
             LOGGER.error("Exception when calling SystemPreCheckApi->%s_system_prechecks_profiles_get: %s\n", self.api_version_string, e)
             return 'error'

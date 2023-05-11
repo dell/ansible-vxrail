@@ -212,7 +212,7 @@ class VxRailLCMPRCHECK():
         api_instance = vxrail_ansible_utility.LCMPreCheckApi(vxrail_ansible_utility.ApiClient(self.configuration))
         try:
             # start LCM Precheck
-            response = self.get_versioned_response(api_instance, "/lcm/precheck", request_body)
+            response = self.get_versioned_response(api_instance, "Post /lcm/precheck", request_body)
         except ApiException as e:
             LOGGER.error("Exception when calling LCMPreCheckApi->precheck_%s: %s\n", self.api_version_string, e)
             return 'error'

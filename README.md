@@ -15,7 +15,7 @@ This table provides information about the software prerequisites for the Ansible
 
 | **Ansible Modules** | **VxRail version** | **Python version** | **Python library (VxRail Ansible Utility) version** | **Ansible Version** |
 |---------------------|----------------|--------------------|----------------------------|-------------|
-| v1.5.0 | 7.0.410 | 3.7, 3.8 | 1.5.0 | 2.9 and 2.10 |
+| v2.0.0 | 7.0.450, 8.0.010 | 3.7, 3.8 | 2.0.0 | 2.9 and 2.10 |
 
   * Please follow VxRail Ansible Utility installation instructions on [VxRail Ansible Utility Documentation](https://github.com/dell/ansible-vxrail-utility)
 
@@ -67,8 +67,10 @@ The modules are written in such a way that all requests are idempotent and hence
   * [iDRAC Update User Account Information Module](./docs/iDRAC%20Update%20User%20Account.md)
   * [iDRAC Users module](./docs/iDRAC%20Users%20Module.md)
   * [LCM Advisory Meta Bundle module](./docs/LCM%20Advisory%20Meta%20Bundle%20Module.md)
+  * [LCM Upload Customized Component](./docs/LCM%20Upload%20Customized%20Component.md)
   * [LCM Advisory Report module](./docs/LCM%20Advisory%20Report%20Module.md)
   * [LCM module](./docs/LCM%20Module.md)
+  * [LCM Retry module](./docs/LCM%20Retry%20Module.md)
   * [Host Folder LCM](./docs/Host%20Folder%20LCM.md)
   * [LCM Precheck module](./docs/LCM%20Precheck%20Module.md)
   * [Network throttling Change module](./docs/Bandwidth%20Throttling%20Change%20Module.md)
@@ -77,6 +79,7 @@ The modules are written in such a way that all requests are idempotent and hence
   * [Remove Host module](./docs/Remove%20Host%20Module.md)
   * [Satellite Node Expansion module](./docs/Satellite%20Node%20Expansion%20Module.md)
   * [Satellite Node Remove module](./docs/Satellite%20Node%20Remove%20Module.md)
+  * [Stig Information module](./docs/Stig%20Information%20Module.md)
   * [Support Account module](./docs/Support%20Account%20Module.md)
   * [System Available Hosts module](./docs/System%20Available%20Hosts%20Module.md)
   * [System Cluster Hosts module](./docs/System%20Cluster%20Hosts%20Module.md)
@@ -88,7 +91,8 @@ The modules are written in such a way that all requests are idempotent and hence
   * [System module](./docs/System%20Module.md)
   * [System NTP Change module](./docs/NTP%20Change%20Module.md)
   * [System NTP Information module](./docs/NTP%20Information%20Module.md)
-  * [System Prechecks Profiles Module](./docs/System%20Prechecks%20Profiles%20Module.md)
+  * [System Precheck module](./docs/System%20Precheck%20Module.md)
+  * [System Prechecks Profiles module](./docs/System%20Prechecks%20Profiles%20Module.md)
   * [System Precheck Version module](./docs/System%20Precheck%20Version%20Module.md)
   * [System Proxy Information module](./docs/System%20Proxy%20Information%20Module.md)
   * [System Set Proxy module](./docs/System%20Set%20Proxy%20Module.md)
@@ -98,6 +102,7 @@ The modules are written in such a way that all requests are idempotent and hence
   * [System Virtual Machines module](./docs/System%20Virtual%20Machines%20Module.md)
   * [Telemetry Tier Change module](./docs/Telemetry%20Tier%20Change%20Module.md)
   * [Telemetry Tier Info module](./docs/Telemetry%20Tier%20Information%20Module.md)
+  * [VC Mode Change module](./docs/VC%20Mode%20Change%20Module.md)
   * [VC Mode Information module](./docs/VC%20Mode%20Information%20Module.md)
 
 

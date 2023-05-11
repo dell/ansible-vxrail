@@ -236,7 +236,7 @@ class VxRailCluster():
         api_instance = vxrail_ansible_utility.SystemCredentialsApi(
             vxrail_ansible_utility.ApiClient(self.configuration))
         try:
-            response = self.get_versioned_response(api_instance, 'system/validate-credential', credential_info)
+            response = self.get_versioned_response(api_instance, 'POST /system/validate-credential', credential_info)
         except ApiException as e:
             LOGGER.error("Exception when calling SystemCredentialsApi->%s_system_validate_credential_post: %s\n",
                          self.api_version_string, e)

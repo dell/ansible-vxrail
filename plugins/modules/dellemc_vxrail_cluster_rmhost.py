@@ -183,7 +183,7 @@ class VxRailRemoveHost():
         api_instance = vxrail_ansible_utility.HostRemovalApi(vxrail_ansible_utility.ApiClient(self.configuration))
         try:
             # start Node Removal
-            response = self.get_versioned_response(api_instance, "/cluster/remove-host", request_body)
+            response = self.get_versioned_response(api_instance, "POST /cluster/remove-host", request_body)
         except ApiException as e:
             LOGGER.error("Exception when calling HostRemovalApi->%s_cluster_remove_host_post: %s\n", self.api_version_string, e)
             return 'error'

@@ -129,17 +129,18 @@ class VxRailSystem():
         else:
             self.api_version_string = utils.get_api_version_string(self.vxm_ip, self.api_version_number, module_path, LOGGER)
 
+        # Calls versioned method as attribute (ex: v1_trust_store_certificates_get)
         call_string = self.api_version_string + '_trust_store_certificates_get'
         LOGGER.info("Using utility method: %s\n", call_string)
-        api_chassis_get = getattr(api_instance, call_string)
-        return api_chassis_get()
+        trust_store_certificates_get = getattr(api_instance, call_string)
+        return trust_store_certificates_get()
 
     def invoke_public_api(self) -> dict:
         # create an instance of the API class
         api_instance = vxrail_ansible_utility.CertificatesApi(vxrail_ansible_utility.ApiClient(self.configuration))
         try:
             # Invoke api
-            response = self.get_versioned_response(api_instance, "/trust-store/certificates/fingerprints")
+            response = self.get_versioned_response(api_instance, "GET /trust-store/certificates/fingerprints")
         except ApiException as e:
             LOGGER.error("Exception when calling CertificatesApi->%s_trust_store_certificates_get: %s\n", str(self.api_version_string), e)
             return 'error'

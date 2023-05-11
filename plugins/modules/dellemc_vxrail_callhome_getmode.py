@@ -136,7 +136,7 @@ class VxRailCluster():
         api_instance = vxrail_ansible_utility.CallHomeModeApi(vxrail_ansible_utility.ApiClient(self.configuration))
         try:
             # query CallHome Mode information
-            response = self.get_versioned_response(api_instance, "/callhome/mode")
+            response = self.get_versioned_response(api_instance, "Get /callhome/mode")
         except ApiException as e:
             LOGGER.error("Exception when calling CallHomeModeApi->calhome_mode_get: %s\n", e)
             return 'error'

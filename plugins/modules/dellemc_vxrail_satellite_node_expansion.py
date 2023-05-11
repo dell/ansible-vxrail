@@ -344,7 +344,7 @@ class VxRailSatelliteNode():
             vxrail_ansible_utility.ApiClient(self.configuration))
         try:
             # cancel cluster expansion
-            self.get_versioned_response_cancel_expansion(api_instance, "/host-folder/expansion/cancel")
+            self.get_versioned_response_cancel_expansion(api_instance, "Post /host-folder/expansion/cancel")
         except ApiException as e:
             LOGGER.error(
                 "Exception when calling SatelliteNodeExpansionApi->%s_satellite_node_expansion_cancel_post: %s\n", self.api_version_string, e)
@@ -372,7 +372,7 @@ class VxRailSatelliteNode():
             vxrail_ansible_utility.ApiClient(self.configuration))
         try:
             # start cluster expansion
-            response = self.get_versioned_response_start_expansion(api_instance, "/host-folder/expansion", request_body)
+            response = self.get_versioned_response_start_expansion(api_instance, "Post /host-folder/expansion", request_body)
         except ApiException as e:
             LOGGER.error("Exception when calling SatelliteNodeExpansionApi->%s_satellite_node_expansion_post: %s\n", self.api_version_string, e)
             return 'error'
