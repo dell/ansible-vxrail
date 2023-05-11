@@ -123,8 +123,8 @@ Install the python sdk named ['VxRail Ansible Utility'](https://github.com/dell/
 ## Using Collections
 
   * In order to use any Ansible module, ensure that the importation of the proper FQCN (Fully Qualified Collection Name) must be embedded in the playbook. For example,
- <br>collections:
- <br>&nbsp;&nbsp;&nbsp; - dellemc.vxrail
+<br>collections:
+<br>&nbsp;&nbsp;&nbsp; - dellemc.vxrail
   * To generate Ansible documentation for a specific module, embed the FQCN before the module name. For example,
 <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; *ansible-doc dellemc.vxrail.dellemc_vxrail_cluster*
 
