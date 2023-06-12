@@ -73,10 +73,10 @@ options:
 
   timeout:
     description:
-      Time out value for host folder upgrade, the default value is 21600 seconds
+      Time out value for host folder upgrade, the default value is 3600 seconds
     required: false
     type: int
-    default: 21600
+    default: 3600
 
   api_version_number:
     description:
@@ -256,7 +256,7 @@ def main():
         target_version=dict(required=True),
         failure_rate=dict(type='int'),
         concurrent_size=dict(type='int'),
-        timeout=dict(type='int', default=30 * 720),
+        timeout=dict(type='int', default=30 * 120),
         api_version_number=dict(type='int')
     )
 

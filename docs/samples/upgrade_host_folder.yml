@@ -24,7 +24,7 @@
         failure_rate: "{{ failure_rate_var }}"
         concurrent_size: "{{ concurrent_size_var }}"
         api_version_number: "{{ api_version_number | default(omit) }}"
-      async: 21600
+      async: 1800
       poll: 0
       register: upgrade_status
 
@@ -33,7 +33,7 @@
         jid: "{{ upgrade_status.ansible_job_id }}"
       register: job_result
       until: job_result.finished
-      retries: 720
+      retries: 120
       delay: 30
 
     - name: Get host folder upgrade Result

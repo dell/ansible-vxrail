@@ -322,7 +322,6 @@ class VxRailHosts():
             self.api_version_number = int(self.api_version_string.split('v')[1])
         else:
             self.api_version_string = utils.get_api_version_string(self.vxm_ip, self.api_version_number, module_path, LOGGER)
-
         if self.host_sn == "all":
             # Calls versioned method as attribute (ex: v1_hosts_get)
             call_string = self.api_version_string + '_hosts_get'
@@ -387,12 +386,22 @@ class VxRailHosts():
         host_info['operational_status'] = data.operational_status
         host_info['power_status'] = data.power_status
 
+        # Only found dpu part in 8.0 train, now in current release with 8.0.010, it's v9 version.
+        if self.api_version_number == 9:
+            if data.dpus:
+                host_info['dpus'] = self._get_info_list(self._generate_dpu_info_from_response_data, data.dpus)
+            else:
+                host_info['dpus'] = []
+
         if self.api_version_number >= 10:
             host_info['part_number'] = data.part_number
             if data.gpus:
                 host_info['gpus'] = self._get_info_list(self._generate_gpu_info_from_response_data, data.gpus)
             else:
                 host_info['gpus'] = []
+
+        host_info['tpm_version'] = data.tpm_version if hasattr(data, 'tpm_version') else utils.field_not_found(14)
+        host_info['tpm_status'] = data.tpm_status if hasattr(data, 'tpm_status') else utils.field_not_found(14)
 
         # Only found in v5+
         if self.api_version_number >= 5:
@@ -489,8 +498,8 @@ class VxRailHosts():
         nic_info['slot'] = data.slot
         nic_info['firmware_family_version'] = data.firmware_family_version
 
-        # Only found in v8+
-        if self.api_version_number >= 8:
+        # Only found in v8+, but v9 don't support these field
+        if self.api_version_number >= 8 and self.api_version_number != 9:
             nic_info['wwnn'] = data.wwnn
             nic_info['wwpn'] = data.wwpn
         else:
@@ -637,6 +646,14 @@ class VxRailHosts():
             gpu_info['last_update_time'] = data.last_update_time
             gpu_info['serial_number'] = data.serial_number
         return gpu_info
+
+    def _generate_dpu_info_from_response_data(self, data):
+        dpu_info = {}
+        dpu_info['sn'] = data.sn
+        dpu_info['model'] = data.model
+        dpu_info['os_name'] = data.os_name
+        dpu_info['health'] = data.health
+        return dpu_info
 
 
 def main():

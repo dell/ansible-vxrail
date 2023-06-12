@@ -15,7 +15,7 @@ This table provides information about the software prerequisites for the Ansible
 
 | **Ansible Modules** | **VxRail version** | **Python version** | **Python library (VxRail Ansible Utility) version** | **Ansible Version** |
 |---------------------|----------------|--------------------|----------------------------|-------------|
-| v2.0.0 | 7.0.450, 8.0.010 | 3.7, 3.8 | 2.0.0 | 2.9 and 2.10 |
+| v1.3.0 | 7.0.240+ | <br> 3.6.x <br> 3.7.x | 1.3.0 | 2.9 and 2.10 |
 
   * Please follow VxRail Ansible Utility installation instructions on [VxRail Ansible Utility Documentation](https://github.com/dell/ansible-vxrail-utility)
 
@@ -86,6 +86,7 @@ The modules are written in such a way that all requests are idempotent and hence
   * [System Disable Proxy module](./docs/System%20Disable%20Proxy%20Module.md)
   * [System DNS Change module](./docs/DNS%20Change%20Module.md)
   * [System DNS Information module](./docs/DNS%20Information%20Module.md)
+  * [System Get Management Accounts module](./docs/System%20Get%20Management%20Accounts%20Module.md)
   * [System Internet Mode Change module](./docs/System%20Internet%20Mode%20Change%20Module.md)
   * [System Internet Mode Information module](./docs/System%20Internet%20Mode%20Information%20Module.md)
   * [System module](./docs/System%20Module.md)
@@ -123,8 +124,8 @@ Install the python sdk named ['VxRail Ansible Utility'](https://github.com/dell/
 ## Using Collections
 
   * In order to use any Ansible module, ensure that the importation of the proper FQCN (Fully Qualified Collection Name) must be embedded in the playbook. For example,
-<br>collections:
-<br>&nbsp;&nbsp;&nbsp; - dellemc.vxrail
+ <br>collections:
+ <br>&nbsp;&nbsp;&nbsp; - dellemc.vxrail
   * To generate Ansible documentation for a specific module, embed the FQCN before the module name. For example,
 <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; *ansible-doc dellemc.vxrail.dellemc_vxrail_cluster*
 

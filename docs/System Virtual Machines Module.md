@@ -1,6 +1,6 @@
 System Virtual Machines Module for Dell EMC VxRail
 =================
-### Product Guide 2.0.0
+### Product Guide 1.4.0
 
 > © 2021 Dell Inc. or its subsidiaries. All rights reserved. Dell 
 > EMC, and other trademarks are trademarks of Dell Inc. or its 
@@ -93,7 +93,7 @@ Parameters
                                                                         </td>
                                                             <td>
                                         <div></div>
-                                        <div>Time out value for getting iDRAC Network Settings infomation, the default value is 60 seconds</div>
+                                        <div>Time out value for getting System VM information, the default value is 60 seconds</div>
                                         <div></div>
                                                     </td>
         </tr>
