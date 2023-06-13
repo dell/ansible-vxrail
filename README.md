@@ -15,7 +15,7 @@ This table provides information about the software prerequisites for the Ansible
 
 | **Ansible Modules** | **VxRail version** | **Python version** | **Python library (VxRail Ansible Utility) version** | **Ansible Version** |
 |---------------------|----------------|--------------------|----------------------------|-------------|
-| v2.0.0 | 7.0.450, 8.0.010 | 3.7, 3.8 | 2.0.0 | 2.9 and 2.10 |
+| v2.1.0 | 8.0.100 | 3.7, 3.8 | 2.1.0 | 2.9 and 2.10 |
 
   * Please follow VxRail Ansible Utility installation instructions on [VxRail Ansible Utility Documentation](https://github.com/dell/ansible-vxrail-utility)
 
@@ -26,7 +26,7 @@ The modules are written in such a way that all requests are idempotent and hence
   * [Auto Discovery hosts module](./docs/Day1%20Auto%20Discovery%20Host%20Module.md)
   * [Callhome Information module](./docs/Callhome%20Information%20Module.md)
   * [Callhome Disable module](./docs/Callhome%20Disable%20Module.md)
-  * [Callhome Enable module](./docs/Callhome%20Enable%20Module.md) 
+  * [Callhome Enable module](./docs/Callhome%20Enable%20Module.md)
   * [Callhome Mode Information module](./docs/Callhome%20Mode%20Information%20Module.md)
   * [Callhome Mode Change module](./docs/Callhome%20Mode%20Change%20Module.md)
   * [Certificate Get Automated Renewal Configurations module](./docs/Certificate%20Get%20Automated%20Renewal%20Configurations%20Module.md)
@@ -71,6 +71,7 @@ The modules are written in such a way that all requests are idempotent and hence
   * [LCM Advisory Report module](./docs/LCM%20Advisory%20Report%20Module.md)
   * [LCM module](./docs/LCM%20Module.md)
   * [LCM Retry module](./docs/LCM%20Retry%20Module.md)
+  * [LCM VLCM Image Info module](./docs/LCM%20VLCM%20Image%20Info%20Module.md)
   * [Host Folder LCM](./docs/Host%20Folder%20LCM.md)
   * [LCM Precheck module](./docs/LCM%20Precheck%20Module.md)
   * [Network throttling Change module](./docs/Bandwidth%20Throttling%20Change%20Module.md)
@@ -86,6 +87,7 @@ The modules are written in such a way that all requests are idempotent and hence
   * [System Disable Proxy module](./docs/System%20Disable%20Proxy%20Module.md)
   * [System DNS Change module](./docs/DNS%20Change%20Module.md)
   * [System DNS Information module](./docs/DNS%20Information%20Module.md)
+  * [System Get Management Accounts module](./docs/System%20Get%20Management%20Accounts%20Module.md)
   * [System Internet Mode Change module](./docs/System%20Internet%20Mode%20Change%20Module.md)
   * [System Internet Mode Information module](./docs/System%20Internet%20Mode%20Information%20Module.md)
   * [System module](./docs/System%20Module.md)

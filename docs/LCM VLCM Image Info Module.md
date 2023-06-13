@@ -1,20 +1,19 @@
-**LCM Retry Module for Dell EMC VxRail**
+**LCM VLCM Image Information Module for Dell EMC VxRail**
 =========================================
 ### Product Guide
 
-> © 2021 Dell Inc. or its subsidiaries. All rights reserved. Dell 
-> EMC, and other trademarks are trademarks of Dell Inc. or its 
-> subsidiaries. Other trademarks may be trademarks of their respective owners. 
+> © 2021 Dell Inc. or its subsidiaries. All rights reserved. Dell
+> EMC, and other trademarks are trademarks of Dell Inc. or its
+> subsidiaries. Other trademarks may be trademarks of their respective owners.
 
 Synopsis
 --------
-This module will retry the LCM full upgrade or partial upgrade if started through the LCM API call. 
-  
+This module will retrieve vLCM image information from the provided LCM bundle.
+
 Supported Endpoints
 --------
 
-* POST /lcm/upgrade/retry
-  
+* Post /v1/lcm/upgrade/vlcm/image
 
 Parameters
 ----------
@@ -92,75 +91,88 @@ Parameters
          <td colspan="1">
             <div class="ansibleOptionAnchor"
                id="parameter-state"/>
-            <b>api_version_number</b>
+            <b>vxm_root_account</b>
             <a class="ansibleOptionLink"
                href="#parameter-state"
                title="Permalink to this option"/>
             <div style="font-size: small">
-               <span style="color: purple">type=str</span>
+                <span style="color: purple">type=string</span>
                <br>
-               <span style="color: red"/>
+               <span style="color: red">required=true</span>
             </div>
          </td>
          <td>
-            <ul style="margin: 0; padding: 0">
-               <b>Default:</b>
-               <li>1</li>
-            </ul>
          </td>
          <td>
-            <div>The version of LCM upgrade retry API, the default value is the highest available version in your VxRail system.</div>
+            <div>The root account of VxRail Manager</div>
          </td>
       </tr>
       <tr>
          <td colspan="1">
             <div class="ansibleOptionAnchor"
                id="parameter-state"/>
-            <b>timeout</b>
+            <b>vxm_root_passwd</b>
             <a class="ansibleOptionLink"
                href="#parameter-state"
                title="Permalink to this option"/>
             <div style="font-size: small">
-               <span style="color: purple">type=integer</span>
+                <span style="color: purple">type=string</span>
                <br>
-               <span style="color: red"/>
+               <span style="color: red">required=true</span>
             </div>
          </td>
          <td>
-            <ul style="margin: 0; padding: 0">
-               <b>Default:</b>
-               <li>21600s (6 hours)</li>
-            </ul>
          </td>
          <td>
-            <div>Time out value for LCM retry, the default value is 21600 seconds(6 hours).</div>
+            <div>The password for the root account provided in VxRail Manager</div>
+         </td>
+      </tr>
+      <tr>
+         <td colspan="1">
+            <div class="ansibleOptionAnchor"
+               id="parameter-state"/>
+            <b>bundle</b>
+            <a class="ansibleOptionLink"
+               href="#parameter-state"
+               title="Permalink to this option"/>
+            <div style="font-size: small">
+                <span style="color: purple">type=string</span>
+               <br>
+               <span style="color: red">required=true</span>
+            </div>
+         </td>
+         <td>
+         </td>
+         <td>
+            <div>The file path for the bundle.</div>
          </td>
       </tr>
    </table>
 
 
-
-
 Notes
 -----
 - Make sure your VxRail environment supports the API that you use.
-- This module will only retry a failed LCM upgrade. 
-- This module can only retry LCM upgrades done through the LCM API call or module. Returns a 400 error when attempting to retry an upgrade started manually.
-- Details on execution of module dellemc_vxrail_lcm.py can be checked in the logs /tmp/vxrail_ansible_lcm.log
+- Details on execution of module dellemc_vxrail_lcm_vlcm_image.py can be checked in the logs /tmp/vxrail_ansible_lcm_vlcm_image.log
+
 
 
 Examples
 --------
 
 ``` yaml+jinja
-   -  name: Retry Failed LCM Upgrade. Version specified by api_version_number. 
-      dellemc_vxrail_lcm_retry:
+    - name: Start to retrieve vLCM image information from the provided bundle.
+      dellemc_vxrail_lcm_vlcm_image:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
-        api_version_number: "{{ api_version_number }}"
-        timeout: "{{ timeout }}"
+        vxm_root_account: "{{ vxm_root_account }}"
+        vxm_root_passwd: "{{ vxm_root_passwd }}"
+        bundle: "{{ bundle }}"
+        timeout: "{{ timeout | default(omit) }}"
+        api_version_number: "{{ api_version_number | default(omit) }}"
 ```
+
 
 Return Values
 -------------
@@ -175,60 +187,73 @@ The following are the fields unique to this module:
    </tr>
    <tr>
       <td colspan="2">
-         <div class="ansibleOptionAnchor" id="return-changed"></div>
-         <b>changed</b>
-         <a class="ansibleOptionLink" href="#return-changed" title="Permalink to this return value"></a>
+         <div class="ansibleOptionAnchor"></div>
+         <b>VLCM_IMAGE_INFO</b>
+         <a class="ansibleOptionLink"></a>
          <div style="font-size: small">
-            <span style="color: purple">type=boolean</span>
+            <span style="color: purple">complex</span>
          </div>
       </td>
-      <td>always</td>
+      <td></td>
       <td>
-         <div>Whether or not the resource has changed.</div>
-         <br/>
-      </td>
-   </tr>
-   <tr>
-      <td colspan="2">
-         <div class="ansibleOptionAnchor" id="return-host_details"></div>
-         <b>LCM_API_Upgrade</b>
-         <a class="ansibleOptionLink" href="#return-host_details" title="Permalink to this return value"></a>
-         <div style="font-size: small">
-            <span style="color: purple">type=list</span>
-         </div>
-      </td>
-      <td>When LCM completes</td>
-      <td>
-         <div>LCM Status</div>
+         <div>The vLCM image information from the provided LCM bundle</div>
          <br/>
       </td>
    </tr>
    <tr>
       <td class="elbow-placeholder">&nbsp;</td>
       <td colspan="1">
-         <div class="ansibleOptionAnchor" id="return-host_details/bw_limit"></div>
-         <b>request_id</b>
-         <a class="ansibleOptionLink" href="#return-host_details/bw_limit" title="Permalink to this return value"></a>
+         <div class="ansibleOptionAnchor"></div>
+         <b>base_image</b>
+         <a class="ansibleOptionLink" ></a>
          <div style="font-size: small">
-            <span style="color: purple">type=string</span>
+            <span style="color: purple">type=object</span>
          </div>
       </td>
       <td>success</td>
       <td>
-         <div>LCM(long-running) request returns a requestId.</div>
+         <div>ersion of the vLCM image.</div>
    <tr>
       <td class="elbow-placeholder">&nbsp;</td>
       <td colspan="1">
-         <div class="ansibleOptionAnchor" id="return-host_details/bw_limit"></div>
-         <b>status</b>
-         <a class="ansibleOptionLink" href="#return-host_details/bw_limit" title="Permalink to this return value"></a>
+         <div class="ansibleOptionAnchor"></div>
+         <b>components</b>
+         <a class="ansibleOptionLink"></a>
          <div style="font-size: small">
-            <span style="color: purple">type=string</span>
+            <span style="color: purple">type=object</span>
          </div>
       </td>
       <td>success</td>
       <td>
-         <div>The current state of the execution</div>
+         <div>Components of the vLCM image.</div>
+    <tr>
+      <td class="elbow-placeholder">&nbsp;</td>
+      <td colspan="1">
+         <div class="ansibleOptionAnchor"></div>
+         <b>hardware_support</b>
+         <a class="ansibleOptionLink"></a>
+         <div style="font-size: small">
+            <span style="color: purple">type=object</span>
+         </div>
+      </td>
+      <td>success</td>
+      <td>
+         <div>Messages about hardware support for the vLCM image.</div>
+       <tr>
+    <td colspan="2">
+         <div class="ansibleOptionAnchor"></div>
+         <b>msg</b>
+         <a class="ansibleOptionLink"></a>
+         <div style="font-size: small">
+            <span style="color: purple">type=string</span>
+         </div>
+      </td>
+      <td></td>
+      <td>
+         <div>Retrieve vLCM image informations success. Please see the /tmp/vxrail_ansible_lcm_vlcm_image.log for more details</div>
+         <br/>
+      </td>
+   </tr>
 </table>
 
 Authors
