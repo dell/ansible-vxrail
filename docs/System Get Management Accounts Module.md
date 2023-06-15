@@ -1,22 +1,19 @@
-**Disks Information Module for Dell EMC VxRail**
-=========================================
+System Get Management Accounts Module for Dell EMC VxRail
+=================
 ### Product Guide
 
 > © 2021 Dell Inc. or its subsidiaries. All rights reserved. Dell 
 > EMC, and other trademarks are trademarks of Dell Inc. or its 
 > subsidiaries. Other trademarks may be trademarks of their respective owners. 
 
-
 Synopsis
 --------
-This module will retrieve the VxRail Disk Information.
-  
+This module will retrieve the VxRail System vCenter management account information
+
 Supported Endpoints
 --------
 
-* GET /disks
-* GET /disks/{disk_sn}
-  
+* GET /system/accounts/management
 
 Parameters
 ----------
@@ -78,28 +75,8 @@ Parameters
                                         <div>The password for the administrator account provided in vcadmin</div>
                                                     </td>
         </tr>
+
 <tr>
-<tr>
-                                                            <td colspan="1">
-                <div class="ansibleOptionAnchor" id="parameter-state"></div>
-                <b>disks_sn</b>
-                <a class="ansibleOptionLink" href="#parameter-state" title="Permalink to this option"></a>
-                <div style="font-size: small">
-                    <span style="color: purple">type=string</span>
-                    <br>
-                    <span style="color: red"></span>                    </div>
-                                                    </td>
-                            <td>
-                                                                                                                        <ul style="margin: 0; padding: 0"><b>Default:</b>
-                                                                                                                                                            <li>all</li>
-                                                                                </ul>
-                                                                        </td>
-                                                            <td>
-                                        <div></div>
-                                        <div>Disk serial number to retrieve specific disk information, the default value is all</div>
-                                        <div></div>
-                                                    </td>
-        </tr>
                                                             <td colspan="1">
                 <div class="ansibleOptionAnchor" id="parameter-state"></div>
                 <b>timeout</b>
@@ -116,11 +93,11 @@ Parameters
                                                                         </td>
                                                             <td>
                                         <div></div>
-                                        <div>Time out value for getting disk information, the default value is 60 seconds</div>
+                                        <div>Time out value for getting system management account, the default value is 60 seconds</div>
                                         <div></div>
                                                     </td>
         </tr>
-        <tr>
+<tr>
                                                             <td colspan="1">
                 <div class="ansibleOptionAnchor" id="parameter-state"></div>
                 <b>api_version_number</b>
@@ -131,10 +108,12 @@ Parameters
                     <span style="color: red"></span>                    </div>
                                                     </td>
                             <td>
+                                                                                                                        <ul style="margin: 0; padding: 0"><b></b>
+                                                                                </ul>
                                                                         </td>
                                                             <td>
                                         <div></div>
-                                        <div>The version of API to call. If omitted, will use highest version on the system.</div>
+                                        <div>The version of API to call. If omitted, will use highest version on the system</div>
                                         <div></div>
                                                     </td>
         </tr>
@@ -142,22 +121,24 @@ Parameters
 
 Notes
 -----
-- This module calls any existing version of the /disks and /disks/{disk_sn} API, please ensure your VxRail cluster supports this API.
-- Can check Log file /tmp/vxrail_ansible_get_disks.log for more details about execution result.
+- Make sure your VxRail environment supports the API that you use
+- The current version only supports retrieving VC (vCenter) account information. 
+- Module dellemc_vxrail_system_get_management_accounts.py can call any existing version of /system/accounts/management API
+- Details on execution of module dellemc_vxrail_system_get_management_accounts.py can be checked in the logs /tmp/vxrail_ansible_system_get_management_accounts.log
 
 
 Examples
 --------
 
 ``` yaml+jinja
-  - name: Get VxRail Disks Information. Version specified by api_version_number
-    dellemc_vxrail_get_disks:
-      vxmip: "{{ vxmip }}"
-      vcadmin: "{{ vcadmin }}"
-      vcpasswd: "{{ vcpasswd }}"
-      disk_sn: "{{ disk_sn }}"
-      api_version_number: "{{ api_version_number }}"
-      timeout : "{{ timeout }}"
+  - name: Retrieve VxRail Management Account Info (VC Only). Version specified by 'api_version_number'.
+    dellemc_vxrail_system_get_management_accounts:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        timeout : "{{ timeout }}"
+        api_version_number: "{{ api_version_number }}"
+
 ```
 
 Return Values
@@ -191,16 +172,16 @@ The following are the fields unique to this module:
                             <tr>
                             <td colspan="3">
                 <div class="ansibleOptionAnchor" id="return-hostgroup_details"></div>
-                <b>Disks_Info</b>
+                <b>Management_Accounts_Info</b>
                 <a class="ansibleOptionLink" href="#return-hostgroup_details" title="Permalink to this return value"></a>
                 <div style="font-size: small">
                   <span style="color: purple">complex</span>
                                       </div>
                                 </td>
-            <td>When disk information can be retrieved from the cluster. </td>
+            <td>When cluster exists.</td>
             <td>v1</td>
             <td>
-                                        <div>The disk information within the cluster.</div>
+                                        <div>The management accounts cluster.</div>
                                     <br/>
                                 </td>
         </tr>
@@ -209,7 +190,7 @@ The following are the fields unique to this module:
                                 <td class="elbow-placeholder">&nbsp;</td>
                             <td colspan="2">
                 <div class="ansibleOptionAnchor" id="return-hostgroup_details/num_of_initiators"></div>
-                <b>id</b>
+                <b>component</b>
                 <a class="ansibleOptionLink" href="#return-hostgroup_details/num_of_initiators" title="Permalink to this return value"></a>
                 <div style="font-size: small">
                   <span style="color: purple">type=string</span>
@@ -218,7 +199,7 @@ The following are the fields unique to this module:
             <td>success</td>
             <td>v1</td>
             <td>
-                                        <div>The ID of the disk.</div>
+                                        <div>The component to query the account information from. Currently only supports VC.</div>
                                     <br/>
                                 </td>
         </tr>
@@ -226,7 +207,7 @@ The following are the fields unique to this module:
                                 <td class="elbow-placeholder">&nbsp;</td>
                             <td colspan="2">
                 <div class="ansibleOptionAnchor" id="return-hostgroup_details/num_of_initiators"></div>
-                <b>sn</b>
+                <b>hostname</b>
                 <a class="ansibleOptionLink" href="#return-hostgroup_details/num_of_initiators" title="Permalink to this return value"></a>
                 <div style="font-size: small">
                   <span style="color: purple">type=string</span>
@@ -235,7 +216,7 @@ The following are the fields unique to this module:
             <td>success</td>
             <td>v1</td>
             <td>
-                                        <div>The serial number of the disk.</div>
+                                        <div>ESXi host name. ESXi host name can be null if component is "VC".</div>
                                     <br/>
                                 </td>
         </tr>
@@ -243,7 +224,7 @@ The following are the fields unique to this module:
                                 <td class="elbow-placeholder">&nbsp;</td>
                             <td colspan="2">
                 <div class="ansibleOptionAnchor" id="return-hostgroup_details/num_of_initiators"></div>
-                <b>guid</b>
+                <b>username</b>
                 <a class="ansibleOptionLink" href="#return-hostgroup_details/num_of_initiators" title="Permalink to this return value"></a>
                 <div style="font-size: small">
                   <span style="color: purple">type=string</span>
@@ -252,126 +233,7 @@ The following are the fields unique to this module:
             <td>success</td>
             <td>v1</td>
             <td>
-                                        <div>The global unique identifier of the disk.</div>
-                                    <br/>
-                                </td>
-        </tr>
-<tr>
-                                <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="2">
-                <div class="ansibleOptionAnchor" id="return-hostgroup_details/num_of_initiators"></div>
-                <b>disk_type</b>
-                <a class="ansibleOptionLink" href="#return-hostgroup_details/num_of_initiators" title="Permalink to this return value"></a>
-                <div style="font-size: small">
-                  <span style="color: purple">type=string</span>
-                                 </div>
-                                </td>
-            <td>success</td>
-            <td>v1</td>
-            <td>
-                                        <div>Type of disk drive.</div>
-                                    <br/>
-                                </td>
-        </tr>
-<tr>
-                                <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="2">
-                <div class="ansibleOptionAnchor" id="return-hostgroup_details/num_of_initiators"></div>
-                <b>protocol</b>
-                <a class="ansibleOptionLink" href="#return-hostgroup_details/num_of_initiators" title="Permalink to this return value"></a>
-                <div style="font-size: small">
-                  <span style="color: purple">type=string</span>
-                                 </div>
-                                </td>
-            <td>success</td>
-            <td>v1</td>
-            <td>
-                                        <div>The type of transport protocol used by the disk.</div>
-                                    <br/>
-                                </td>
-        </tr>
-<tr>
-                                <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="2">
-                <div class="ansibleOptionAnchor" id="return-hostgroup_details/num_of_initiators"></div>
-                <b>enclosure</b>
-                <a class="ansibleOptionLink" href="#return-hostgroup_details/num_of_initiators" title="Permalink to this return value"></a>
-                <div style="font-size: small">
-                  <span style="color: purple">type=string</span>
-                                 </div>
-                                </td>
-            <td>success</td>
-            <td>v1</td>
-            <td>
-                                        <div>The enclosure where the disk is installed.</div>
-                                    <br/>
-                                </td>
-        </tr>
-<tr>
-                                <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="2">
-                <div class="ansibleOptionAnchor" id="return-hostgroup_details/num_of_initiators"></div>
-                <b>bay</b>
-                <a class="ansibleOptionLink" href="#return-hostgroup_details/num_of_initiators" title="Permalink to this return value"></a>
-                <div style="font-size: small">
-                  <span style="color: purple">type=string</span>
-                                 </div>
-                                </td>
-            <td>success</td>
-            <td>v1</td>
-            <td>
-                                        <div>The bay number of the disk.</div>
-                                    <br/>
-                                </td>
-        </tr>
-<tr>
-                                <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="2">
-                <div class="ansibleOptionAnchor" id="return-hostgroup_details/num_of_initiators"></div>
-                <b>slot</b>
-                <a class="ansibleOptionLink" href="#return-hostgroup_details/num_of_initiators" title="Permalink to this return value"></a>
-                <div style="font-size: small">
-                  <span style="color: purple">type=string</span>
-                                 </div>
-                                </td>
-            <td>success</td>
-            <td>v1</td>
-            <td>
-                                        <div>The slot where the disk is installed.</div>
-                                    <br/>
-                                </td>
-        </tr>
-<tr>
-                                <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="2">
-                <div class="ansibleOptionAnchor" id="return-hostgroup_details/num_of_initiators"></div>
-                <b>missing</b>
-                <a class="ansibleOptionLink" href="#return-hostgroup_details/num_of_initiators" title="Permalink to this return value"></a>
-                <div style="font-size: small">
-                  <span style="color: purple">type=string</span>
-                                 </div>
-                                </td>
-            <td>success</td>
-            <td>v1</td>
-            <td>
-                                        <div>Whether the disk health status is critical. Supported values are false (not critical) and true (critical)</div>
-                                    <br/>
-                                </td>
-        </tr>
-<tr>
-                                <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="2">
-                <div class="ansibleOptionAnchor" id="return-hostgroup_details/num_of_initiators"></div>
-                <b>capacity</b>
-                <a class="ansibleOptionLink" href="#return-hostgroup_details/num_of_initiators" title="Permalink to this return value"></a>
-                <div style="font-size: small">
-                  <span style="color: purple">type=string</span>
-                                 </div>
-                                </td>
-            <td>success</td>
-            <td>v1</td>
-            <td>
-                                        <div>The storage capacity of the disk.</div>
+                                        <div>The management account username</div>
                                     <br/>
                                 </td>
         </tr>
@@ -381,4 +243,3 @@ Authors
 -------
 
 -   VxRail Development Team &lt;<ansible.team@dell.com>&gt;
-
