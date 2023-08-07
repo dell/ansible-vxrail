@@ -1,6 +1,6 @@
 **Chassis Module for Dell EMC VxRail**
 =========================================
-### Product Guide
+### Product Guide 1.5.0
 
 > © 2021 Dell Inc. or its subsidiaries. All rights reserved. Dell 
 > EMC, and other trademarks are trademarks of Dell Inc. or its 
@@ -475,6 +475,24 @@ The following are the fields unique to this module:
 			<td>v5</td>
             <td>
                                         <div>Information about witness sled</div>
+                                    <br/>
+                                </td>
+        </tr>
+<tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="return-hostgroup_details/num_of_initiators"></div>
+                <b>node_disk_type</b>
+                <a class="ansibleOptionLink" href="#return-hostgroup_details/num_of_initiators" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                  <br>
+                  <span style="color: purple"></span>                    </div>
+                                </td>
+            <td>success</td>
+			<td>v6</td>
+            <td>
+                                        <div>Information about the node disk type</div>
                                     <br/>
                                 </td>
         </tr>

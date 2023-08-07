@@ -136,8 +136,8 @@ class VxRailCluster():
             self.api_version_string = utils.get_api_version_string(self.vxm_ip, self.api_version_number, module_path, LOGGER)
 
         # Calls versioned method as attribute (ex: v1_generate_advisory_report_public)
-        call_string = self.api_version_string + '_generate_advisory_report_public'
-        # call_string = 'generate_advisory_report_public'
+        # call_string = self.api_version_string + '_generate_advisory_report_public'
+        call_string = 'generate_advisory_report_public'
         LOGGER.info("Using utility method: %s\n", call_string)
         api_generate_advisory_report_public = getattr(api_instance, call_string)
         return api_generate_advisory_report_public()

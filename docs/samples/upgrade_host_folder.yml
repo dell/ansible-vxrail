@@ -8,7 +8,6 @@
     action: "{{ action }}"
     folder_id: "{{ folder_id }}"
     target_version: "{{ target_version }}"
-# "Only when the action is UPGRADE, the variables failure_rate_var and concurrent_size_var are needed.
     failure_rate_var: "{{ failure_rate | default(omit) }}"
     concurrent_size_var: "{{ concurrent_size | default(omit) }}"
 
@@ -24,7 +23,7 @@
         failure_rate: "{{ failure_rate_var }}"
         concurrent_size: "{{ concurrent_size_var }}"
         api_version_number: "{{ api_version_number | default(omit) }}"
-      async: 21600
+      async: 1800
       poll: 0
       register: upgrade_status
 
@@ -33,7 +32,7 @@
         jid: "{{ upgrade_status.ansible_job_id }}"
       register: job_result
       until: job_result.finished
-      retries: 720
+      retries: 60
       delay: 30
 
     - name: Get host folder upgrade Result
