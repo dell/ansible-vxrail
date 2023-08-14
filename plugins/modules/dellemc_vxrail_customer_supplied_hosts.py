@@ -15,7 +15,7 @@ short_description: Return nodes by customer supplied management IP
 
 # If this is part of a collection, you need to use semantic versioning,
 # i.e. the version is of the form "2.5.0" and not "2.4".
-version_added: "1.6.0"
+version_added: "1.5.0"
 
 description:
 - This module will retrieve customer-supplied node information from given management IP addresses
@@ -451,12 +451,10 @@ class VxRailHost():
                     individual_node_info = {
                         'idrac_ipv6': entry.get('idrac_ipv6'),
                         'ipv6': entry.get('ipv6'),
-                        'storage_types': entry.get('storage_types')
+                        'storage_types': entry.get('storage_types'),
                     }
                     if entry.get('disk_group_config') is not None:
                         individual_node_info['disk_group_config'] = entry.get('disk_group_config')
-                    if entry.get('vlcm_software_spec') is not None:
-                        individual_node_info['vlcm_software_spec'] = entry.get('vlcm_software_spec')
                 nodes_info = {**nodes_info, **individual_node_info}
                 nodes_info_list.append(nodes_info)
         if not has_some_node_data:

@@ -384,6 +384,10 @@ class VxRailHosts():
         host_info['operational_status'] = data.operational_status
         host_info['power_status'] = data.power_status
 
+        # Only found in v6+
+        if self.api_version_number >= 6:
+            host_info['node_disk_type'] = data.node_disk_type
+
         # Only found in v3+
         if self.api_version_number >= 3:
             if data.firmware_info is not None:

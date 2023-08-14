@@ -1,7 +1,7 @@
 
 **Ansible Modules for Dell EMC VxRail** 
 =========================================
-### Release Notes
+### Release Notes 1.0.0
 
 >   © 2021 Dell Inc. or its subsidiaries. All rights reserved. Dell
 >   EMC, and other trademarks are trademarks of Dell Inc. or its

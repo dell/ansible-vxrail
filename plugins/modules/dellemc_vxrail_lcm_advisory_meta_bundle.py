@@ -140,8 +140,8 @@ class VxRailCluster():
             self.api_version_string = utils.get_api_version_string(self.vxm_ip, self.api_version_number, module_path, LOGGER)
 
         # Calls versioned method as attribute (ex: v1_lcm_advisory_meta_bundle_post)
-        call_string = self.api_version_string + '_lcm_advisory_meta_bundle_post'
-        # call_string = 'lcm_advisory_meta_bundle_post'
+        # call_string = self.api_version_string + '_lcm_advisory_meta_bundle_post'
+        call_string = 'lcm_advisory_meta_bundle_post'
         LOGGER.info("Using utility method: %s\n", call_string)
         api_generate_advisory_meta_bundle_post = getattr(api_instance, call_string)
         return api_generate_advisory_meta_bundle_post(meta_bundle=self.meta_bundle)

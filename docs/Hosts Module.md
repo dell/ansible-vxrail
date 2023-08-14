@@ -1,6 +1,6 @@
 **Hosts Module for Dell EMC VxRail**
 =========================================
-### Product Guide
+### Product Guide 1.5.0
 
 > © 2021 Dell Inc. or its subsidiaries. All rights reserved. Dell 
 > EMC, and other trademarks are trademarks of Dell Inc. or its 
@@ -619,17 +619,16 @@ The following are the fields unique to this module:
                                 <td class="elbow-placeholder">&nbsp;</td>
                             <td colspan="2">
                 <div class="ansibleOptionAnchor" id="return-hostgroup_details/num_of_initiators"></div>
-                <b>dpus</b>
+                <b>node_disk_type</b>
                 <a class="ansibleOptionLink" href="#return-hostgroup_details/num_of_initiators" title="Permalink to this return value"></a>
                 <div style="font-size: small">
-                  <span style="color: purple">type=list</span>
-                  <br>
-                  <span style="color: purple">elements=DpuInfoV1</span>                    </div>
+                  <span style="color: purple">type=string</span>
+                </div>
                                 </td>
             <td>success</td>
-			<td>v9</td>
+			<td>v13</td>
             <td>
-                                        <div>Information about the DPU on this host.</div>
+                                        <div>Information about the node disk type of this host.</div>
                                     <br/>
                                 </td>
         </tr>

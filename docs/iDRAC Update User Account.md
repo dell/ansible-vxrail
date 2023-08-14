@@ -1,6 +1,6 @@
-**iDRAC Update User Account Information Module for Dell EMC VxRail**
+iDRAC Update User Account Information Module
 =================
-### Product Guide
+### Product Guide 1.5
 
 > © 2021 Dell Inc. or its subsidiaries. All rights reserved. Dell 
 > EMC, and other trademarks are trademarks of Dell Inc. or its 
