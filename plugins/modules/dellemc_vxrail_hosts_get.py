@@ -322,7 +322,6 @@ class VxRailHosts():
             self.api_version_number = int(self.api_version_string.split('v')[1])
         else:
             self.api_version_string = utils.get_api_version_string(self.vxm_ip, self.api_version_number, module_path, LOGGER)
-
         if self.host_sn == "all":
             # Calls versioned method as attribute (ex: v1_hosts_get)
             call_string = self.api_version_string + '_hosts_get'
@@ -381,23 +380,29 @@ class VxRailHosts():
         host_info['manufacturer'] = data.manufacturer
         host_info['psnt'] = data.psnt
         host_info['led_status'] = data.led_status
+        host_info['led_color'] = data.led_color if self.api_version_number >= 15 else utils.field_not_found(1)
         host_info['health'] = data.health
         host_info['missing'] = data.missing
         host_info['tpm_present'] = data.tpm_present
         host_info['operational_status'] = data.operational_status
         host_info['power_status'] = data.power_status
 
-        # Only found in v13+
-        if self.api_version_number >= 13:
-            host_info['node_disk_type'] = data.node_disk_type
+        # Only found dpu part in 8.0 train, now in current release with 8.0.010, it's v9 version.
+        if self.api_version_number == 9:
+            if data.dpus:
+                host_info['dpus'] = self._get_info_list(self._generate_dpu_info_from_response_data, data.dpus)
+            else:
+                host_info['dpus'] = []
 
-        # Only found in v10+
         if self.api_version_number >= 10:
             host_info['part_number'] = data.part_number
             if data.gpus:
                 host_info['gpus'] = self._get_info_list(self._generate_gpu_info_from_response_data, data.gpus)
             else:
                 host_info['gpus'] = []
+
+        host_info['tpm_version'] = data.tpm_version if hasattr(data, 'tpm_version') else utils.field_not_found(14)
+        host_info['tpm_status'] = data.tpm_status if hasattr(data, 'tpm_status') else utils.field_not_found(14)
 
         # Only found in v5+
         if self.api_version_number >= 5:
@@ -483,6 +488,18 @@ class VxRailHosts():
             boot_device_info['controller_model'] = utils.field_not_found(4)
             boot_device_info['controller_status'] = utils.field_not_found(4)
 
+        # Only found in v15+
+        if self.api_version_number >= 15:
+            boot_device_info['encryption_ability'] = data.encryption_ability
+            boot_device_info['encryption_status'] = data.encryption_status
+            boot_device_info['controller_encryption_capability'] = data.controller_encryption_capability
+            boot_device_info['controller_encryption_mode'] = data.controller_encryption_mode
+        else:
+            boot_device_info['encryption_ability'] = utils.field_not_found(15)
+            boot_device_info['encryption_status'] = utils.field_not_found(15)
+            boot_device_info['controller_encryption_capability'] = utils.field_not_found(15)
+            boot_device_info['controller_encryption_mode'] = utils.field_not_found(15)
+
         return boot_device_info
 
     def _generate_nic_info_from_response_data(self, data):
@@ -494,8 +511,8 @@ class VxRailHosts():
         nic_info['slot'] = data.slot
         nic_info['firmware_family_version'] = data.firmware_family_version
 
-        # Only found in v8+
-        if self.api_version_number >= 8:
+        # Only found in v8+, but v9 don't support these field
+        if self.api_version_number >= 8 and self.api_version_number != 9:
             nic_info['wwnn'] = data.wwnn
             nic_info['wwpn'] = data.wwpn
         else:
@@ -518,6 +535,13 @@ class VxRailHosts():
         else:
             nic_info['port'] = utils.field_not_found(6)
 
+        # Only found in v15+
+        if self.api_version_number >= 15:
+            nic_info['vendor'] = data.vendor
+            nic_info['model'] = data.model
+        else:
+            nic_info['vendor'] = utils.field_not_found(15)
+            nic_info['model'] = utils.field_not_found(15)
         return nic_info
 
     def _generate_disk_info_from_response_data(self, data):
@@ -642,6 +666,14 @@ class VxRailHosts():
             gpu_info['last_update_time'] = data.last_update_time
             gpu_info['serial_number'] = data.serial_number
         return gpu_info
+
+    def _generate_dpu_info_from_response_data(self, data):
+        dpu_info = {}
+        dpu_info['sn'] = data.sn
+        dpu_info['model'] = data.model
+        dpu_info['os_name'] = data.os_name
+        dpu_info['health'] = data.health
+        return dpu_info
 
 
 def main():

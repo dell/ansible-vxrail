@@ -1,0 +1,24 @@
+---
+- name: VxRail Hosts Sequential Reboot
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+
+  tasks:
+    - name: VxRail Hosts Sequential Reboot
+      dellemc_vxrail_sequential_reboot:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        all: "{{ all | default(omit) }}"
+        dry_run: "{{ dry_run  | default(omit) }}"
+        hosts: "{{ hosts | default(omit) }}"
+        api_version_number: "{{ api_version_number | default(omit) }}"
+        timeout: "{{ timeout | default(omit) }}"
+      register: sequential_reboot_info
+
+    - name: VxRail Hosts Sequential Reboot
+      debug:
+        msg:  "{{sequential_reboot_info}}"

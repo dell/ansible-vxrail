@@ -1,5 +1,10 @@
-System Module
-=================
+**System Module for Dell EMC VxRail**
+=========================================
+### Product Guide
+
+> © 2021 Dell Inc. or its subsidiaries. All rights reserved. Dell 
+> EMC, and other trademarks are trademarks of Dell Inc. or its 
+> subsidiaries. Other trademarks may be trademarks of their respective owners.
 
 Synopsis
 --------

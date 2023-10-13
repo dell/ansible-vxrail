@@ -1,0 +1,25 @@
+---
+- name: VxRail Hosts Sequential Reboot Cancel
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+    request_id: "{{ request_id }}"
+
+  tasks:
+    - name: VxRail Hosts Sequential Reboot Cancel
+      dellemc_vxrail_sequential_reboot_cancel:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        all: "{{ all | default(omit) }}"
+        request_id: "{{ request_id }}"
+        hosts: "{{ hosts | default(omit)}}"
+        api_version_number: "{{ api_version_number | default(omit) }}"
+        timeout: "{{ timeout | default(omit) }}"
+      register: sequential_reboot_cancel_info
+
+    - name: VxRail Hosts Sequential Reboot Cancel
+      debug:
+        msg:  "{{sequential_reboot_cancel_info}}"

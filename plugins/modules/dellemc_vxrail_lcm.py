@@ -297,6 +297,8 @@ class VxRailLCM():
         self.vc_password = module.params.get('vcpasswd')
         self.vc_root_account = module.params.get('vc_root_account')
         self.vc_root_passwd = module.params.get('vc_root_passwd')
+        self.vc_mgmt_account = module.params.get('vc_mgmt_account')
+        self.vc_mgmt_passwd = module.params.get('vc_mgmt_passwd')
         self.vxm_root_account = module.params.get('vxm_root_account')
         self.vxm_root_passwd = module.params.get('vxm_root_passwd')
         self.psc_root_account = module.params.get('psc_root_account')
@@ -413,6 +415,12 @@ class VxRailLCM():
             update_rules['ecosystem_check'] = ecosystem_check
             lcm_json['update_rules'] = update_rules
 
+        # for api v6
+        if hasattr(self, 'vc_mgmt_account') and hasattr(self, 'vc_mgmt_passwd'):
+            vcenter_dict['vc_mgmt_user'] = {'username': self.vc_mgmt_account, 'password': self.vc_mgmt_passwd}
+        else:
+            vcenter_dict['vc_mgmt_user'] = utils.field_not_found(6)
+
         return lcm_json
 
     def upgrade(self):
@@ -518,8 +526,12 @@ def main():
         ecosystem_check_continue_with_incompatible=dict(type='bool'),
         ecosystem_check_components=dict(type='str')
     )
+    v6_module_args = dict(
+        vc_mgmt_account=dict(required=True),
+        vc_mgmt_passwd=dict(required=True, no_log=True),
+    )
 
-    module_args = dict(**common_module_args, **v2_module_args, **v4_module_args, **v5_module_args)
+    module_args = dict(**common_module_args, **v2_module_args, **v4_module_args, **v5_module_args, **v6_module_args)
     module = AnsibleModule(
         argument_spec=module_args,
         supports_check_mode=True,

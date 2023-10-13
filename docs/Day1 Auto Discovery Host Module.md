@@ -1,6 +1,6 @@
 **Day1 Auto Discovery Host Module for Dell EMC VxRail**
 =========================================
-### Product Guide 1.4.0
+### Product Guide
 
 > © 2021 Dell Inc. or its subsidiaries. All rights reserved. Dell 
 > EMC, and other trademarks are trademarks of Dell Inc. or its 
@@ -1106,6 +1106,100 @@ The following are the fields unique to this module:
             <td>v1</td>
             <td>
                                         <div>build number (For internal use,deprecated and only exist in v1)</div>
+                                    <br/>
+                                </td>
+        </tr>
+<tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="3">
+                <div class="ansibleOptionAnchor" id="return-hostgroup_details/consistent_lun"></div>
+                <b>vlcm_software_spec</b>
+                <a class="ansibleOptionLink" href="#return-hostgroup_details/consistent_lun" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=object</span>
+                                      </div>
+                                </td>
+            <td>When vLCM is enabled</td>
+            <td>v2</td>
+            <td>
+                                        <div>Information about vLCM image</div>
+                                    <br/>
+                                </td>
+        </tr>
+        <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="return-hostgroup_details/disabled_flags"></div>
+                <b>base_image</b>
+                <a class="ansibleOptionLink" href="#return-hostgroup_details/disabled_flags" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=object</span>
+                  <br>
+                  <span style="color: purple"></span>                    </div>
+                                </td>
+            <td>When vLCM is enabled</td>
+            <td>v2</td>
+            <td>
+                                        <div>Information about the vLCM image</div>
+                                    <br/>
+                                </td>
+        </tr>
+        <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="return-hostgroup_details/disabled_flags"></div>
+                <b>version</b>
+                <a class="ansibleOptionLink" href="#return-hostgroup_details/disabled_flags" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                  <br>
+                  <span style="color: purple"></span>                    </div>
+                                </td>
+            <td>When vLCM is enabled</td>
+            <td>v2</td>
+            <td>
+                                        <div>Version of the vLCM image</div>
+                                    <br/>
+                                </td>
+        </tr>
+        <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="return-hostgroup_details/disabled_flags"></div>
+                <b>components</b>
+                <a class="ansibleOptionLink" href="#return-hostgroup_details/disabled_flags" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                  <br>
+                  <span style="color: purple"></span>                    </div>
+                                </td>
+            <td>When vLCM is enabled</td>
+            <td>v2</td>
+            <td>
+                                        <div>Components of the vLCM image</div>
+                                    <br/>
+                                </td>
+        </tr>
+        <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="return-hostgroup_details/disabled_flags"></div>
+                <b>hardware_support</b>
+                <a class="ansibleOptionLink" href="#return-hostgroup_details/disabled_flags" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                  <br>
+                  <span style="color: purple"></span>                    </div>
+                                </td>
+            <td>When vLCM is enabled</td>
+            <td>v2</td>
+            <td>
+                                        <div>Messages about hardware support for the vLCM image</div>
                                     <br/>
                                 </td>
         </tr>

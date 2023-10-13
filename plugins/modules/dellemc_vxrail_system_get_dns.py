@@ -156,6 +156,8 @@ class VxRailSystem():
         data_dictionary = {}
         data_list = []
         data_dictionary['servers'] = data.servers
+        if self.api_version_number > 1 and data.is_internal:
+            data_dictionary['upstream_dns'] = data.upstream_dns
         data_dictionary['is_internal'] = data.is_internal
         data_list.append(dict(data_dictionary.items()))
         return data_list
