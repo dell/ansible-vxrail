@@ -5,7 +5,6 @@
     vxmip: "{{ vxmip }}"
     vcadmin: "{{ vcadmin }}"
     vcpasswd: "{{ vcpasswd }}"
-    servers: "{{ servers }}"
 
   tasks:
     - name: Change DNS Settings
@@ -14,7 +13,8 @@
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
         components: "{{ components | default(omit) }}"
-        servers: "{{ servers }}"
+        servers: "{{ servers  | default(omit) }}"
+        upstream_dns: "{{ upstream_dns | default(omit) }}"
         api_version_number: "{{ api_version_number | default(omit) }}"
         timeout: "{{ timeout | default(omit) }}"
       register: dns_change_info

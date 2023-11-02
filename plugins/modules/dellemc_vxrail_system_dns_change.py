@@ -130,6 +130,7 @@ class VxRailCluster():
         self.components = module.params.get('components')
         self.servers = module.params.get('servers')
         self.api_version_number = module.params.get('api_version_number')
+        self.upstream_dns = module.params.get('upstream_dns')
 
         self.system_url = VxrailClusterUrls(self.vxm_ip)
         # Configure HTTP basic authorization: basicAuth
@@ -162,9 +163,15 @@ class VxRailCluster():
             'vcenter': {
                 "username": self.vc_admin,
                 "password": self.vc_password
-            },
-            'servers': self.servers
+            }
         }
+
+        LOGGER.info("there is: %s",self.upstream_dns)
+        if self.servers:
+            dns_change_info['servers'] = self.servers
+        if self.upstream_dns and self.api_version_number > 1:
+            LOGGER.info("there is v2: %s",self.upstream_dns)
+            dns_change_info['upstream_dns'] = self.upstream_dns
 
         # create an instance of the API class
         api_instance = vxrail_ansible_utility.SystemInformationApi(
@@ -179,6 +186,10 @@ class VxRailCluster():
         LOGGER.info("%s/system/dns POST api response: %s\n", self.api_version_string, response)
         data = response
         dns_return_info['servers'] = data.servers
+        if self.servers:
+            dns_return_info['servers'] = data.servers
+        if self.upstream_dns and self.api_version_number > 1:
+            dns_return_info['upstream_dns'] = data.upstream_dns
         dns_return_info['is_internal'] = data.is_internal
         return dict(dns_return_info.items())
 
@@ -193,7 +204,8 @@ def main():
         vcadmin=dict(required=True),
         vcpasswd=dict(required=True, no_log=True),
         components=dict(default="ALL"),
-        servers=dict(type='list', elements='str', required=True),
+        servers=dict(type='list', elements='str'),
+        upstream_dns=dict(type='list', elements='str'),
         api_version_number=dict(type='int'),
         timeout=dict(type='int', default=60)
     )

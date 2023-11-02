@@ -1,6 +1,6 @@
 **System DNS Information Module for Dell EMC VxRail**
 =========================================
-### Product Guide 1.4.0
+### Product Guide
 
 > © 2021 Dell Inc. or its subsidiaries. All rights reserved. Dell 
 > EMC, and other trademarks are trademarks of Dell Inc. or its 
@@ -210,6 +210,23 @@ The following are the fields unique to this module:
             <td>v1</td>
             <td>
                                         <div>A list of IP addresses for the DNS servers</div>
+                                    <br/>
+                                </td>
+        </tr>
+                                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="return-hostgroup_details/consistent_lun"></div>
+                <b>upstream_dns</b>
+                <a class="ansibleOptionLink" href="#return-hostgroup_details/consistent_lun" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=array[string]</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+            <td>v2</td>
+            <td>
+                                        <div>A list of IP addresses for the upstream DNS servers</div>
                                     <br/>
                                 </td>
         </tr>

@@ -1,0 +1,20 @@
+---
+- name: Return all of certificates that stored in VXM trust store
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+
+  tasks:
+    - name: Return all certificate content that stored in VXM trust store
+      dellemc_vxrail_certificates_get_all_info:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        api_version_number: "{{ api_version_number | default(omit) }}"
+      register: content_info
+
+    - name: Display all certificates content
+      debug:
+        msg:  "{{content_info}}"

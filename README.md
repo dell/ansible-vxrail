@@ -15,7 +15,7 @@ This table provides information about the software prerequisites for the Ansible
 
 | **Ansible Modules** | **VxRail version** | **Python version** | **Python library (VxRail Ansible Utility) version** | **Ansible Version** |
 |---------------------|----------------|--------------------|----------------------------|-------------|
-| v2.2.0 | 7.0.460 | 3.7, 3.8 | 2.0.0 | 2.9 and 2.10 |
+| v2.3.0 | 7.0.480 | 3.7, 3.8 | 2.3.0 | 2.9 and 2.10 |
 
   * Please follow VxRail Ansible Utility installation instructions on [VxRail Ansible Utility Documentation](https://github.com/dell/ansible-vxrail-utility)
 
@@ -26,13 +26,14 @@ The modules are written in such a way that all requests are idempotent and hence
   * [Auto Discovery hosts module](./docs/Day1%20Auto%20Discovery%20Host%20Module.md)
   * [Callhome Information module](./docs/Callhome%20Information%20Module.md)
   * [Callhome Disable module](./docs/Callhome%20Disable%20Module.md)
-  * [Callhome Enable module](./docs/Callhome%20Enable%20Module.md) 
+  * [Callhome Enable module](./docs/Callhome%20Enable%20Module.md)
   * [Callhome Mode Information module](./docs/Callhome%20Mode%20Information%20Module.md)
   * [Callhome Mode Change module](./docs/Callhome%20Mode%20Change%20Module.md)
   * [Certificate Get Automated Renewal Configurations module](./docs/Certificate%20Get%20Automated%20Renewal%20Configurations%20Module.md)
   * [Certificate Get Automated Renewal Status module](./docs/Certificate%20Get%20Automated%20Renewal%20Status%20Module.md)
   * [Certificate Get Content module](./docs/Certificate%20Get%20Content%20module.md)
   * [Certificate Get Fingerprints module](./docs/Certificate%20Get%20Fingerprints%20module.md)
+  * [Certificate Get All Information module](./docs/Certificate%20Get%20All%20Information%20Module.md)
   * [Certificate Import Certs Into Truststore module](./docs/Certificate%20Import%20Certs%20Into%20Truststore%20module.md)
   * [Certificate Removal module](./docs/Certificate%20Removal%20module.md)
   * [Certificate Signing Request Generation module](./docs/Certificate%20CSR%20Module.md)
@@ -57,6 +58,7 @@ The modules are written in such a way that all requests are idempotent and hence
   * [CVS Compliance Report module](./docs/CVS%20Compliance%20Report%20Module.md)
   * [Day1 Initialization module](./docs/Day1%20Initialization%20Module.md)
   * [Disks Information module](./docs/Disks%20Information%20Module.md)
+  * [Export CVS Compliance Report module](./docs/Export%20CVS%20Compliance%20Report%20Module.md)
   * [Hosts module](./docs/Hosts%20Module.md)
   * [Host Shutdown module](./docs/Host%20Shutdown%20Module.md)
   * [Hosts Update module](./docs/Hosts%20Update%20Module.md)
@@ -71,6 +73,7 @@ The modules are written in such a way that all requests are idempotent and hence
   * [LCM Advisory Report module](./docs/LCM%20Advisory%20Report%20Module.md)
   * [LCM module](./docs/LCM%20Module.md)
   * [LCM Retry module](./docs/LCM%20Retry%20Module.md)
+  * [LCM VLCM Image Info module](./docs/LCM%20VLCM%20Image%20Info%20Module.md)
   * [Host Folder LCM](./docs/Host%20Folder%20LCM.md)
   * [LCM Precheck module](./docs/LCM%20Precheck%20Module.md)
   * [Network throttling Change module](./docs/Bandwidth%20Throttling%20Change%20Module.md)
@@ -79,6 +82,9 @@ The modules are written in such a way that all requests are idempotent and hence
   * [Remove Host module](./docs/Remove%20Host%20Module.md)
   * [Satellite Node Expansion module](./docs/Satellite%20Node%20Expansion%20Module.md)
   * [Satellite Node Remove module](./docs/Satellite%20Node%20Remove%20Module.md)
+  * [Sequential Reboot Cancel Module](./docs/Sequential%20Reboot%20Cancel%20Module.md)
+  * [Sequential Reboot Module](./docs/Sequential%20Reboot%20Module.md)
+  * [Sequential Reboot Retry Module](./docs/Sequential%20Reboot%20Retry%20Module.md)
   * [Stig Information module](./docs/Stig%20Information%20Module.md)
   * [Support Account module](./docs/Support%20Account%20Module.md)
   * [System Available Hosts module](./docs/System%20Available%20Hosts%20Module.md)
@@ -86,6 +92,7 @@ The modules are written in such a way that all requests are idempotent and hence
   * [System Disable Proxy module](./docs/System%20Disable%20Proxy%20Module.md)
   * [System DNS Change module](./docs/DNS%20Change%20Module.md)
   * [System DNS Information module](./docs/DNS%20Information%20Module.md)
+  * [System Get Management Accounts module](./docs/System%20Get%20Management%20Accounts%20Module.md)
   * [System Internet Mode Change module](./docs/System%20Internet%20Mode%20Change%20Module.md)
   * [System Internet Mode Information module](./docs/System%20Internet%20Mode%20Information%20Module.md)
   * [System module](./docs/System%20Module.md)
@@ -123,8 +130,8 @@ Install the python sdk named ['VxRail Ansible Utility'](https://github.com/dell/
 ## Using Collections
 
   * In order to use any Ansible module, ensure that the importation of the proper FQCN (Fully Qualified Collection Name) must be embedded in the playbook. For example,
- <br>collections:
- <br>&nbsp;&nbsp;&nbsp; - dellemc.vxrail
+<br>collections:
+<br>&nbsp;&nbsp;&nbsp; - dellemc.vxrail
   * To generate Ansible documentation for a specific module, embed the FQCN before the module name. For example,
 <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; *ansible-doc dellemc.vxrail.dellemc_vxrail_cluster*
 

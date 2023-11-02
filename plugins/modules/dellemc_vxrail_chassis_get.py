@@ -349,8 +349,8 @@ class VxRailHosts():
         # Only found in v5+
         if self.api_version_number >= 5:
             chassis_info['chassis_manager_fw_version'] = data.chassis_manager_fw_version
-            if data.witness and len(data.witness) > 0:
-                chassis_info['witness'] = self._generate_witness_info_from_response_data(data.witness[0])
+            if data.witness:
+                chassis_info['witness'] = self._generate_witness_info_from_response_data(data.witness)
             else:
                 chassis_info['witness'] = None
 
@@ -378,15 +378,12 @@ class VxRailHosts():
         host_info['manufacturer'] = data.manufacturer
         host_info['psnt'] = data.psnt
         host_info['led_status'] = data.led_status
+        host_info['led_color'] = data.led_color if self.api_version_number >= 7 else utils.field_not_found(7)
         host_info['health'] = data.health
         host_info['missing'] = data.missing
         host_info['tpm_present'] = data.tpm_present
         host_info['operational_status'] = data.operational_status
         host_info['power_status'] = data.power_status
-
-        # Only found in v6+
-        if self.api_version_number >= 6:
-            host_info['node_disk_type'] = data.node_disk_type
 
         # Only found in v3+
         if self.api_version_number >= 3:
@@ -469,6 +466,13 @@ class VxRailHosts():
             nic_info['drivers'] = self._get_info_list(
                 self._generate_drivers_info_from_response_data, data.drivers)
         nic_info['port'] = data.port
+
+        if self.api_version_number >= 7:
+            nic_info['vendor'] = data.vendor
+            nic_info['model'] = data.model
+        else:
+            nic_info['vendor'] = utils.field_not_found(7)
+            nic_info['model'] = utils.field_not_found(7)
 
         return nic_info
 

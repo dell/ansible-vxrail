@@ -1,6 +1,6 @@
 **Hosts Module for Dell EMC VxRail**
 =========================================
-### Product Guide 1.5.0
+### Product Guide
 
 > © 2021 Dell Inc. or its subsidiaries. All rights reserved. Dell 
 > EMC, and other trademarks are trademarks of Dell Inc. or its 
@@ -351,41 +351,42 @@ The following are the fields unique to this module:
                                     <br/>
                                 </td>
         </tr>
-                            <tr>
-                                <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="2">
+            <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+            <td colspan="2">
                 <div class="ansibleOptionAnchor" id="return-hostgroup_details/num_of_initiators"></div>
                 <b>boot_devices</b>
                 <a class="ansibleOptionLink" href="#return-hostgroup_details/num_of_initiators" title="Permalink to this return value"></a>
                 <div style="font-size: small">
                   <span style="color: purple">type=list</span>
                   <br>
-                  <span style="color: purple">elements=BootDeviceV2</span>                    </div>
-                                </td>
+                  <span style="color: purple">elements=BootDeviceV4</span></div>
+            </td>
             <td>success</td>
 			<td>v1</td>
             <td>
-                                        <div>Information about each boot device on the VxRail host.</div>
-                                    <br/>
-                                </td>
+                <div>Information about each boot device on the VxRail host.</div>
+                <br/>
+            </td>
         </tr>
-                            <tr>
-                                <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="2">
+        <tr>
+            <td class="elbow-placeholder">&nbsp;</td>
+            <td colspan="2">
                 <div class="ansibleOptionAnchor" id="return-hostgroup_details/num_of_masking_views"></div>
                 <b>nics</b>
                 <a class="ansibleOptionLink" href="#return-hostgroup_details/num_of_masking_views" title="Permalink to this return value"></a>
                 <div style="font-size: small">
                   <span style="color: purple">type=list</span>
                   <br>
-                  <span style="color: purple">elements=NicV3</span>                    </div>
-                                </td>
+                  <span style="color: purple">elements=NicV4</span>                    
+                </div>
+            </td>
             <td>success</td>
 			<td>v1</td>
             <td>
-                                        <div>Information about each NIC on the VxRail host</div>
-                                    <br/>
-                                </td>
+                <div>Information about each NIC on the VxRail host</div>
+                <br/>
+            </td>
         </tr>
                             <tr>
                                 <td class="elbow-placeholder">&nbsp;</td>
@@ -400,9 +401,26 @@ The following are the fields unique to this module:
             <td>success</td>
 			<td>v1</td>
             <td>
-                                        <div>State of the chassis LED indicator for the host</div>
+                                        <div>Status of the chassis LED indicator on the host</div>
                                     <br/>
                                 </td>
+        </tr>
+        <tr>
+            <td class="elbow-placeholder">&nbsp;</td>
+            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="return-hostgroup_details/port_flags_override"></div>
+                <b>led_color</b>
+                <a class="ansibleOptionLink" href="#return-hostgroup_details/port_flags_override" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                                      </div>
+                                </td>
+            <td>success</td>
+			<td>v15</td>
+            <td>
+            <div>Color of the chassis LED indicator on the host</div>
+                <br/>
+            </td>
         </tr>
                             <tr>
                                 <td class="elbow-placeholder">&nbsp;</td>
@@ -472,24 +490,58 @@ The following are the fields unique to this module:
                                     <br/>
                                 </td>
         </tr>
-<tr>
-                                <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="2">
+        <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan="2">
                 <div class="ansibleOptionAnchor" id="return-hostgroup_details/type"></div>
                 <b>tpm_present</b>
                 <a class="ansibleOptionLink" href="#return-hostgroup_details/type" title="Permalink to this return value"></a>
                 <div style="font-size: small">
                   <span style="color: purple">type=boolean</span>
-                                      </div>
-                                </td>
+                </div>
+                </td>
             <td>success</td>
 			<td>v1</td>
             <td>
-                                        <div>Whether a TPM security device is installed on the VxRail host</div>
-                                    <br/>
-                                </td>
+                <div>Whether a TPM security device is installed on the VxRail host</div>
+                <br/>
+            </td>
         </tr>
-<tr>
+        <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan="2">
+                <div class="ansibleOptionAnchor" id="return-hostgroup_details/type"></div>
+                <b>tpm_version</b>
+                <a class="ansibleOptionLink" href="#return-hostgroup_details/type" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                </div>
+                </td>
+            <td>success</td>
+			<td>v14</td>
+            <td>
+                <div>The TPM version that is installed on the VxRail host</div>
+                <br/>
+            </td>
+        </tr>
+        <tr>
+                <td class="elbow-placeholder">&nbsp;</td>
+                <td colspan="2">
+                <div class="ansibleOptionAnchor" id="return-hostgroup_details/type"></div>
+                <b>tpm_status</b>
+                <a class="ansibleOptionLink" href="#return-hostgroup_details/type" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                </div>
+                </td>
+            <td>success</td>
+			<td>v14</td>
+            <td>
+                <div>The status of TPM security on the VxRail host</div>
+                <br/>
+            </td>
+        </tr>
+        <tr>
                                 <td class="elbow-placeholder">&nbsp;</td>
                             <td colspan="2">
                 <div class="ansibleOptionAnchor" id="return-hostgroup_details/num_of_initiators"></div>
@@ -619,16 +671,17 @@ The following are the fields unique to this module:
                                 <td class="elbow-placeholder">&nbsp;</td>
                             <td colspan="2">
                 <div class="ansibleOptionAnchor" id="return-hostgroup_details/num_of_initiators"></div>
-                <b>node_disk_type</b>
+                <b>dpus</b>
                 <a class="ansibleOptionLink" href="#return-hostgroup_details/num_of_initiators" title="Permalink to this return value"></a>
                 <div style="font-size: small">
-                  <span style="color: purple">type=string</span>
-                </div>
+                  <span style="color: purple">type=list</span>
+                  <br>
+                  <span style="color: purple">elements=DpuInfoV1</span>                    </div>
                                 </td>
             <td>success</td>
-			<td>v13</td>
+			<td>v9</td>
             <td>
-                                        <div>Information about the node disk type of this host.</div>
+                                        <div>Information about the DPU on this host.</div>
                                     <br/>
                                 </td>
         </tr>

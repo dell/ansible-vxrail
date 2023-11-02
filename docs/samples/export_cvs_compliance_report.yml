@@ -1,0 +1,26 @@
+---
+- name: Export cvs compliance report
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+    output_file_path: "{{ output_file_path }}"
+
+  tasks:
+    - name: Start to export cvs compliance report
+      dellemc_vxrail_export_cvs_compliance_report:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        group_by: "{{ group_by | default(omit) }}"
+        format: "{{ format | default(omit) }}"
+        ids: "{{ ids | default(omit) }}"
+        output_file_path: "{{ output_file_path }}"
+        timeout: "{{ timeout | default(omit) }}"
+        api_version_number: "{{ api_version_number | default(omit) }}"
+      register: export_cvs_compliance_report
+   
+    - name: Get cvs compliance report result
+      debug:
+        msg:  "{{export_cvs_compliance_report}}"
