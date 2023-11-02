@@ -1,6 +1,6 @@
 **Chassis Module for Dell EMC VxRail**
 =========================================
-### Product Guide 1.5.0
+### Product Guide
 
 > © 2021 Dell Inc. or its subsidiaries. All rights reserved. Dell 
 > EMC, and other trademarks are trademarks of Dell Inc. or its 
@@ -182,321 +182,311 @@ The following are the fields unique to this module:
 		<th>Minimum API Version</th>
         <th width="100%">Description</th>
     </tr>
-                <tr>
-                            <td colspan="3">
+        <tr>
+            <td colspan="3">
                 <div class="ansibleOptionAnchor" id="return-changed"></div>
                 <b>changed</b>
                 <a class="ansibleOptionLink" href="#return-changed" title="Permalink to this return value"></a>
                 <div style="font-size: small">
-                  <span style="color: purple">type=boolean</span>
-                                      </div>
-                                </td>
+                    <span style="color: purple">type=boolean</span>
+                </div>
+            </td>
             <td>always</td>
 			<td>all</td>
             <td>
-                                        <div>Whether or not the resource has changed.</div>
-                                    <br/>
-                                </td>
+                <div>Whether or not the resource has changed.</div>
+                <br/>
+            </td>
         </tr>
-                            <tr>
-                            <td colspan="3">
+        <tr>
+            <td colspan="3">
                 <div class="ansibleOptionAnchor" id="return-hostgroup_details"></div>
                 <b>chassis_information</b>
                 <a class="ansibleOptionLink" href="#return-hostgroup_details" title="Permalink to this return value"></a>
                 <div style="font-size: small">
-                  <span style="color: purple">complex</span>
-                                      </div>
-                                </td>
+                    <span style="color: purple">complex</span>
+                </div>
+            </td>
             <td>When cluster exists.</td>
 			<td>v1</td>
             <td>
-                                        <div>Details of Vxrail System</div>
-                                    <br/>
-                                </td>
+                <div>Details of Vxrail System</div>
+            <br/>
+            </td>
         </tr>
-                                    <tr>
-                                <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="2">
+        <tr>
+            <td class="elbow-placeholder">&nbsp;</td>
+            <td colspan="2">
                 <div class="ansibleOptionAnchor" id="return-hostgroup_details/consistent_lun"></div>
                 <b>id</b>
                 <a class="ansibleOptionLink" href="#return-hostgroup_details/consistent_lun" title="Permalink to this return value"></a>
                 <div style="font-size: small">
-                  <span style="color: purple">type=string</span>
-                                      </div>
-                                </td>
+                    <span style="color: purple">type=string</span>
+                </div>
+            </td>
             <td>success</td>
 			<td>v1</td>
             <td>
-                                        <div>chassis id</div>
-                                    <br/>
-                                </td>
+                <div>chassis id</div>
+                <br/>
+            </td>
         </tr>
-                            <tr>
-                                <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="2">
+        <tr>
+            <td class="elbow-placeholder">&nbsp;</td>
+            <td colspan="2">
                 <div class="ansibleOptionAnchor" id="return-hostgroup_details/disabled_flags"></div>
                 <b>sn</b>
                 <a class="ansibleOptionLink" href="#return-hostgroup_details/disabled_flags" title="Permalink to this return value"></a>
                 <div style="font-size: small">
-                  <span style="color: purple">type=string</span>
-                  <br>
-                  <span style="color: purple"></span>                    </div>
-                                </td>
+                    <span style="color: purple">type=string</span>
+                    <br>
+                    <span style="color: purple"></span>                    </div>
+            </td>
             <td>success</td>
 			<td>v1</td>
             <td>
-                                        <div>chassis sn</div>
-                                    <br/>
-                                </td>
+                <div>chassis sn</div>
+                <br/>
+            </td>
         </tr>
-                            <tr>
-                                <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="2">
+        <tr>
+            <td class="elbow-placeholder">&nbsp;</td>
+            <td colspan="2">
                 <div class="ansibleOptionAnchor" id="return-hostgroup_details/enabled_flags"></div>
                 <b>part_number</b>
                 <a class="ansibleOptionLink" href="#return-hostgroup_details/enabled_flags" title="Permalink to this return value"></a>
                 <div style="font-size: small">
-                  <span style="color: purple">type=string</span>
-                  <br>
-                  <span style="color: purple"></span>                    </div>
-                                </td>
+                    <span style="color: purple">type=string</span>
+                    <br>
+                    <span style="color: purple"></span>
+                </div>
+            </td>
             <td>success</td>
 			<td>v1</td>
             <td>
-                                        <div>chassis part number</div>
-                                    <br/>
-                                </td>
+                <div>chassis part number</div>
+                <br/>
+            </td>
         </tr>
-                            <tr>
-                                <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="2">
+        <tr>
+            <td class="elbow-placeholder">&nbsp;</td>
+            <td colspan="2">
                 <div class="ansibleOptionAnchor" id="return-hostgroup_details/host"></div>
                 <b>description</b>
                 <a class="ansibleOptionLink" href="#return-hostgroup_details/host" title="Permalink to this return value"></a>
                 <div style="font-size: small">
-                  <span style="color: purple">type=string</span>
-                  <br>
-                  <span style="color: purple"></span>                    </div>
-                                </td>
+                    <span style="color: purple">type=string</span>
+                    <br>
+                    <span style="color: purple"></span>
+                </div>
+            </td>
             <td>success</td>
 			<td>v1</td>
             <td>
-                                        <div>chassis description</div>
-                                    <br/>
-                                </td>
+                <div>chassis description</div>
+                <br/>
+            </td>
         </tr>
-                            <tr>
-                                <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="2">
+        <tr>
+            <td class="elbow-placeholder">&nbsp;</td>
+            <td colspan="2">
                 <div class="ansibleOptionAnchor" id="return-hostgroup_details/hostGroupId"></div>
                 <b>service_tag</b>
                 <a class="ansibleOptionLink" href="#return-hostgroup_details/hostGroupId" title="Permalink to this return value"></a>
                 <div style="font-size: small">
-                  <span style="color: purple">type=string</span>
-                                      </div>
-                                </td>
+                    <span style="color: purple">type=string</span>
+                </div>
+            </td>
             <td>success</td>
 			<td>v1</td>
             <td>
-                                        <div>chassis service tag</div>
-                                    <br/>
-                                </td>
+                <div>chassis service tag</div>
+                <br/>
+            </td>
         </tr>
-                            <tr>
-                                <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="2">
+        <tr>
+            <td class="elbow-placeholder">&nbsp;</td>
+            <td colspan="2">
                 <div class="ansibleOptionAnchor" id="return-hostgroup_details/maskingview"></div>
                 <b>psnt</b>
                 <a class="ansibleOptionLink" href="#return-hostgroup_details/maskingview" title="Permalink to this return value"></a>
                 <div style="font-size: small">
-                  <span style="color: purple">type=string</span>
-                  <br>
-                  <span style="color: purple"></span>                    </div>
-                                </td>
+                    <span style="color: purple">type=string</span>
+                    <br>
+                    <span style="color: purple"></span>
+                </div>
+            </td>
             <td>success</td>
 			<td>v1</td>
             <td>
-                                        <div>chassis psnt</div>
-                                    <br/>
-                                </td>
+                <div>chassis psnt</div>
+                <br/>
+            </td>
         </tr>
-                            <tr>
-                                <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="2">
+         <tr>
+            <td class="elbow-placeholder">&nbsp;</td>
+            <td colspan="2">
                 <div class="ansibleOptionAnchor" id="return-hostgroup_details/num_of_hosts"></div>
                 <b>model</b>
                 <a class="ansibleOptionLink" href="#return-hostgroup_details/num_of_hosts" title="Permalink to this return value"></a>
                 <div style="font-size: small">
-                  <span style="color: purple">type=string</span>
-                                      </div>
-                                </td>
+                    <span style="color: purple">type=string</span>
+                </div>
+            </td>
             <td>success</td>
 			<td>v1</td>
             <td>
-                                        <div>chassis model</div>
-                                    <br/>
-                                </td>
+                <div>chassis model</div>
+                <br/>
+            </td>
         </tr>
-                            <tr>
-                                <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="2">
+        <tr>
+            <td class="elbow-placeholder">&nbsp;</td>
+            <td colspan="2">
                 <div class="ansibleOptionAnchor" id="return-hostgroup_details/num_of_initiators"></div>
                 <b>render_category</b>
                 <a class="ansibleOptionLink" href="#return-hostgroup_details/num_of_initiators" title="Permalink to this return value"></a>
                 <div style="font-size: small">
-                  <span style="color: purple">type=string</span>
-                  <br>
-                  <span style="color: purple"></span>                    </div>
-                                </td>
+                    <span style="color: purple">type=string</span>
+                    <br>
+                    <span style="color: purple"></span>
+                </div>
+            </td>
             <td>success</td>
 			<td>v1</td>
             <td>
-                                        <div>chassis render category</div>
-                                    <br/>
-                                </td>
+                <div>chassis render category</div>
+                <br/>
+            </td>
         </tr>
-                            <tr>
-                                <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="2">
+        <tr>
+            <td class="elbow-placeholder">&nbsp;</td>
+            <td colspan="2">
                 <div class="ansibleOptionAnchor" id="return-hostgroup_details/num_of_masking_views"></div>
                 <b>hosts</b>
                 <a class="ansibleOptionLink" href="#return-hostgroup_details/num_of_masking_views" title="Permalink to this return value"></a>
                 <div style="font-size: small">
-                  <span style="color: purple">type=list</span>
-                  <br>
-                  <span style="color: purple">elements=HostBasicInfoV3</span>                    </div>
-                                </td>
+                    <span style="color: purple">type=list</span>
+                    <br>
+                    <span style="color: purple">elements=HostBasicInfoV7</span>                  
+                </div>
+            </td>
             <td>success</td>
 			<td>v1</td>
             <td>
-                                        <div>host basic infomation</div>
-                                    <br/>
-                                </td>
+                <div>host basic infomation</div>
+                <br/>
+            </td>
         </tr>
-                            <tr>
-                                <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="2">
+        <tr>
+            <td class="elbow-placeholder">&nbsp;</td>
+            <td colspan="2">
                 <div class="ansibleOptionAnchor" id="return-hostgroup_details/port_flags_override"></div>
                 <b>generation</b>
                 <a class="ansibleOptionLink" href="#return-hostgroup_details/port_flags_override" title="Permalink to this return value"></a>
                 <div style="font-size: small">
-                  <span style="color: purple">type=integer</span>
-                                      </div>
-                                </td>
+                    <span style="color: purple">type=integer</span>
+                </div>
+            </td>
             <td>success</td>
 			<td>v1</td>
             <td>
-                                        <div>chassis generation</div>
-                                    <br/>
-                                </td>
+                <div>chassis generation</div>
+                <br/>
+            </td>
         </tr>
-                            <tr>
-                                <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="2">
+        <tr>
+            <td class="elbow-placeholder">&nbsp;</td>
+            <td colspan="2">
                 <div class="ansibleOptionAnchor" id="return-hostgroup_details/type"></div>
                 <b>health</b>
                 <a class="ansibleOptionLink" href="#return-hostgroup_details/type" title="Permalink to this return value"></a>
                 <div style="font-size: small">
-                  <span style="color: purple">type=string</span>
-                                      </div>
-                                </td>
+                    <span style="color: purple">type=string</span>
+                </div>
+            </td>
             <td>success</td>
 			<td>v1</td>
             <td>
-                                        <div>chassis health status</div>
-                                    <br/>
-                                </td>
+                <div>chassis health status</div>
+                <br/>
+            </td>
         </tr>
- <tr>
-                                <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="2">
+        <tr>
+            <td class="elbow-placeholder">&nbsp;</td>
+            <td colspan="2">
                 <div class="ansibleOptionAnchor" id="return-hostgroup_details/type"></div>
                 <b>missing</b>
                 <a class="ansibleOptionLink" href="#return-hostgroup_details/type" title="Permalink to this return value"></a>
                 <div style="font-size: small">
-                  <span style="color: purple">type=boolean</span>
-                                      </div>
-                                </td>
+                    <span style="color: purple">type=boolean</span>
+                </div>
+            </td>
             <td>success</td>
 			<td>v1</td>
             <td>
-                                        <div>The upgrade status of the VxRail appliance software</div>
-                                    <br/>
-                                </td>
+                <div>The upgrade status of the VxRail appliance software</div>
+                <br/>
+            </td>
         </tr>
-<tr>
-                                <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="2">
+        <tr>
+            <td class="elbow-placeholder">&nbsp;</td>
+            <td colspan="2">
                 <div class="ansibleOptionAnchor" id="return-hostgroup_details/num_of_initiators"></div>
                 <b>power_supplies</b>
                 <a class="ansibleOptionLink" href="#return-hostgroup_details/num_of_initiators" title="Permalink to this return value"></a>
                 <div style="font-size: small">
-                  <span style="color: purple">type=list</span>
-                  <br>
-                  <span style="color: purple">elements=PowerSupplyInfo</span>                    </div>
-                                </td>
+                    <span style="color: purple">type=list</span>
+                    <br>
+                    <span style="color: purple">elements=PowerSupplyInfo</span>
+                </div>
+            </td>
             <td>success</td>
 			<td>v1</td>
             <td>
-                                        <div>Information about the chassis power supplies</div>
-                                    <br/>
-                                </td>
+                <div>Information about the chassis power supplies</div>
+                <br/>
+            </td>
         </tr>
-<tr>
-                                <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="2">
+        <tr>
+            <td class="elbow-placeholder">&nbsp;</td>
+            <td colspan="2">
                 <div class="ansibleOptionAnchor" id="return-hostgroup_details/num_of_initiators"></div>
                 <b>bay</b>
                 <a class="ansibleOptionLink" href="#return-hostgroup_details/num_of_initiators" title="Permalink to this return value"></a>
                 <div style="font-size: small">
-                  <span style="color: purple">type=boolean</span>
-                  <br>
-                  <span style="color: purple"></span>                    </div>
-                                </td>
+                    <span style="color: purple">type=boolean</span>
+                    <br>
+                    <span style="color: purple"></span>
+                </div>
+            </td>
             <td>success</td>
 			<td>v4</td>
             <td>
-                                        <div>Information about bay</div>
-                                    <br/>
-                                </td>
+                <div>Information about bay</div>
+                <br/>
+            </td>
         </tr>
-<tr>
-                                <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="2">
+        <tr>
+            <td class="elbow-placeholder">&nbsp;</td>
+            <td colspan="2">
                 <div class="ansibleOptionAnchor" id="return-hostgroup_details/num_of_initiators"></div>
                 <b>witness</b>
                 <a class="ansibleOptionLink" href="#return-hostgroup_details/num_of_initiators" title="Permalink to this return value"></a>
                 <div style="font-size: small">
-                  <span style="color: purple">type=WitnessBasicInfoV1</span>
-                  <br>
-                  <span style="color: purple"></span>                    </div>
-                                </td>
+                    <span style="color: purple">type=WitnessBasicInfoV2</span>
+                    <br>
+                    <span style="color: purple"></span>
+                </div>
+            </td>
             <td>success</td>
 			<td>v5</td>
             <td>
-                                        <div>Information about witness sled</div>
-                                    <br/>
-                                </td>
+                <div>Information about witness sled</div>
+                <br/>
+            </td>
         </tr>
-<tr>
-                                <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="2">
-                <div class="ansibleOptionAnchor" id="return-hostgroup_details/num_of_initiators"></div>
-                <b>node_disk_type</b>
-                <a class="ansibleOptionLink" href="#return-hostgroup_details/num_of_initiators" title="Permalink to this return value"></a>
-                <div style="font-size: small">
-                  <span style="color: purple">type=string</span>
-                  <br>
-                  <span style="color: purple"></span>                    </div>
-                                </td>
-            <td>success</td>
-			<td>v6</td>
-            <td>
-                                        <div>Information about the node disk type</div>
-                                    <br/>
-                                </td>
-        </tr>
-                    </table>
+</table>
 
 Authors
 -------
