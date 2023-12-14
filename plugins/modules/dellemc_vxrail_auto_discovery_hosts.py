@@ -400,6 +400,9 @@ class VxRailAutoDiscoveryHosts():
                           'hardware_profile': entry.get('hardware_profile')}
             if entry.get('violations') is not None:
                 nodes_info['violations'] = entry.get('violations')
+            if entry.get('capability') is not None:
+                nodes_info['capability'] = entry.get('capability')
+
             individual_node_info = {}
             if self.api_version_number == 1:
                 individual_node_info = {

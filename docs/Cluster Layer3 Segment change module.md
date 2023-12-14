@@ -89,7 +89,7 @@ Parameters
                                                                                                                                                         </td>
                                                             <td>
                                         <div></div>
-                                        <div>The type of ip address</div>
+                                        <div>The type of ip address(IPV4, IPV6 or DUALSTACK)</div>
                                                     </td>
         </tr>
 <tr>
@@ -100,7 +100,7 @@ Parameters
                 <div style="font-size: small">
                     <span style="color: purple">type=string</span>
                     <br>
-                    <span style="color: red">required=true</span>                    </div>
+                    <span style="color: red">required=false</span>                    </div>
                                                     </td>
                             <td>
                                                                                                                                                         </td>
@@ -117,13 +117,47 @@ Parameters
                 <div style="font-size: small">
                     <span style="color: purple">type=string</span>
                     <br>
-                    <span style="color: red">required=true</span>                    </div>
+                    <span style="color: red">required=false</span>                    </div>
                                                     </td>
                             <td>
                                                                                                                                                         </td>
                                                             <td>
                                         <div></div>
                                         <div>The subnet mask of the management traffic for the segment</div>
+                                                    </td>
+        </tr>
+<tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
+                <b>management_gateway_ipv6</b>
+                <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                    <br>
+                    <span style="color: red">required=false</span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div></div>
+                                        <div>The IPv6 gateway address of the management traffic for the segment</div>
+                                                    </td>
+        </tr>
+<tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
+                <b>management_prefix_length_ipv6</b>
+                <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=integer</span>
+                    <br>
+                    <span style="color: red">required=false</span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div></div>
+                                        <div>The prefix length of the management traffic for the segment</div>
                                                     </td>
         </tr>
 <tr>
@@ -197,29 +231,12 @@ Parameters
 <tr>
                                                             <td colspan="1">
                 <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
-                <b>new_segment_label</b>
-                <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
-                <div style="font-size: small">
-                    <span style="color: purple">type=string</span>
-                    <br>
-                    <span style="color: red">required=true</span>                    </div>
-                                                    </td>
-                            <td>
-                                                                                                                                                        </td>
-                                                            <td>
-                                        <div></div>
-                                        <div>The label of the current segment to be acted upon</div>
-                                                    </td>
-        </tr>
-<tr>
-                                                            <td colspan="1">
-                <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
                 <b>vmotion_gateway</b>
                 <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
                 <div style="font-size: small">
                     <span style="color: purple">type=string</span>
                     <br>
-                    <span style="color: red">required=true</span>                    </div>
+                    <span style="color: red">required=false</span>                    </div>
                                                     </td>
                             <td>
                                                                                                                                                         </td>
@@ -236,7 +253,7 @@ Parameters
                 <div style="font-size: small">
                     <span style="color: purple">type=string</span>
                     <br>
-                    <span style="color: red">required=true</span>                    </div>
+                    <span style="color: red">required=false</span>                    </div>
                                                     </td>
                             <td>
                                                                                                                                                         </td>
@@ -253,13 +270,64 @@ Parameters
                 <div style="font-size: small">
                     <span style="color: purple">type=string</span>
                     <br>
-                    <span style="color: red">required=true</span>                    </div>
+                    <span style="color: red">required=false</span>                    </div>
                                                     </td>
                             <td>
                                                                                                                                                         </td>
                                                             <td>
                                         <div></div>
                                         <div>The subnet mask for the vMotion traffic of the segment</div>
+                                                    </td>
+        </tr>
+<tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
+                <b>vmotion_gateway_ipv6</b>
+                <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                    <br>
+                    <span style="color: red">required=false</span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div></div>
+                                        <div>The IPv6 gateway address of the vMotion traffic of the segment</div>
+                                                    </td>
+        </tr>
+<tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
+                <b>vmotion_init_gateway_ipv6</b>
+                <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                    <br>
+                    <span style="color: red">required=false</span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div></div>
+                                        <div>The IPv6 gateway address of the vMotion traffic for the initial segment</div>
+                                                    </td>
+        </tr>
+<tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
+                <b>vmotion_prefix_length_ipv6</b>
+                <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                    <br>
+                    <span style="color: red">required=false</span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div></div>
+                                        <div>The prefix length for the vMotion traffic of the segment</div>
                                                     </td>
         </tr>
 <tr>
@@ -304,7 +372,7 @@ Parameters
                 <div style="font-size: small">
                     <span style="color: purple">type=string</span>
                     <br>
-                    <span style="color: red">required=true</span>                    </div>
+                    <span style="color: red">required=false</span>                    </div>
                                                     </td>
                             <td>
                                                                                                                                                         </td>
@@ -321,7 +389,7 @@ Parameters
                 <div style="font-size: small">
                     <span style="color: purple">type=string</span>
                     <br>
-                    <span style="color: red">required=true</span>                    </div>
+                    <span style="color: red">required=false</span>                    </div>
                                                     </td>
                             <td>
                                                                                                                                                         </td>
@@ -338,7 +406,58 @@ Parameters
                 <div style="font-size: small">
                     <span style="color: purple">type=string</span>
                     <br>
-                    <span style="color: red">required=true</span>                    </div>
+                    <span style="color: red">required=false</span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div></div>
+                                        <div>The subnet mask for the vSAN traffic for the segment</div>
+                                                    </td>
+        </tr>
+<tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
+                <b>vsan_gateway_ipv6</b>
+                <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                    <br>
+                    <span style="color: red">required=false</span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div></div>
+                                        <div>The IPv6 gateway address of the vSAN traffic for the segment</div>
+                                                    </td>
+        </tr>
+<tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
+                <b>vsan_init_gateway_ipv6</b>
+                <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                    <br>
+                    <span style="color: red">required=false</span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div></div>
+                                        <div>The IPv6 gateway address of the vSAN traffic for the initial segment</div>
+                                                    </td>
+        </tr>
+<tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
+                <b>vsan_prefix_length_ipv6</b>
+                <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=integer</span>
+                    <br>
+                    <span style="color: red">required=false</span>                    </div>
                                                     </td>
                             <td>
                                                                                                                                                         </td>
@@ -456,20 +575,28 @@ Examples
         vcpasswd: "{{ vcpasswd }}"
         ip_version: "{{ ip_version }}"
         management_gateway: "{{ management_gateway }}"
+        management_gateway_ipv6: "{{ management_gateway_ipv6 }}"
         management_netmask: "{{ management_netmask }}"
+        management_prefix_length_ipv6: "{{ management_prefix_length_ipv6 }}"
         management_topology: "{{ management_topology }}"
         management_vlan: "{{ management_vlan }}"
         proxy_ip: "{{ proxy_ip }}"
         segment_label: "{{ segment_label }}"
         new_segment_label: "{{ new_segment_label }}"
         vmotion_gateway: "{{ vmotion_gateway }}"
+        vmotion_gateway_ipv6: "{{ vmotion_gateway_ipv6 }}"
         vmotion_init_gateway: "{{ vmotion_init_gateway }}"
+        vmotion_init_gateway_ipv6: "{{ vmotion_init_gateway_ipv6 }}"
         vmotion_netmask: "{{ vmotion_netmask }}"
+        vmotion_prefix_length_ipv6: "{{ vmotion_prefix_length_ipv6 }}"
         vmotion_topology: "{{ vmotion_topology }}"
         vmotion_vlan: "{{ vmotion_vlan }}"
         vsan_gateway: "{{ vsan_gateway }}"
+        vsan_gateway_ipv6: "{{ vsan_gateway_ipv6 }}"
         vsan_init_gateway: "{{ vsan_init_gateway }}"
+        vsan_init_gateway_ipv6: "{{ vsan_init_gateway_ipv6 }}"
         vsan_netmask: "{{ vsan_netmask }}"
+        vsan_prefix_length_ipv6: "{{ vsan_prefix_length_ipv6 }}"
         vsan_topology: "{{ vsan_topology }}"
         vsan_vlan: "{{ vsan_vlan }}"
         version: "{{ version }}"

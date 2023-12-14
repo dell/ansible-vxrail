@@ -48,14 +48,26 @@ options:
   management_gateway:
     description:
       The IPv4 gateway address of the management traffic for the segment
-    required: True
+    required: False
     type: str
 
   management_netmask:
     description:
       The subnet mask of the management traffic for the segment
-    required: True
+    required: False
     type: str
+
+  management_gateway_ipv6:
+    description:
+      The IPv6 gateway address of the management traffic for the segment
+    required: False
+    type: str
+
+  management_prefix_length_ipv6:
+    description:
+      The prefix length of the management traffic for the segment
+    required: False
+    type: int
 
   management_topology:
     description:
@@ -66,7 +78,7 @@ options:
   management_vlan:
     description:
       The VLAN ID of the management traffic for the segment
-    required: false
+    required: False
     type: int
 
   proxy_ip:
@@ -84,20 +96,38 @@ options:
   vmotion_gateway:
     description:
       The IPv4 gateway address of the vMotion traffic of the segment
-    required: True
+    required: False
     type: str
 
   vmotion_init_gateway:
     description:
       The IPv4 gateway address of the vMotion traffic for the initial segment
-    required: True
+    required: False
     type: str
 
   vmotion_netmask:
     description:
       The subnet mask for the vMotion traffic of the segment
-    required: True
+    required: False
     type: str
+
+  vmotion_gateway_ipv6:
+    description:
+      The IPv6 gateway address of the vMotion traffic of the segment
+    required: False
+    type: str
+
+  vmotion_init_gateway_ipv6:
+    description:
+      The IPv6 gateway address of the vMotion traffic for the initial segment
+    required: False
+    type: str
+
+  vmotion_prefix_length_ipv6:
+    description:
+      The prefix length for the vMotion traffic of the segment
+    required: False
+    type: int
 
   vmotion_topology:
     description:
@@ -114,20 +144,38 @@ options:
   vsan_gateway:
     description:
       The IPv4 gateway address of the vSAN traffic for the segment
-    required: True
+    required: False
     type: str
 
   vsan_init_gateway:
     description:
       The IPv4 gateway address of the vSAN traffic for the initial segment
-    required: True
+    required: False
     type: str
 
   vsan_netmask:
     description:
       The subnet mask for the vSAN traffic for the segment
-    required: True
+    required: False
     type: str
+
+  vsan_gateway_ipv6:
+    description:
+      The IPv6 gateway address of the vSAN traffic for the segment
+    required: False
+    type: str
+
+  vsan_init_gateway_ipv6:
+    description:
+      The IPv6 gateway address of the vSAN traffic for the initial segment
+    required: False
+    type: str
+
+  vsan_prefix_length_ipv6:
+    description:
+      The prefix length for the vSAN traffic for the segment
+    required: False
+    type: int
 
   vsan_topology:
     description:
@@ -173,6 +221,8 @@ EXAMPLES = r'''
         ip_version: "{{ ip_version }}"
         management_gateway: "{{ management_gateway }}"
         management_netmask: "{{ management_netmask }}"
+        management_gateway_ipv6: "{{ management_gateway_ipv6 }}"
+        management_prefix_length_ipv6: "{{ management_prefix_length_ipv6 }}"
         management_topology: "{{ management_topology }}"
         management_vlan: "{{ management_vlan }}"
         proxy_ip: "{{ proxy_ip }}"
@@ -180,11 +230,17 @@ EXAMPLES = r'''
         vmotion_gateway: "{{ vmotion_gateway }}"
         vmotion_init_gateway: "{{ vmotion_init_gateway }}"
         vmotion_netmask: "{{ vmotion_netmask }}"
+        vmotion_gateway_ipv6: "{{ vmotion_gateway_ipv6 }}"
+        vmotion_init_gateway_ipv6: "{{ vmotion_init_gateway_ipv6 }}"
+        vmotion_prefix_length_ipv6: "{{ vmotion_prefix_length_ipv6 }}"
         vmotion_topology: "{{ vmotion_topology }}"
         vmotion_vlan: "{{ vmotion_vlan }}"
         vsan_gateway: "{{ vsan_gateway }}"
         vsan_init_gateway: "{{ vsan_init_gateway }}"
         vsan_netmask: "{{ vsan_netmask }}"
+        vsan_gateway_ipv6: "{{ vsan_gateway_ipv6 }}"
+        vsan_init_gateway_ipv6: "{{ vsan_init_gateway_ipv6 }}"
+        vsan_prefix_length_ipv6: "{{ vsan_prefix_length_ipv6 }}"
         vsan_topology: "{{ vsan_topology }}"
         vsan_vlan: "{{ vsan_vlan }}"
         version: "{{ version }}"
@@ -232,22 +288,30 @@ class VxRailCluster():
         self.timeout = module.params.get('timeout')
         self.vc_admin = module.params.get('vcadmin')
         self.vc_password = module.params.get('vcpasswd')
-        self.ip_version = module.params.get('ip_version')
+        self.ip_version = module.params.get('ip_version').upper()
         self.management_gateway = module.params.get('management_gateway')
+        self.management_gateway_ipv6 = module.params.get('management_gateway_ipv6')
         self.management_netmask = module.params.get('management_netmask')
-        self.management_topology = module.params.get('management_topology')
+        self.management_prefix_length_ipv6 = module.params.get('management_prefix_length_ipv6')
+        self.management_topology = module.params.get('management_topology').upper()
         self.management_vlan = module.params.get('management_vlan')
         self.proxy_ip = module.params.get('proxy_ip')
         self.segment_label = module.params.get('segment_label')
         self.vmotion_gateway = module.params.get('vmotion_gateway')
+        self.vmotion_gateway_ipv6 = module.params.get('vmotion_gateway_ipv6')
         self.vmotion_init_gateway = module.params.get('vmotion_init_gateway')
+        self.vmotion_init_gateway_ipv6 = module.params.get('vmotion_init_gateway_ipv6')
         self.vmotion_netmask = module.params.get('vmotion_netmask')
-        self.vmotion_topology = module.params.get('vmotion_topology')
+        self.vmotion_prefix_length_ipv6 = module.params.get('vmotion_prefix_length_ipv6')
+        self.vmotion_topology = module.params.get('vmotion_topology').upper()
         self.vmotion_vlan = module.params.get('vmotion_vlan')
         self.vsan_gateway = module.params.get('vsan_gateway')
+        self.vsan_gateway_ipv6 = module.params.get('vsan_gateway_ipv6')
         self.vsan_init_gateway = module.params.get('vsan_init_gateway')
+        self.vsan_init_gateway_ipv6 = module.params.get('vsan_init_gateway_ipv6')
         self.vsan_netmask = module.params.get('vsan_netmask')
-        self.vsan_topology = module.params.get('vsan_topology')
+        self.vsan_prefix_length_ipv6 = module.params.get('vsan_prefix_length_ipv6')
+        self.vsan_topology = module.params.get('vsan_topology').upper()
         self.vsan_vlan = module.params.get('vsan_vlan')
         self.version = module.params.get('version')
         self.api_version_number = module.params.get('api_version_number')
@@ -280,19 +344,27 @@ class VxRailCluster():
         segment_json["segment"] = {}
         segment_json["segment"]["ip_version"] = self.ip_version
         segment_json["segment"]["management_gateway"] = self.management_gateway
+        segment_json["segment"]["management_gateway_ipv6"] = self.management_gateway_ipv6
         segment_json["segment"]["management_netmask"] = self.management_netmask
+        segment_json["segment"]["management_prefix_length_ipv6"] = self.management_prefix_length_ipv6
         segment_json["segment"]["management_topology"] = self.management_topology
         segment_json["segment"]["management_vlan"] = self.management_vlan
         segment_json["segment"]["proxy_ip"] = self.proxy_ip
         segment_json["segment"]["segment_label"] = self.segment_label
         segment_json["segment"]["vmotion_gateway"] = self.vmotion_gateway
+        segment_json["segment"]["vmotion_gateway_ipv6"] = self.vmotion_gateway_ipv6
         segment_json["segment"]["vmotion_init_gateway"] = self.vmotion_init_gateway
+        segment_json["segment"]["vmotion_init_gateway_ipv6"] = self.vmotion_init_gateway_ipv6
         segment_json["segment"]["vmotion_netmask"] = self.vmotion_netmask
+        segment_json["segment"]["vmotion_prefix_length_ipv6"] = self.vmotion_prefix_length_ipv6
         segment_json["segment"]["vmotion_topology"] = self.vmotion_topology
         segment_json["segment"]["vmotion_vlan"] = self.vmotion_vlan
         segment_json["segment"]["vsan_gateway"] = self.vsan_gateway
+        segment_json["segment"]["vsan_gateway_ipv6"] = self.vsan_gateway_ipv6
         segment_json["segment"]["vsan_init_gateway"] = self.vsan_init_gateway
+        segment_json["segment"]["vsan_init_gateway_ipv6"] = self.vsan_init_gateway_ipv6
         segment_json["segment"]["vsan_netmask"] = self.vsan_netmask
+        segment_json["segment"]["vsan_prefix_length_ipv6"] = self.vsan_prefix_length_ipv6
         segment_json["segment"]["vsan_topology"] = self.vsan_topology
         segment_json["segment"]["vsan_vlan"] = self.vsan_vlan
         segment_json["vcenter"] = {}
@@ -340,21 +412,29 @@ def main():
         vcpasswd=dict(required=True, no_log=True),
         segment_label=dict(required=True),
         timeout=dict(type='int', default=60),
-        ip_version=dict(required=True),
-        management_gateway=dict(required=True),
-        management_netmask=dict(required=True),
-        management_topology=dict(required=True),
+        ip_version=dict(required=True, choices=['IPV4', 'IPV6', 'DUALSTACK']),
+        management_gateway=dict(required=False),
+        management_gateway_ipv6=dict(required=False),
+        management_netmask=dict(required=False),
+        management_prefix_length_ipv6=dict(type='int', required=False),
+        management_topology=dict(required=True, choices=['DIFF_SUBNET', 'SAME_SUBNET']),
         management_vlan=dict(type='int', default=0),
         proxy_ip=dict(required=True),
-        vmotion_gateway=dict(required=True),
-        vmotion_init_gateway=dict(required=True),
-        vmotion_netmask=dict(required=True),
-        vmotion_topology=dict(required=True),
+        vmotion_gateway=dict(required=False),
+        vmotion_gateway_ipv6=dict(required=False),
+        vmotion_init_gateway=dict(required=False),
+        vmotion_init_gateway_ipv6=dict(required=False),
+        vmotion_netmask=dict(required=False),
+        vmotion_prefix_length_ipv6=dict(type='int', required=False),
+        vmotion_topology=dict(required=True, choices=['DIFF_SUBNET', 'SAME_SUBNET']),
         vmotion_vlan=dict(type='int', default=0),
-        vsan_gateway=dict(required=True),
-        vsan_init_gateway=dict(required=True),
-        vsan_netmask=dict(required=True),
-        vsan_topology=dict(required=True),
+        vsan_gateway=dict(required=False),
+        vsan_gateway_ipv6=dict(required=False),
+        vsan_init_gateway=dict(required=False),
+        vsan_init_gateway_ipv6=dict(required=False),
+        vsan_netmask=dict(required=False),
+        vsan_prefix_length_ipv6=dict(type='int', required=False),
+        vsan_topology=dict(required=True, choices=['DIFF_SUBNET', 'SAME_SUBNET']),
         vsan_vlan=dict(type='int', default=0),
         version=dict(required=True),
         api_version_number=dict(required=False, type='int')
@@ -362,6 +442,11 @@ def main():
     module = AnsibleModule(
         argument_spec=module_args,
         supports_check_mode=True,
+        required_if=[
+          ('management_topology', 'DIFF_SUBNET', ('management_gateway', 'management_gateway_ipv6'), True),
+          ('vmotion_topology', 'DIFF_SUBNET', ('vmotion_gateway', 'vmotion_gateway_ipv6'), True),
+          ('vsan_topology', 'DIFF_SUBNET', ('vsan_gateway', 'vsan_gateway_ipv6'), True),
+        ]
     )
     result = VxRailCluster().add_layer3_segment()
 

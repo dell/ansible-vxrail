@@ -129,6 +129,57 @@ Parameters
         <tr>
                                                             <td colspan="1">
                 <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
+                <b>new_ipv6</b>
+                <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                    <br>
+                    <span style="color: red">required=true</span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div></div>
+                                        <div>The new IPv6 address to assign to the VxRail manager</div>
+                                                    </td>
+        </tr>
+        <tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
+                <b>gateway_ipv6</b>
+                <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                    <br>
+                    <span style="color: red">required=true</span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div></div>
+                                        <div>The gateway IPv6 for the new manager address</div>
+                                                    </td>
+        </tr>
+        <tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
+                <b>prefix_length_ipv6</b>
+                <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                    <br>
+                    <span style="color: red">required=true</span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div></div>
+                                        <div>The prefix length for the new manager address</div>
+                                                    </td>
+        </tr>
+        <tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
                 <b>vlan_id</b>
                 <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
                 <div style="font-size: small">
@@ -203,6 +254,9 @@ Examples
         new_ip: "{{ new_ip }}"
         gateway: "{{ gateway }}"
         netmask: "{{ netmask }}"
+        new_ipv6: "{{ new_ipv6 }}"
+        gateway_ipv6: "{{ gateway_ipv6 }}"
+        prefix_length_ipv6: "{{ prefix_length_ipv6 }}"
         vlan_id: "{{ vlan_id }}"
         timeout: "{{ timeout }}"
         api_version_number: "{{ api_version_number }}"

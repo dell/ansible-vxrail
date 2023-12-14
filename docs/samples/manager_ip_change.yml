@@ -3,22 +3,24 @@
   hosts: localhost
   vars:
     vxmip: "{{ vxmip }}"
-    vcadmin: "{{ vcadmin }}"
-    vcpasswd: "{{ vcpasswd }}"
     new_ip: "{{ new_ip }}"
     gateway: "{{ gateway }}"
     netmask: "{{ netmask }}"
+    new_ipv6: "{{ new_ipv6 }}"
+    gateway_ipv6: "{{ gateway_ipv6 }}"
+    prefix_length_ipv6: "{{ prefix_length_ipv6 }}"
     vlan_id: "{{ vlan_id }}"
 
   tasks:
     - name: Configure the VxRail Manager IP address
       dellemc_vxrail_network_manager_configure:
         vxmip: "{{ vxmip }}"
-        vcadmin: "{{ vcadmin }}"
-        vcpasswd: "{{ vcpasswd }}"
         new_ip: "{{ new_ip }}"
         gateway: "{{ gateway }}"
         netmask: "{{ netmask }}"
+        new_ipv6: "{{ new_ipv6 }}"
+        gateway_ipv6: "{{ gateway_ipv6 }}"
+        prefix_length_ipv6: "{{ prefix_length_ipv6 }}"
         vlan_id: "{{ vlan_id }}"
         api_version_number: "{{ api_version_number | default(omit) }}"
         timeout: "{{ timeout | default(omit) }}"

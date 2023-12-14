@@ -102,13 +102,13 @@ Parameters
                 <div style="font-size: small">
                     <span style="color: purple">type=string</span>
                     <br>
-                    <span style="color: red">required=true</span>                    </div>
+                    <span style="color: red">required=false</span>                    </div>
                                                     </td>
                             <td>
                                                                         </td>
                                                             <td>
                                         <div></div>
-                                        <div>The MAC address of the iDRAC.</div>
+                                        <div>The IPv4 address of the iDRAC.</div>
                                         <div></div>
                                                     </td>
         </tr>
@@ -120,13 +120,13 @@ Parameters
                 <div style="font-size: small">
                     <span style="color: purple">type=string</span>
                     <br>
-                    <span style="color: red">required=true</span>                    </div>
+                    <span style="color: red">required=false</span>                    </div>
                                                     </td>
                             <td>
                                                                         </td>
                                                             <td>
                                         <div></div>
-                                        <div>The netmask of the iDRAC.</div>
+                                        <div>The netmask of the iDRAC IPv4 address.</div>
                                         <div></div>
                                                     </td>
         </tr>
@@ -138,13 +138,13 @@ Parameters
                 <div style="font-size: small">
                     <span style="color: purple">type=string</span>
                     <br>
-                    <span style="color: red">required=true</span>                    </div>
+                    <span style="color: red">required=false</span>                    </div>
                                                     </td>
                             <td>
                                                                         </td>
                                                             <td>
                                         <div></div>
-                                        <div>The gateway address of the iDRAC.</div>
+                                        <div>The gateway address of the iDRAC IPv4 address.</div>
                                         <div></div>
                                                     </td>
         </tr>
@@ -155,7 +155,8 @@ Parameters
                 <a class="ansibleOptionLink" href="#parameter-state" title="Permalink to this option"></a>
                 <div style="font-size: small">
                     <span style="color: purple">type=boolean</span>
-                    <br>                    </div>
+                    <br>
+                    <span style="color: red">required=false</span>                     </div>
                                                     </td>
                             <td>
                                                                         </td>
@@ -164,6 +165,70 @@ Parameters
                                         <div>Whether DHCP service enabled or not.</div>
                                         <div></div>
                                                     </td>
+        </tr>
+<tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
+                <b>ipv6_address</b>
+                <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                    <br>
+                    <span style="color: red">required=false</span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div></div>
+                                        <div>The IPv6 address of the iDRAC IPv6 address</div>
+        </tr>
+<tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
+                <b>ipv6_prefix_length</b>
+                <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                    <br>
+                    <span style="color: red">required=false</span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div></div>
+                                        <div>The netmask of the iDRAC IPv6 address</div>
+        </tr>
+<tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
+                <b>ipv6_gateway</b>
+                <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                    <br>
+                    <span style="color: red">required=false</span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div></div>
+                                        <div>The gateway address of the iDRAC IPv6 address</div>
+        </tr>
+<tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
+                <b>ipv6_auto_config_enabled</b>
+                <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                    <br>
+                    <span style="color: red">required=false</span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div></div>
+                                        <div>Whether enable auto config iDRAC IPv6 address or not</div>
         </tr>
 <tr>
                                                             <td colspan="1">
@@ -255,7 +320,7 @@ Examples
 --------
 
 ``` yaml+jinja
- - name: Update iDRAC network settings, version specified by api_version_number
+ - name: Update iDRAC IPv4 network settings, version specified by api_version_number
     dellemc_vxrail_idrac_updatenetwork:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
@@ -266,6 +331,24 @@ Examples
         gateway: "{{ gateway }}"
         vlan_id: "{{ vlan_id }}"
         dhcp_enabled: "{{ dhcp_enabled }}"
+        vlan_priority: "{{ vlan_priority }}"
+        timeout: "{{ timeout }}"
+        api_version_number: "{{ api_version_number }}"
+
+```
+
+``` yaml+jinja
+ - name: Update iDRAC IPv6 network settings, version specified by api_version_number
+    dellemc_vxrail_idrac_updatenetwork:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        sn: "{{ sn }}"
+        ipv6_address: "{{ ipv6_address }}"
+        ipv6_prefix_length: "{{ ipv6_prefix_length }}"
+        ipv6_gateway: "{{ ipv6_gateway }}"
+        ipv6_auto_config_enabled: "{{ ipv6_auto_config_enabled }}"
+        vlan_id: "{{ vlan_id }}"
         vlan_priority: "{{ vlan_priority }}"
         timeout: "{{ timeout }}"
         api_version_number: "{{ api_version_number }}"

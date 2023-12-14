@@ -1,0 +1,21 @@
+---
+- name: Retrieve cluster vLCM information api. Supported in VxRail versions 8.0.200+.
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+
+  tasks:
+    - name: Start to retrieve cluster vLCM information
+      dellemc_vxrail_lcm_vlcm_get:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        timeout: "{{ timeout | default(omit) }}"
+        api_version_number: "{{ api_version_number | default(omit) }}"
+      register: job_result
+
+    - name: Display Retrieve cluster vLCM information result
+      debug:
+        msg: "{{ job_result }}"

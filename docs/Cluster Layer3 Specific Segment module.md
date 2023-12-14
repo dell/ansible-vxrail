@@ -245,6 +245,38 @@ The following are the fields unique to this module:
                                 <td class="elbow-placeholder">&nbsp;</td>
                             <td colspan="2">
                 <div class="ansibleOptionAnchor" id="return-hostgroup_details/num_of_initiators"></div>
+                <b>management_gateway_ipv6</b>
+                <a class="ansibleOptionLink" href="#return-hostgroup_details/num_of_initiators" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                                 </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>The IPv6 gateway address of the management traffic for the current segment</div>
+                                    <br/>
+                                </td>
+        </tr>
+<tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="return-hostgroup_details/num_of_initiators"></div>
+                <b>management_prefix_length_ipv6</b>
+                <a class="ansibleOptionLink" href="#return-hostgroup_details/num_of_initiators" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                                 </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>The prefix length of the management traffic for the current segment</div>
+                                    <br/>
+                                </td>
+        </tr>
+<tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="return-hostgroup_details/num_of_initiators"></div>
                 <b>management_vlan</b>
                 <a class="ansibleOptionLink" href="#return-hostgroup_details/num_of_initiators" title="Permalink to this return value"></a>
                 <div style="font-size: small">
@@ -277,6 +309,22 @@ The following are the fields unique to this module:
                                 <td class="elbow-placeholder">&nbsp;</td>
                             <td colspan="2">
                 <div class="ansibleOptionAnchor" id="return-hostgroup_details/num_of_initiators"></div>
+                <b>vsan_init_gateway</b>
+                <a class="ansibleOptionLink" href="#return-hostgroup_details/num_of_initiators" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                                 </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>The gateway address of the init rack vSAN traffic for the current segment</div>
+                                    <br/>
+                                </td>
+        </tr>
+<tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="return-hostgroup_details/num_of_initiators"></div>
                 <b>vsan_netmask</b>
                 <a class="ansibleOptionLink" href="#return-hostgroup_details/num_of_initiators" title="Permalink to this return value"></a>
                 <div style="font-size: small">
@@ -286,6 +334,54 @@ The following are the fields unique to this module:
             <td>success</td>
             <td>
                                         <div>The subnet mask for the vSAN traffic for the current segment</div>
+                                    <br/>
+                                </td>
+        </tr>
+<tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="return-hostgroup_details/num_of_initiators"></div>
+                <b>vsan_gateway_ipv6</b>
+                <a class="ansibleOptionLink" href="#return-hostgroup_details/num_of_initiators" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                                 </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>The IPv6 gateway address of the vSAN traffic for the current segment</div>
+                                    <br/>
+                                </td>
+        </tr>
+<tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="return-hostgroup_details/num_of_initiators"></div>
+                <b>vsan_init_gateway_ipv6</b>
+                <a class="ansibleOptionLink" href="#return-hostgroup_details/num_of_initiators" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                                 </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>The IPv6 gateway address of the init rack vSAN traffic for the current segment</div>
+                                    <br/>
+                                </td>
+        </tr>
+<tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="return-hostgroup_details/num_of_initiators"></div>
+                <b>vsan_prefix_legnth_ipv6</b>
+                <a class="ansibleOptionLink" href="#return-hostgroup_details/num_of_initiators" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                                 </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>The prefix length for the vSAN traffic for the current segment</div>
                                     <br/>
                                 </td>
         </tr>
@@ -325,6 +421,22 @@ The following are the fields unique to this module:
                                 <td class="elbow-placeholder">&nbsp;</td>
                             <td colspan="2">
                 <div class="ansibleOptionAnchor" id="return-hostgroup_details/num_of_initiators"></div>
+                <b>vmotion_init_gateway</b>
+                <a class="ansibleOptionLink" href="#return-hostgroup_details/num_of_initiators" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                                 </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>The gateway address of the init rack vMotion traffic for the current segment</div>
+                                    <br/>
+                                </td>
+        </tr>
+<tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="return-hostgroup_details/num_of_initiators"></div>
                 <b>vmotion_netmask</b>
                 <a class="ansibleOptionLink" href="#return-hostgroup_details/num_of_initiators" title="Permalink to this return value"></a>
                 <div style="font-size: small">
@@ -334,6 +446,54 @@ The following are the fields unique to this module:
             <td>success</td>
             <td>
                                         <div>The subnet mask for the vMotion traffic of the current segment</div>
+                                    <br/>
+                                </td>
+        </tr>
+<tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="return-hostgroup_details/num_of_initiators"></div>
+                <b>vmotion_gateway_ipv6</b>
+                <a class="ansibleOptionLink" href="#return-hostgroup_details/num_of_initiators" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                                 </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>The IPv6 gateway address of the vMotion traffic of the current segment</div>
+                                    <br/>
+                                </td>
+        </tr>
+<tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="return-hostgroup_details/num_of_initiators"></div>
+                <b>vmotion_init_gateway_ipv6</b>
+                <a class="ansibleOptionLink" href="#return-hostgroup_details/num_of_initiators" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                                 </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>The IPv6 gateway address of the init rack vMotion traffic for the current segment</div>
+                                    <br/>
+                                </td>
+        </tr>
+<tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="return-hostgroup_details/num_of_initiators"></div>
+                <b>vmotion_prefix_length_ipv6</b>
+                <a class="ansibleOptionLink" href="#return-hostgroup_details/num_of_initiators" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                                 </div>
+                                </td>
+            <td>success</td>
+            <td>
+                                        <div>The prefix length for the vMotion traffic of the current segment</div>
                                     <br/>
                                 </td>
         </tr>

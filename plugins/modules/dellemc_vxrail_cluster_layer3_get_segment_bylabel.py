@@ -79,17 +79,27 @@ Cluster_Layer3_Get_Segment_By_Label_Information:
   type: dict
   sample: >-
     {
-        "management_gateway" : "172.19.1.167"
-        "management_netmask" : "255.255.0.0"
-        "management_vlan"    : 0
-        "vsan_gateway"       : "172.19.1.167"
-        "vsan_netmask"       : "255.255.0.0"
-        "vsan_vlan"          : 0
-        "vmotion_gateway"    : "172.19.1.167"
-        "vmotion_netmask"    : "255.255.0.0"
-        "vmotion_vlan"       : 0
-        "segment_label"      : "V1SegmentTest1"
-        "proxy_ip"           : "172.19.35.101"
+        "management_gateway"            : "172.19.1.167"
+        "management_netmask"            : "255.255.0.0"
+        "management_gateway_ipv6"       : "fc00::20:17:1:167"
+        "management_prefix_length_ipv6" : 96
+        "management_vlan"               : 0
+        "vsan_gateway"                  : "172.19.1.167"
+        "vsan_init_gateway"             : "172.18.1.16"
+        "vsan_netmask"                  : "255.255.0.0"
+        "vsan_gateway_ipv6"             : "fc00::20:17:1:167"
+        "vsan_init_gateway_ipv6"        : "fc00::20:18:1:167"
+        "vsan_prefix_legnth_ipv6"       : 96
+        "vsan_vlan"                     : 0
+        "vmotion_gateway"               : "172.19.1.167"
+        "vmotion_init_gateway"          : "172.18.1.167"
+        "vmotion_netmask"               : "255.255.0.0"
+        "vmotion_gateway_ipv6"          : "fc00::20:17:1:167"
+        "vmotion_init_gateway_ipv6"     : "fc00::20:18:1:167"
+        "vmotion_prefix_length_ipv6"    : 96
+        "vmotion_vlan"                  : 0
+        "segment_label"                 : "V1SegmentTest1"
+        "proxy_ip"                      : "172.19.35.101"
     }
 '''
 
@@ -174,12 +184,23 @@ class VxRailCluster():
         segment_info['management_netmask'] = data.management_netmask
         segment_info['management_vlan'] = data.management_vlan
         segment_info['vsan_gateway'] = data.vsan_gateway
+        segment_info['vsan_init_gateway'] = data.vsan_init_gateway
         segment_info['vsan_netmask'] = data.vsan_netmask
         segment_info['vsan_vlan'] = data.vsan_vlan
         segment_info['vmotion_gateway'] = data.vmotion_gateway
+        segment_info['vmotion_init_gateway'] = data.vmotion_init_gateway
         segment_info['vmotion_netmask'] = data.vmotion_netmask
         segment_info['vmotion_vlan'] = data.vmotion_vlan
         segment_info['segment_label'] = data.segment_label
+        if self.api_version_number > 1:
+            segment_info['management_gateway_ipv6'] = data.management_gateway_ipv6
+            segment_info['management_prefix_length_ipv6'] = data.management_prefix_length_ipv6
+            segment_info['vsan_gateway_ipv6'] = data.vsan_gateway_ipv6
+            segment_info['vsan_init_gateway_ipv6'] = data.vsan_init_gateway_ipv6
+            segment_info['vsan_prefix_legnth_ipv6'] = data.vsan_prefix_legnth_ipv6
+            segment_info['vmotion_gateway_ipv6'] = data.vmotion_gateway_ipv6
+            segment_info['vmotion_init_gateway_ipv6'] = data.vmotion_init_gateway_ipv6
+            segment_info['vmotion_prefix_length_ipv6'] = data.vmotion_prefix_length_ipv6
         return segment_info
 
 
