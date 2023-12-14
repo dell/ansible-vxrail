@@ -153,7 +153,13 @@ options:
     required: false
     type: int
     default: 300
-
+    
+  ip_version:
+    description:
+      IP version of remote connector. Allowed values are IPV4 and IPV6
+    required: False
+    type: str
+    
   api_version_number:
     description:
       A specific version number to use for the API call. If not included, will use the highest version by default
@@ -190,6 +196,7 @@ EXAMPLES = r'''
         customer_email_address: "{{ customer_email_address }}"
         customer_pref_language: "{{ customer_pref_language }}"
         timeout: "{{ timeout }}"
+        ip_version: "{{ ip_version }}"
         api_version_number: "{{ api_version_number }}"
 '''
 
@@ -250,6 +257,7 @@ class VxRailCluster():
         self.customer_phone_number = module.params.get('customer_phone_number')
         self.customer_email_address = module.params.get('customer_email_address')
         self.customer_pref_language = module.params.get('customer_pref_language')
+        self.ip_version = module.params.get('ip_version')
         self.system_url = VxrailClusterUrls(self.vxm_ip)
         # Configure HTTP basic authorization: basicAuth
         self.configuration = vxrail_ansible_utility.Configuration()
@@ -315,6 +323,8 @@ class VxRailCluster():
                 }
             ]
             callhome_info['customer_contact_infos'] = customer_contact_spec
+        if self.api_version_number >= 2:
+          callhome_info['ip_version'] = self.ip_version
         return callhome_info
 
     def enable_callhome(self):
@@ -358,6 +368,7 @@ def main():
         customer_email_address=dict(type='str', required=False),
         customer_pref_language=dict(type='str', required=False),
         timeout=dict(type='int', default=300),
+        ip_version=dict(type='str', required=False),
         api_version_number=dict(type='int')
     )
     module = AnsibleModule(

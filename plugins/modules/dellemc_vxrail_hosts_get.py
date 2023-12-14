@@ -387,12 +387,9 @@ class VxRailHosts():
         host_info['operational_status'] = data.operational_status
         host_info['power_status'] = data.power_status
 
-        # Only found dpu part in 8.0 train, now in current release with 8.0.010, it's v9 version.
-        if self.api_version_number == 9:
-            if data.dpus:
-                host_info['dpus'] = self._get_info_list(self._generate_dpu_info_from_response_data, data.dpus)
-            else:
-                host_info['dpus'] = []
+        host_info['dpus'] = \
+            self._get_info_list(self._generate_dpu_info_from_response_data, data.dpus) \
+            if hasattr(data, 'dpus') else []
 
         if self.api_version_number >= 10:
             host_info['part_number'] = data.part_number

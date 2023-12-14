@@ -75,6 +75,30 @@ options:
     required: false
     type: boolean
 
+  ipv6_address:
+    description:
+      The IPv6 address of the iDRAC.
+    required: true
+    type: string
+
+  ipv6_prefix_length:
+    description:
+      The prefix length of the iDRAC IPv6 address.
+    required: true
+    type: string
+
+  ipv6_gateway:
+    description:
+      The gateway address of the iDRAC IPv6 address.
+    required: true
+    type: string
+
+  ipv6_auto_config_enabled:
+    description:
+      Whether enable auto config iDRAC IPv6 address or not.
+    required: false
+    type: boolean
+
   vlan_id:
     description:
       The VLAN ID setting of the iDRAC. Set 0 to disable.
@@ -110,6 +134,10 @@ EXAMPLES = r'''
         netmask: "{{ netmask }}"
         gateway: "{{ gateway }}"
         dhcp_enabled: "{{ dhcp_enabled }}"
+        ipv6_address: "{{ ipv6_address }}"
+        ipv6_prefix_length: "{{ ipv6_prefix_length }}"
+        ipv6_gateway: "{{ ipv6_gateway }}"
+        ipv6_auto_config_enabled: "{{ ipv6_auto_config_enabled }}"
         vlan_id: "{{ vlan_id }}"
         vlan_priority: "{{ vlan_priority }}"
         timeout: "{{ timeout }}"
@@ -168,6 +196,10 @@ class VxRailCluster():
         self.netmask = module.params.get('netmask')
         self.gateway = module.params.get('gateway')
         self.dhcp_enabled = module.params.get('dhcp_enabled')
+        self.ipv6_address = module.params.get('ipv6_address')
+        self.ipv6_prefix_length = module.params.get('ipv6_prefix_length')
+        self.ipv6_gateway = module.params.get('ipv6_gateway')
+        self.ipv6_auto_config_enabled = module.params.get('ipv6_auto_config_enabled')
         self.vlan_id = module.params.get('vlan_id')
         self.vlan_priority = module.params.get('vlan_priority')
         self.api_version_number = module.params.get('api_version_number')
@@ -213,17 +245,29 @@ class VxRailCluster():
         # when API version v2 is used
         if self.api_version_number == 2:
             idrac_network_json = {
-                "ipv4": {
-                    "ip_address": self.ip_address,
-                    "netmask": self.netmask,
-                    "gateway": self.gateway,
-                    "dhcp_enabled": self.dhcp_enabled
-                },
                 "vlan": {
                     "vlan_id": self.vlan_id,
                     "vlan_priority": self.vlan_priority
                 }
             }
+            idrac_network_ipv4_info = {}
+            idrac_network_ipv6_info = {}
+            if self.ip_address:
+                idrac_network_ipv4_info["ip_address"] = self.ip_address
+                idrac_network_ipv4_info["netmask"] = self.netmask
+                idrac_network_ipv4_info["gateway"] = self.gateway
+                idrac_network_ipv4_info["dhcp_enabled"] = self.dhcp_enabled
+            if self.ipv6_address:
+                idrac_network_ipv6_info["ip_address"] = self.ipv6_address
+                idrac_network_ipv6_info["ipv6_prefix_length"] = self.ipv6_prefix_length
+                idrac_network_ipv6_info["gateway"] = self.ipv6_gateway
+                idrac_network_ipv6_info["auto_config_enabled"] = self.ipv6_auto_config_enabled
+            if len(idrac_network_ipv4_info) > 0:
+                idrac_network_json["ipv4"] = idrac_network_ipv4_info
+            if len(idrac_network_ipv6_info) > 0:
+                idrac_network_json["ipv6"] = idrac_network_ipv6_info
+
+        LOGGER.info("idrac_network_json: %s\n", idrac_network_json)
         return update_idrac_network(body=idrac_network_json, sn=self.sn)
 
     def update_network(self):
@@ -253,16 +297,24 @@ def main():
         sn=dict(required=True),
         api_version_number=dict(type='int'),
         timeout=dict(type='int', default=1800),
-        ip_address=dict(required=True),
-        netmask=dict(required=True),
-        gateway=dict(required=True),
+        ip_address=dict(required=False),
+        netmask=dict(required=False),
+        gateway=dict(required=False),
         dhcp_enabled=dict(type='bool'),
+        ipv6_address=dict(required=False),
+        ipv6_prefix_length=dict(required=False, type='int'),
+        ipv6_gateway=dict(required=False),
+        ipv6_auto_config_enabled=dict(type='bool'),
         vlan_id=dict(required=True, type='int'),
         vlan_priority=dict(type='int', default=0)
     )
     module = AnsibleModule(
         argument_spec=module_args,
         supports_check_mode=True,
+        required_together=[
+            ('ip_address', 'netmask', 'gateway', 'dhcp_enabled'),
+            ('ipv6_address', 'ipv6_prefix_length', 'ipv6_gateway', 'ipv6_auto_config_enabled')
+        ],
     )
 
     result_request_id = VxRailCluster().update_network()

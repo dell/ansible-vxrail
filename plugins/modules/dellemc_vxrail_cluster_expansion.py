@@ -73,6 +73,24 @@ options:
     required: True
     type: str
 
+  mgt_ipv6:
+    description:
+      The management IPv6 address for the ESX Host.
+    required: True
+    type: str
+
+  vsan_ip:
+    description:
+      The vsan IPv6 address for the ESX Host.
+    required: True
+    type: str
+
+  vmotion_ip:
+    description:
+      The vmotion IPv6 address for the ESX Host.
+    required: True
+    type: str
+
   mgt_account:
     description:
       Management account the VxRail Manager is registered to
@@ -145,6 +163,9 @@ EXAMPLES = r'''
         mgt_ip: "{{ mgt_ip }}"
         vsan_ip: "{{ vsan_ip }}"
         vmotion_ip: "{{ vmotion_ip }}"
+        mgt_ipv6: "{{ mgt_ipv6 }}"
+        vsan_ipv6: "{{ vsan_ipv6 }}"
+        vmotion_ipv6: "{{ vmotion_ipv6 }}"
         rack_name: "{{ rack_name }}"
         order_number: "{{ order_number }}"
         maintenance_mode : "{{ maintenance_mode }}"
@@ -209,8 +230,11 @@ class VxRailCluster():
         self.mgt_account = module.params.get('mgt_account')
         self.mgt_passwd = module.params.get('mgt_passwd')
         self.mgt_ip = module.params.get('mgt_ip')
+        self.mgt_ipv6 = module.params.get('mgt_ipv6')
         self.vmotionip = module.params.get('vmotion_ip')
+        self.vmotionipv6 = module.params.get('vmotion_ipv6')
         self.vsanip = module.params.get('vsan_ip')
+        self.vsanipv6 = module.params.get('vsan_ipv6')
         self.rackname = module.params.get('rack_name')
         self.order_number = module.params.get('order_number')
         self.root_passwd = module.params.get('root_passwd')
@@ -347,22 +371,32 @@ class VxRailCluster():
     def _create_network_section(self):
         network, manage_dict, vsan_dict, vmotion_dict = [], {}, {}, {}
         manage_dict['type'] = 'MANAGEMENT'
-        manage_dict['ip'] = self.mgt_ip
-        network.append(manage_dict)
         vsan_dict['type'] = 'VSAN'
-        vsan_dict['ip'] = self.vsanip
-        network.append(vsan_dict)
         vmotion_dict['type'] = 'VMOTION'
-        vmotion_dict['ip'] = self.vmotionip
+
+        if self.mgt_ip:
+          manage_dict['ip'] = self.mgt_ip
+          vsan_dict['ip'] = self.vsanip
+          vmotion_dict['ip'] = self.vmotionip
+
+        if self.mgt_ipv6:
+          manage_dict['ipv6'] = self.mgt_ipv6
+          vsan_dict['ipv6'] = self.vsanipv6
+          vmotion_dict['ipv6'] = self.vmotionipv6
+
+        network.append(manage_dict)
+        network.append(vsan_dict)
         network.append(vmotion_dict)
+
         return network
 
     def _create_nicmapping_section(self):
+        LOGGER.info('configuration: %s.', self.configuration)
         nic_mappings = []
-        api_instance = vxrail_ansible_utility.SystemInformationApi(vxrail_ansible_utility.ApiClient(self.configuration))
+        api_instance = vxrail_ansible_utility.HostInformationApi(vxrail_ansible_utility.ApiClient(self.configuration))
         try:
             # get nic mapping
-            response = api_instance.query_cluster_configured_host_info()
+            response = api_instance.v1_system_cluster_hosts_pnics_get()
         except ApiException as e:
             LOGGER.error("Exception when calling ClusterExpansionApi->query_cluster_configured_host_info: %s\n", e)
             return 'error'
@@ -390,9 +424,12 @@ def main():
         mgt_account=dict(required=True),
         mgt_passwd=dict(required=True, no_log=True),
         root_passwd=dict(required=True, no_log=True),
-        mgt_ip=dict(required=True),
-        vsan_ip=dict(required=True),
-        vmotion_ip=dict(required=True),
+        mgt_ip=dict(required=False),
+        vsan_ip=dict(required=False),
+        vmotion_ip=dict(required=False),
+        mgt_ipv6=dict(required=False),
+        vsan_ipv6=dict(required=False),
+        vmotion_ipv6=dict(required=False),
         rack_name=dict(type='str', default="default-rack"),
         order_number=dict(type='int', default=5),
         maintenance_mode=dict(type='bool', default=False),
@@ -402,6 +439,10 @@ def main():
     module = AnsibleModule(
         argument_spec=module_args,
         supports_check_mode=True,
+        required_together=[
+            ('mgt_ip', 'vsan_ip', 'vmotion_ip'),
+            ('mgt_ipv6', 'vsan_ipv6', 'vmotion_ipv6')
+        ],
     )
     validation_status = 0
     expansion_status = 0

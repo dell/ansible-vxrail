@@ -527,8 +527,8 @@ def main():
         ecosystem_check_components=dict(type='str')
     )
     v6_module_args = dict(
-        vc_mgmt_account=dict(required=True),
-        vc_mgmt_passwd=dict(required=True, no_log=True),
+        vc_mgmt_account=dict(type='str'),
+        vc_mgmt_passwd=dict(type='str', no_log=True),
     )
 
     module_args = dict(**common_module_args, **v2_module_args, **v4_module_args, **v5_module_args, **v6_module_args)

@@ -149,7 +149,7 @@ Parameters
                 <div style="font-size: small">
                     <span style="color: purple">type=string</span>
                     <br>
-                    <span style="color: red">required=true</span>                    </div>
+                    <span style="color: red">required=false</span>                    </div>
                                                     </td>
                             <td>
                                                                                                                                                         </td>
@@ -166,7 +166,7 @@ Parameters
                 <div style="font-size: small">
                     <span style="color: purple">type=string</span>
                     <br>
-                    <span style="color: red">required=true</span>                    </div>
+                    <span style="color: red">required=false</span>                    </div>
                                                     </td>
                             <td>
                                                                                                                                                         </td>
@@ -183,13 +183,64 @@ Parameters
                 <div style="font-size: small">
                     <span style="color: purple">type=string</span>
                     <br>
-                    <span style="color: red">required=true</span>                    </div>
+                    <span style="color: red">required=false</span>                    </div>
                                                     </td>
                             <td>
                                                                                                                                                         </td>
                                                             <td>
                                         <div></div>
                                         <div>The vmotion IP address for the ESX Host</div>
+                                                    </td>
+        </tr>
+<tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
+                <b>mgt_ipv6</b>
+                <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                    <br>
+                    <span style="color: red">required=false</span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div></div>
+                                        <div>The management IPv6 address for the ESX Host</div>
+                                                    </td>
+        </tr>
+<tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
+                <b>vsan_ipv6</b>
+                <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                    <br>
+                    <span style="color: red">required=false</span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div></div>
+                                        <div>The vsan IPv6 address for the ESX Host</div>
+                                                    </td>
+        </tr>
+<tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
+                <b>vmotion_ipv6</b>
+                <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                    <br>
+                    <span style="color: red">required=false</span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div></div>
+                                        <div>The vmotion IPv6 address for the ESX Host</div>
                                                     </td>
         </tr>
 <tr>
@@ -370,6 +421,9 @@ Examples
         mgt_ip: "{{ mgt_ip }}"
         vsan_ip: "{{ vsan_ip }}"
         vmotion_ip: "{{ vmotion_ip }}"
+        mgt_ipv6: "{{ mgt_ipv6 }}"
+        vsan_ipv6: "{{ vsan_ipv6 }}"
+        vmotion_ipv6: "{{ vmotion_ipv6 }}"
         rack_name: "{{ rack_name }}"
         order_number: "{{ order_number }}"
         maintenance_mode: "{{ maintenance_mode }}"

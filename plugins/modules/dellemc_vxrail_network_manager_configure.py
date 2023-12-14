@@ -28,18 +28,6 @@ options:
     required: True
     type: str
 
-  vcadmin:
-    description:
-      Administrative account of the vCenter Server the VxRail Manager is registered to
-    required: True
-    type: str
-
-  vcpasswd:
-    description:
-      The password for the administrator account provided in vcadmin
-    required: True
-    type: str
-
   new_ip:
     description:
       The new IP address to assign to the VxRail manager
@@ -55,6 +43,24 @@ options:
   netmask:
     description:
       The subnet mask for the new manager address
+    required: True
+    type: str
+
+  new_ipv6:
+    description:
+      The new IPv6 address to assign to the VxRail manager
+    required: True
+    type: str
+
+  gateway_ipv6:
+    description:
+      The gateway IPv6 for the new manager address
+    required: True
+    type: str
+
+  prefix_length_ipv6:
+    description:
+      The prefix length for the new manager address
     required: True
     type: str
 
@@ -86,11 +92,12 @@ EXAMPLES = r'''
   - name: Configure the VxRail Manager IP address
     dellemc_vxrail_network_manager_configure:
         vxmip: "{{ vxmip }}"
-        vcadmin: "{{ vcadmin }}"
-        vcpasswd: "{{ vcpasswd }}"
         new_ip: "{{ new_ip }}"
         gateway: "{{ gateway }}"
         netmask: "{{ netmask }}"
+        new_ipv6: "{{ new_ipv6 }}"
+        gateway_ipv6: "{{ gateway_ipv6 }}"
+        prefix_length_ipv6: "{{ prefix_length_ipv6 }}"
         vlan_id: "{{ vlan_id }}"
         timeout: "{{ timeout }}"
         api_version_number: "{{ api_version_number }}"
@@ -133,19 +140,18 @@ class VxRailCluster():
     def __init__(self):
         self.vxm_ip = module.params.get('vxmip')
         self.timeout = module.params.get('timeout')
-        self.vc_admin = module.params.get('vcadmin')
-        self.vc_password = module.params.get('vcpasswd')
         self.new_ip = module.params.get('new_ip')
         self.gateway = module.params.get('gateway')
         self.netmask = module.params.get('netmask')
+        self.new_ipv6 = module.params.get('new_ipv6')
+        self.gateway_ipv6 = module.params.get('gateway_ipv6')
+        self.prefix_length_ipv6 = module.params.get('prefix_length_ipv6')
         self.vlan_id = module.params.get('vlan_id')
         self.api_version_number = module.params.get('api_version_number')
 
         self.system_url = VxrailClusterUrls(self.vxm_ip)
         # Configure HTTP basic authorization: basicAuth
         self.configuration = vxrail_ansible_utility.Configuration()
-        self.configuration.username = self.vc_admin
-        self.configuration.password = self.vc_password
         self.configuration.verify_ssl = False
         self.configuration.host = self.system_url.set_host()
         self.api_version_string = "v?"
@@ -168,11 +174,21 @@ class VxRailCluster():
     def post_manager_ip(self):
         manager_return_info = {}
         manager_change_info = {
-            "ip": self.new_ip,
-            "gateway": self.gateway,
-            "netmask": self.netmask,
             "vlan_id": self.vlan_id
         }
+        if self.new_ip:
+            manager_change_info["ip"] = self.new_ip
+        if self.gateway:
+            manager_change_info["gateway"] = self.gateway
+        if self.netmask:
+            manager_change_info["netmask"] = self.netmask
+        if self.new_ipv6:
+            manager_change_info["ipv6"] = self.new_ipv6
+        if self.gateway_ipv6:
+            manager_change_info["gateway_ipv6"] = self.gateway_ipv6
+        if self.prefix_length_ipv6:
+            manager_change_info["prefix_length_ipv6"] = self.prefix_length_ipv6
+
         LOGGER.info("Sending Configuration: %s", manager_change_info)
 
         # create an instance of the API class
@@ -201,9 +217,12 @@ def main():
         vxmip=dict(required=True),
         vcadmin=dict(required=True),
         vcpasswd=dict(required=True, no_log=True),
-        new_ip=dict(required=True),
-        gateway=dict(required=True),
-        netmask=dict(required=True),
+        new_ip=dict(required=False),
+        gateway=dict(required=False),
+        netmask=dict(required=False),
+        new_ipv6=dict(required=False),
+        gateway_ipv6=dict(required=False),
+        prefix_length_ipv6=dict(type='int', required=False),
         vlan_id=dict(required=True, type='str'),
         api_version_number=dict(type='int'),
         timeout=dict(type='int', default=60)
@@ -211,6 +230,7 @@ def main():
     module = AnsibleModule(
         argument_spec=module_args,
         supports_check_mode=True,
+        required_if=([('api_version_number', 1, ['new_ip', 'gateway', 'netmask'])]),
     )
     result = VxRailCluster().post_manager_ip()
     if result == 'error':
