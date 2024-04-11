@@ -12,10 +12,6 @@ module: dellemc_vxrail_system_getprechecksreport
 
 short_description: Get all or one pre-check report using a specified request ID.
 
-# If this is part of a collection, you need to use semantic versioning,
-# i.e. the version is of the form "2.5.0" and not "2.4".
-version_added: "1.5.0"
-
 description:
 - Get a pre-check report using a specified request ID.
 options:

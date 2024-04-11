@@ -13,10 +13,6 @@ module: dellemc_vxrail_get_telemetry_tier
 
 short_description: Retrieve VxRail Telemetry Tier
 
-# If this is part of a collection, you need to use semantic versioning,
-# i.e. the version is of the form "2.5.0" and not "2.4".
-version_added: "1.4.0"
-
 description:
 - This module will retrieve the system's Telemetry tier.
 options:

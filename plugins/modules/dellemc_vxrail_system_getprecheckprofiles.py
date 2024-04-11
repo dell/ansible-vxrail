@@ -12,10 +12,6 @@ module: dellemc_vxrail_system_getprecheckprofiles
 
 short_description: Retrieve the list precheck profiles.
 
-# If this is part of a collection, you need to use semantic versioning,
-# i.e. the version is of the form "2.5.0" and not "2.4".
-version_added: "1.5.0"
-
 description:
 - Get a list of available precheck profiles. Each profile represents a different type of precheck that you can perform.
 options:

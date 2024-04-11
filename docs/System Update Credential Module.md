@@ -12,7 +12,9 @@ This module will update the management user passwords that are stored in VxRail 
 
 Supported Endpoints
 --------
-* Post /system/update-credential
+* Post v1/system/update-credential
+* Post v2/system/update-credential
+* Put v3/system/credential
 
 Parameters
 ----------
@@ -88,7 +90,7 @@ Parameters
                                                                                                                                                         </td>
                                                             <td>
                                         <div></div>
-                                        <div>The type of component to be updated. Values are vc and esxi</div>
+                                        <div>The type of component to be updated. Values are vc/esxi for v1, v2 API and VC/ESXI with uppercase for v3 API</div>
                                                     </td>
         </tr>
 <tr>
@@ -139,7 +141,41 @@ Parameters
                                                                                                                                                         </td>
                                                             <td>
                                         <div></div>
-                                        <div>The password for the management account to be stored in VxRail Manager</div>
+                                        <div>The password for the management account to be stored in VxRail Manager, for v1/v2 API</div>
+                                                    </td>
+        </tr>
+<tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
+                <b>current_password</b>
+                <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                    <br>
+                    <span style="color: red">required=true</span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div></div>
+                                        <div>The current password for the management account stored in VxRail Manager, only for v3 API</div>
+                                                    </td>
+        </tr>
+<tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
+                <b>new_password</b>
+                <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                    <br>
+                    <span style="color: red">required=true</span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div></div>
+                                        <div>The new password for the management account to be stored in VxRail Manager, only for v3 API</div>
                                                     </td>
         </tr>
 <tr>
@@ -174,6 +210,9 @@ Parameters
                     <span style="color: red"></span>                    </div>
                                                     </td>
                             <td>
+                                                                                                                        <ul style="margin: 0; padding: 0"><b>Default:</b>
+                                                                                                                                                            <li>3</li>
+                                                                                </ul>
                                                                         </td>
                                                             <td>
                                         <div></div>
@@ -202,8 +241,10 @@ Examples
         component: "{{ component }}"
         hostname: "{{ hostname }}"
         username: "{{ username }}"
-        password: "{{ password }}"
-        timeout : "{{ timeout }}"
+        password: "{{ password if (api_version_number | int) < 3 else omit }}"
+        current_password: "{{ current_password if (api_version_number | int) >= 3 else omit }}"
+        new_password: "{{ new_password if (api_version_number | int) >= 3 else omit }}"
+        timeout: "{{ timeout | default(omit) }}"
         api_version_number: "{{ api_version_number }}"
 ```
 

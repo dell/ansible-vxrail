@@ -12,10 +12,6 @@ module: dellemc_vxrail_cluster_expansion
 
 short_description: Add a node discovered by LoudMouth to an existing VxRail Cluster
 
-# If this is part of a collection, you need to use semantic versioning,
-# i.e. the version is of the form "2.5.0" and not "2.4".
-version_added: "1.4.0"
-
 description:
 - This module will validate a L2 cluster expansion, perform a L2 cluster expansion
   based on the provided expansion specification and query status.
@@ -396,7 +392,7 @@ class VxRailCluster():
         api_instance = vxrail_ansible_utility.HostInformationApi(vxrail_ansible_utility.ApiClient(self.configuration))
         try:
             # get nic mapping
-            response = api_instance.v1_system_cluster_hosts_pnics_get()
+            response = api_instance.v1_query_vx_rail_manager_cluster_host_pnics_get()
         except ApiException as e:
             LOGGER.error("Exception when calling ClusterExpansionApi->query_cluster_configured_host_info: %s\n", e)
             return 'error'

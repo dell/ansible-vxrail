@@ -13,10 +13,6 @@ module: dellemc_vxrail_lcm
 
 short_description: Perform a upgrade with lcm upgrade api
 
-# If this is part of a collection, you need to use semantic versioning,
-# i.e. the version is of the form "2.5.0" and not "2.4".
-version_added: "1.6.0"
-
 description:
 - This module will perform the LCM full upgrade or partial upgrade via v4+ API of all VxRail software and hardware.
 options:
@@ -221,6 +217,24 @@ options:
     required: false
     type: int
 
+  enable_quick_boot:
+    description:
+      Enable quick boot to reduce reboot time.
+    required: false
+    type: bool
+
+  parallel_remediation_enable:
+    description:
+      Enable parallel remediation. For Dynamic Node only
+    required: false
+    type: bool
+
+  parallel_remediation_max:
+    description:
+      Assign the maximum number of hosts to enter maintenance mode at a time and perform remediation.
+    required: false
+    type: str
+
 author:
     - VxRail Development Team(@VxRailDevTeam) <ansible.team@dell.com>
 
@@ -242,6 +256,9 @@ EXAMPLES = r'''
     skip_failed_hosts: "{{ skip_failed_hosts }}"
     ecosystem_check_continue_with_incompatible: "{{ ecosystem_check_continue_with_incompatible }}"
     ecosystem_check_components: "{{ ecosystem_check_components }}"
+    enable_quick_boot: "{{ enable_quick_boot }}"
+    parallel_remediation_enable: "{{ parallel_remediation_enable }}"
+    parallel_remediation_max: "{{ parallel_remediation_max }}"
 '''
 RETURN = r'''
 changed:
@@ -324,6 +341,9 @@ class VxRailLCM():
         self.skip_failed_hosts = module.params.get('skip_failed_hosts')
         self.ecosystem_check_continue_with_incompatible = module.params.get('ecosystem_check_continue_with_incompatible')
         self.ecosystem_check_components = module.params.get('ecosystem_check_components')
+        self.enable_quick_boot = module.params.get('enable_quick_boot')
+        self.parallel_remediation_enable = module.params.get('parallel_remediation_enable')
+        self.parallel_remediation_max = module.params.get('parallel_remediation_max')
         self.vxm_url = VxrailVXMUrls(self.vxm_ip)
         self.api_version_number = module.params.get('api_version_number')
         # Configure HTTP basic authorization: basicAuth
@@ -420,6 +440,21 @@ class VxRailLCM():
             vcenter_dict['vc_mgmt_user'] = {'username': self.vc_mgmt_account, 'password': self.vc_mgmt_passwd}
         else:
             vcenter_dict['vc_mgmt_user'] = utils.field_not_found(6)
+
+        # for api v8
+        if self.api_version_number >= 8:
+            vlcm_parameters = {}
+            parallel_remediation = {}
+
+            if self.enable_quick_boot is not None:
+                vlcm_parameters['enable_quick_boot'] = self.enable_quick_boot
+
+            if self.parallel_remediation_enable is not None:
+                parallel_remediation['enabled'] = self.parallel_remediation_enable
+                parallel_remediation['max_hosts'] = self.parallel_remediation_max
+                vlcm_parameters['parallel_remediation_action'] = parallel_remediation
+
+            lcm_json['vlcm_parameters'] = vlcm_parameters
 
         return lcm_json
 
@@ -530,8 +565,12 @@ def main():
         vc_mgmt_account=dict(type='str'),
         vc_mgmt_passwd=dict(type='str', no_log=True),
     )
-
-    module_args = dict(**common_module_args, **v2_module_args, **v4_module_args, **v5_module_args, **v6_module_args)
+    v8_module_args = dict(
+        enable_quick_boot=dict(type='bool'),
+        parallel_remediation_enable=dict(type='bool'),
+        parallel_remediation_max=dict(type='str')
+    )
+    module_args = dict(**common_module_args, **v2_module_args, **v4_module_args, **v5_module_args, **v6_module_args, **v8_module_args)
     module = AnsibleModule(
         argument_spec=module_args,
         supports_check_mode=True,

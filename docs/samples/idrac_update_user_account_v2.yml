@@ -1,0 +1,29 @@
+---
+- name: Update iDRAC user account information
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+    sn: "{{ sn }}"
+    id: "{{ id }}"
+    name: "{{ name }}"
+    current_password: "{{ current_password }}"
+    new_password: "{{ new_password }}"
+    privilege: "{{ privilege }}"
+
+  tasks:
+    - name: Update iDRAC user account information
+      dellemc_vxrail_idrac_update_useraccount:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        sn: "{{ sn }}"
+        id: "{{ id }}"
+        name: "{{ name }}"
+        privilege: "{{ privilege }}"
+        current_password: "{{ current_password }}"
+        new_password: "{{ new_password }}"
+        timeout: "{{ timeout | default(omit) }}"
+        api_version_number: "{{ api_version_number | default(omit) }}"
+        

@@ -12,11 +12,6 @@ module: dellemc_vxrail_chassis_get
 
 short_description: Get chassis list & every node information for each chassis or the user-specified VxRail chassis.
 
-# If this is part of a collection, you need to use semantic versioning,
-# i.e. the version is of the form "2.5.0" and not "2.4".
-# Displays information up to version 4 (v4). Check the log for full API response from highest version.
-version_added: "1.4.0"
-
 description:
 - This module will call /chassis api to get chassis list & every node information for each chassis and provide more host level information.
   If "chassis_id" is provided, this module will call /chassis/{chassis_id} to get information about the user-specified VxRail chassis.

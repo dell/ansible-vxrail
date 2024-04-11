@@ -13,10 +13,6 @@ module: dellemc_vxrail_idrac_getavailableuserids
 
 short_description: Get a list of iDRAC user slot IDs
 
-# If this is part of a collection, you need to use semantic versioning,
-# i.e. the version is of the form "2.5.0" and not "2.4".
-version_added: "1.5.0"
-
 description:
 - This module will retrieve a list of the available iDRAC user slot IDs.
 options:

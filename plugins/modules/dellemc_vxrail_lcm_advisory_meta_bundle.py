@@ -14,10 +14,6 @@ module: dellemc_vxrail_lcm_advisory_meta_bundle
 
 short_description: Upload a metadata bundle for local advisory analysis
 
-# If this is part of a collection, you need to use semantic versioning,
-# i.e. the version is of the form "2.5.0" and not "2.4".
-version_added: "1.5.0"
-
 description:
 - This module will upload a metadata bundle for local advisory analysis.
 options:

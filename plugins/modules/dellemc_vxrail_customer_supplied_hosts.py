@@ -13,10 +13,6 @@ module: dellemc_vxrail_customer_supplied_hosts
 
 short_description: Return nodes by customer supplied management IP
 
-# If this is part of a collection, you need to use semantic versioning,
-# i.e. the version is of the form "2.5.0" and not "2.4".
-version_added: "1.6.0"
-
 description:
 - This module will retrieve customer-supplied node information from given management IP addresses
 options:

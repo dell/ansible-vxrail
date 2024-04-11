@@ -12,10 +12,6 @@ module: dellemc_vxrail_system_get_management_accounts
 
 short_description: Retrieve VxRail Management Account Info (VC Only)
 
-# If this is part of a collection, you need to use semantic versioning,
-# i.e. the version is of the form "2.5.0" and not "2.4".
-version_added: "1.6.0"
-
 description:
 - This module will retrieve the VxRail System vCenter management account information
 options:

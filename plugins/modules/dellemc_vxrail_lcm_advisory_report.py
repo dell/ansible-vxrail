@@ -14,10 +14,6 @@ module: dellemc_vxrail_lcm_advisory_report
 
 short_description: Generate an advisory report
 
-# If this is part of a collection, you need to use semantic versioning,
-# i.e. the version is of the form "2.5.0" and not "2.4".
-version_added: "1.5.0"
-
 description:
 - This module will generate an advisory report that contains information about all online and local lifecycle management updates.
 options:
