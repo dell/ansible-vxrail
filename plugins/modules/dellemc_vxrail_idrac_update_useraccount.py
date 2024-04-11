@@ -3,7 +3,9 @@
 
 # Copyright: (c) 2018, Terry Jones <terry.jones@example.org>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+
 from __future__ import (absolute_import, division, print_function)
+import json
 __metaclass__ = type
 
 DOCUMENTATION = r'''
@@ -11,10 +13,6 @@ DOCUMENTATION = r'''
 module: dellemc_vxrail_idrac_update_useraccount
 
 short_description: Update an iDRAC user account.
-
-# If this is part of a collection, you need to use semantic versioning,
-# i.e. the version is of the form "2.5.0" and not "2.4".
-version_added: "1.5.0"
 
 description:
   - "This module will update the iDRAC user account."
@@ -71,7 +69,19 @@ options:
 
   password:
     description:
-      The iDRAC user password.
+      V1 api paramter, the iDRAC user password.
+    required: True
+    type: str
+
+  current_password:
+    description:
+      V2 api paramter, the iDRAC user current_password.
+    required: True
+    type: str
+
+  new_password:
+    description:
+      V2 api paramter, the iDRAC user new_password.
     required: True
     type: str
 
@@ -85,7 +95,7 @@ author:
   - VxRail Development Team(@VxRailDevTeam) <ansible.team@dell.com>
 '''
 
-EXAMPLES = r'''
+V1_EXAMPLES = r'''
   - name: Update iDRAC User Account
     dellemc_vxrail_idrac_update_useraccount:
         vxmip: "{{ vxmip }}"
@@ -100,7 +110,23 @@ EXAMPLES = r'''
         privilege: "{{ privilege }}"
 '''
 
-RETURN = r'''
+V2_EXAMPLES = r'''
+  - name: Update iDRAC User Account
+    dellemc_vxrail_idrac_update_useraccount:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        sn: "{{ sn }}"
+        timeout: "{{ timeout }}"
+        api_version_number: "{{ api_version_number }}"
+        id: "{{ id }}"
+        name: "{{ name }}"
+        current_password: "{{ current_password }}"
+        new_password: "{{ new_password }}"
+        privilege: "{{ privilege }}"
+'''
+
+V1_RETURN = r'''
 Update_iDRAC_User_API:
   description: Update an iDRAC user account
   returned: always
@@ -109,6 +135,18 @@ Update_iDRAC_User_API:
     {
             "Request_ID": "SBI_11",
             "Request_Status": "COMPLETED"
+        }
+'''
+
+V2_RETURN = r'''
+Update_iDRAC_User_API:
+  description: Update an iDRAC user account
+  returned: always
+  type: dict
+  sample: >-
+    {
+            "Message": "",
+            "Request_Status": "SUCCESS"
         }
 '''
 
@@ -145,7 +183,11 @@ class VxRailCluster():
         self.sn = module.params.get('sn')
         self.id = module.params.get('id')
         self.name = module.params.get('name')
+        # v1 API parameter: password
         self.password = module.params.get('password')
+        # v2 API parameters: current_password and new_password
+        self.current_password = module.params.get('current_password')
+        self.new_password = module.params.get('new_password')
         self.privilege = module.params.get('privilege')
         self.api_version_number = module.params.get('api_version_number')
         self.system_url = VxrailClusterUrls(self.vxm_ip)
@@ -169,31 +211,48 @@ class VxRailCluster():
         call_string = self.api_version_string + '_hosts_sn_idrac_user_id_put'
         LOGGER.info("Using utility method: %s\n", call_string)
 
-        put_idrac_userid = getattr(api_instance, call_string)
-        return put_idrac_userid(request_body, sn, id)
+        hosts_sn_idrac_user_id_put = getattr(api_instance, call_string)
+        return hosts_sn_idrac_user_id_put(request_body, sn, id)
 
     def create_user_json(self):
         '''idrac user json'''
         idrac_user_json = {}
         idrac_user_json['name'] = self.name
-        idrac_user_json['password'] = self.password
+        if self.password is not None:
+            # v1 API parameter
+            idrac_user_json['password'] = self.password
+        else:
+            # v2 API parameters
+            idrac_user_json['current_password'] = self.current_password
+            idrac_user_json['new_password'] = self.new_password
         idrac_user_json['privilege'] = self.privilege
+        LOGGER.info(f"idrac_user_json: {idrac_user_json}")
         return idrac_user_json
 
     def put_idrac_userid(self):
         # create an instance of the API class
         response = ''
         api_instance = vxrail_ansible_utility.HostIDRACConfigurationApi(vxrail_ansible_utility.ApiClient(self.configuration))
-        request_body = self.create_user_json()
+        request_body = [self.create_user_json()]
+        if self.password:
+            request_body = self.create_user_json()
         try:
             # put host idrac user information
             response = self.get_versioned_response(api_instance, "PUT /hosts/{sn}/idrac/users/{userId}", request_body, self.sn, self.id)
         except ApiException as e:
-            LOGGER.error("Exception when calling HostIDRACConfigurationApi->%s_hosts_sn_idrac_user_id_put: %s\n", self.api_version_string, e)
-            return 'error'
+          LOGGER.error("Exception when calling HostIDRACConfigurationApi->%s_hosts_sn_idrac_user_id_put: %s\n", self.api_version_string, e)
+          if self.current_password:
+                # v2 api
+              LOGGER.error(f"error status: {e.status}")
+              LOGGER.error(f"error reason: {e.reason}")
+              LOGGER.error(f"error body: {e.body}")
+              LOGGER.debug(f"error headers: {e.headers}")
+              return e
+          else:
+              # v1 api
+              return 'error'
         LOGGER.info("%s/hosts/{sn}/idrac/users/{userId} api response: %s\n", self.api_version_string, response)
-        requestid = response.request_id
-        return requestid
+        return response
 
 
 def main():
@@ -209,44 +268,62 @@ def main():
         sn=dict(required=True),
         id=dict(required=True, type='int'),
         name=dict(required=True),
-        password=dict(required=True, no_log=True),
+        password=dict(required=False, no_log=True),
+        current_password=dict(required=False, no_log=True),
+        new_password=dict(required=False, no_log=True),
         privilege=dict(required=True)
     )
     module = AnsibleModule(
         argument_spec=module_args,
         supports_check_mode=True,
     )
-    result_request_id = VxRailCluster().put_idrac_userid()
-    if result_request_id == 'error':
-        module.fail_json(msg="/hosts/{sn}/idrac/users/{userId} API call failed, please "
-                             "see log file /tmp/vxrail_ansible_idrac_update_useraccount.log for details.")
-    LOGGER.info('iDRAC update user account request_id: %s.', result_request_id)
-    vxmip = module.params.get('vxmip')
-    vcadmin = module.params.get('vcadmin')
-    vcpasswd = module.params.get('vcpasswd')
-    task_state = 0
-    time_out = 0
-    initial_timeout = module.params.get('timeout')
-    LOGGER.info('Timeout setting: %s seconds.', initial_timeout)
-    while task_state not in ('COMPLETED', 'FAILED') and time_out < initial_timeout:
-        result_response = utils.get_request_status(vxm_ip=vxmip, vcadmin=vcadmin, vcpasswd=vcpasswd, logger=LOGGER, request_id=result_request_id)
-        task_state = result_response.state
-        LOGGER.info('Request_status: %s', task_state)
-        ''' call frequently to capture 'COMPLETED' status before cluster shut down'''
-        time_out = time_out + 1
-        time.sleep(1)
-    error_message = result_response.error
-    if task_state == 'COMPLETED' and not error_message:
-        vx_facts = {'Request_ID': result_request_id, 'Request_Status': task_state}
-        LOGGER.info("iDRAC user account information updated")
-        vx_facts_result = dict(changed=True, Update_iDRAC_User_API=vx_facts, msg="iDRAC user information updated. Please see the "
-                                                                                 "logs at /tmp/vxrail_ansible_idrac_update_useraccount.log for more details")
+    response = VxRailCluster().put_idrac_userid()
+    if module.params.get('password') is not None:
+      # v1 API Response
+      if response == 'error':
+          module.fail_json(msg="/hosts/{sn}/idrac/users/{userId} API call failed, please "
+                              "see log file /tmp/vxrail_ansible_idrac_update_useraccount.log for details.")
+      result_request_id = response.request_id
+      LOGGER.info('iDRAC update user account request_id: %s.', result_request_id)
+      vxmip = module.params.get('vxmip')
+      vcadmin = module.params.get('vcadmin')
+      vcpasswd = module.params.get('vcpasswd')
+      task_state = 0
+      time_out = 0
+      initial_timeout = module.params.get('timeout')
+      LOGGER.info('Timeout setting: %s seconds.', initial_timeout)
+      while task_state not in ('COMPLETED', 'FAILED') and time_out < initial_timeout:
+          result_response = utils.get_request_status(vxm_ip=vxmip, vcadmin=vcadmin, vcpasswd=vcpasswd, logger=LOGGER, request_id=result_request_id)
+          task_state = result_response.state
+          LOGGER.info('Request_status: %s', task_state)
+          ''' call frequently to capture 'COMPLETED' status before cluster shut down'''
+          time_out = time_out + 1
+          time.sleep(1)
+      error_message = result_response.error
+      if task_state == 'COMPLETED' and not error_message:
+          vx_facts = {'Request_ID': result_request_id, 'Request_Status': task_state}
+          LOGGER.info("iDRAC user account information updated")
+          vx_facts_result = dict(changed=True, Update_iDRAC_User_API=vx_facts, msg="iDRAC user information updated. Please see the "
+                                                                                  "logs at /tmp/vxrail_ansible_idrac_update_useraccount.log for more details")
+      else:
+          LOGGER.info("Failed to update iDRAC user account information")
+          vx_facts = {'Request_ID': result_request_id}
+          vx_facts_result = dict(failed=True, Update_iDRAC_User_API=vx_facts, msg="Please see the /tmp/vxrail_ansible_idrac_update_useraccount.log "
+                                                                                  "for more details")
+      LOGGER.info('Request_info: %s', result_response)
     else:
+       # v2 API Response
+      if hasattr(response, 'status'):
+        # v2 API failed
         LOGGER.info("Failed to update iDRAC user account information")
-        vx_facts = {'Request_ID': result_request_id}
-        vx_facts_result = dict(failed=True, Update_iDRAC_User_API=vx_facts, msg="Please see the /tmp/vxrail_ansible_idrac_update_useraccount.log "
-                                                                                "for more details")
-    LOGGER.info('Request_info: %s', result_response)
+        body = json.loads(response.body.decode('utf-8'))
+        vx_facts = {'Request_Status': "FAILED", 'Message': body['message']}
+        vx_facts_result = dict(failed=True, Update_iDRAC_User_API=vx_facts, msg="iDRAC user account password update failed")   
+      else:
+        # v2 API success
+        vx_facts = {'Request_Status': "SUCCESS"}
+        LOGGER.info("iDRAC user account password updated successfully")
+        vx_facts_result = dict(changed=True, Update_iDRAC_User_API=vx_facts, msg="iDRAC user account password updated successfully")
     module.exit_json(**vx_facts_result)
 
 

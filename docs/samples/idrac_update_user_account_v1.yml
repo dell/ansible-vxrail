@@ -10,6 +10,7 @@
     name: "{{ name }}"
     password: "{{ password }}"
     privilege: "{{ privilege }}"
+    api_version_number: 1
 
   tasks:
     - name: Update iDRAC user account information
@@ -24,7 +25,7 @@
         password: "{{ password }}"
         timeout: "{{ timeout | default(omit) }}"
         api_version_number: "{{ api_version_number | default(omit) }}"
-      async: 300
+      async: 1000
       poll: 0
       register: request_info
 

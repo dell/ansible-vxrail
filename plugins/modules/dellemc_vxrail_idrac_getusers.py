@@ -12,10 +12,6 @@ module: dellemc_vxrail_idrac_getusers
 
 short_description: Get list of the iDRAC user accounts on the specified host.
 
-# If this is part of a collection, you need to use semantic versioning,
-# i.e. the version is of the form "2.5.0" and not "2.4".
-version_added: "1.4.0"
-
 description:
   - "This module will get list of the iDRAC user accounts on the specified host."
 options:

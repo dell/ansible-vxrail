@@ -13,11 +13,6 @@ DOCUMENTATION = r'''
 module: dellemc_vxrail_cluster_expansion_cancel
 
 short_description: Cancel a failed cluster expansion
-
-# If this is part of a collection, you need to use semantic versioning,
-# i.e. the version is of the form "2.5.0" and not "2.4".
-version_added: "1.5.0"
-
 description:
 - This module will cancel a failed cluster expansion.
 options:

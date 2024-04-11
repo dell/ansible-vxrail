@@ -14,10 +14,6 @@ module: dellemc_vxrail_lcm_customized_component
 
 short_description: Perform a upload with lcm upload api
 
-# If this is part of a collection, you need to use semantic versioning,
-# i.e. the version is of the form "2.5.0" and not "2.4".
-
-version_added: "1.6.0"
 
 description:
 - This module will upload a customized component for legacy lcm.

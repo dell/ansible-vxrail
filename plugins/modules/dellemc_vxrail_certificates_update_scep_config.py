@@ -12,11 +12,6 @@ module: dellemc_vxrail_certificates_update_scep_config
 
 short_description: Update automated renewal configurations of certificate through SCEP.
 
-# If this is part of a collection, you need to use semantic versioning,
-# i.e. the version is of the form "2.5.0" and not "2.4".
-# Displays information up to version 4 (v4). Check the log for full API response from highest version.
-version_added: "1.4.0"
-
 description:
 - This module will call POST /cluster/certificates/scep/config api to udpate automated renewal configurations of the VxRail Manager TLS certificate through SCEP
 options:

@@ -137,8 +137,42 @@ Parameters
                             <td>
                                                                                                                                                         </td>
                                                             <td>
-                                        <div></div>
+                                        <div>V1 API parameter</div>
                                         <div>The iDRAC user password.</div>
+                                                    </td>
+        </tr>
+        <tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
+                <b>current_password</b>
+                <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                    <br>
+                    <span style="color: red">required=true</span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div>V2 API parameter</div>
+                                        <div>The iDRAC user current password.</div>
+                                                    </td>
+        </tr>
+        <tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
+                <b>new_password</b>
+                <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                    <br>
+                    <span style="color: red">required=true</span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                                                        </td>
+                                                            <td>
+                                        <div>V2 API parameter</div>
+                                        <div>The iDRAC user new password.</div>
                                                     </td>
         </tr>
         <tr>
@@ -204,8 +238,27 @@ Notes
 - Module dellemc_vxrail_idrac_update_useraccount.py can call any existing version of /hosts/{sn}/idrac/users/{userId}
 - Details on execution of module dellemc_vxrail_idrac_update_useraccount.py can be checked in the logs /tmp/vxrail_ansible_idrac_update_useraccount.log
 
+V2 Examples
+--------
 
-Examples
+``` yaml+jinja
+  - name: Update iDRAC User Account Information. Version specified by api_version_number.
+    dellemc_vxrail_idrac_update_useraccount:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        sn: "{{ host_sn }}"
+        id: "{{ id }}"
+        name: "{{ name }}"
+        current_password: "{{ current_password }}"
+        new_password: "{{ new_password }}"
+        privilege: "{{ privilege }}"
+        timeout: "{{ timeout }}"
+        api_version_number: "{{ api_version_number }}"
+
+```
+
+V1 Examples
 --------
 
 ``` yaml+jinja
@@ -297,9 +350,28 @@ The following are the fields unique to this module:
                   <span style="color: purple"></span>                    </div>
                                 </td>
             <td>When iDRAC user update request is completed</td>
-            <td>v1</td>
+            <td>v1, v2</td>
             <td>
                                         <div>The status of request to update an iDRAC user account.</div>
+                                    <br/>
+                                </td>
+        </tr>
+        </tr>
+                            <tr>
+                                <td class="elbow-placeholder">&nbsp;</td>
+                            <td colspan="2">
+                <div class="ansibleOptionAnchor" id="return-hostgroup_details/disabled_flags"></div>
+                <b>Message</b>
+                <a class="ansibleOptionLink" href="#return-hostgroup_details/disabled_flags" title="Permalink to this return value"></a>
+                <div style="font-size: small">
+                  <span style="color: purple">type=string</span>
+                  <br>
+                  <span style="color: purple"></span>                    </div>
+                                </td>
+            <td>When iDRAC user update failed</td>
+            <td>v1, v2</td>
+            <td>
+                                        <div>Error message received when the update of iDRAC user fails.</div>
                                     <br/>
                                 </td>
         </tr>

@@ -13,10 +13,6 @@ module: dellemc_vxrail_cluster_layer3_get_segments
 
 short_description: Get a list of segments in VxRail cluster layer3.
 
-# If this is part of a collection, you need to use semantic versioning,
-# i.e. the version is of the form "2.5.0" and not "2.4".
-version_added: "1.4.0"
-
 description:
 - This module will get a list of segments that are recognized by VxRail Manager.
 options:

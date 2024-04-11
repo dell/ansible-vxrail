@@ -13,10 +13,6 @@ module: dellemc_vxrail_cluster_getvm
 
 short_description: Retrieves name, status and host information for system virtual machines in the VxRail cluster.
 
-# If this is part of a collection, you need to use semantic versioning,
-# i.e. the version is of the form "2.5.0" and not "2.4".
-version_added: "1.4.0"
-
 description:
 - This module will retrieve the name, status, and host information for system virtual machines in the VxRail cluster.
 options:

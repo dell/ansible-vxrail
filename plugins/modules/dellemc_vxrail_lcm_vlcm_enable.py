@@ -13,10 +13,6 @@ module: dellemc_vxrail_lcm_vlcm_get
 
 short_description: get vlcm info
 
-# If this is part of a collection, you need to use semantic versioning,
-# i.e. the version is of the form "2.5.0" and not "2.4".
-version_added: "2.4.0"
-
 description:
 - This module will retry the LCM full upgrade or partial upgrade if started through the LCM API call.
 options:
