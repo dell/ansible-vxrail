@@ -14,10 +14,6 @@ module: dellemc_vxrail_system_cluster_portgroups
 
 short_description: Retrieve Cluster Portgroups
 
-# If this is part of a collection, you need to use semantic versioning,
-# i.e. the version is of the form "2.5.0" and not "2.4".
-version_added: "1.4.0"
-
 description:
 - This module retrieves information about cluster portgroups used by a node.
 options:

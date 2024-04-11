@@ -14,10 +14,6 @@ module: dellemc_vxrail_export_cvs_compliance_report
 
 short_description: Export CVS compliance report
 
-# If this is part of a collection, you need to use semantic versioning,
-# i.e. the version is of the form "2.5.0" and not "2.4".
-version_added: "1.5.0"
-
 description:
 - Export the CVS compliance report that is generated using the provided parameters.
 options:

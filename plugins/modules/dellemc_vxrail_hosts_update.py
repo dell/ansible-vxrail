@@ -13,10 +13,6 @@ module: dellemc_vxrail_hosts_update
 
 short_description: Update the geographical location of a host
 
-# If this is part of a collection, you need to use semantic versioning,
-# i.e. the version is of the form "2.5.0" and not "2.4".
-version_added: "1.5.0"
-
 description:
 - This module will update the geographical location of the specified host.
 options:

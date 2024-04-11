@@ -14,10 +14,6 @@ module: dellemc_vxrail_network_manager_configure
 
 short_description: Configures the VxRail Manager IP address
 
-# If this is part of a collection, you need to use semantic versioning,
-# i.e. the version is of the form "2.5.0" and not "2.4".
-version_added: "1.5.0"
-
 description:
 - This module will change the VxRail Manager IP prior to cluster build.
 options:
@@ -215,8 +211,6 @@ def main():
     # define available arguments/parameters a user can pass to the module
     module_args = dict(
         vxmip=dict(required=True),
-        vcadmin=dict(required=True),
-        vcpasswd=dict(required=True, no_log=True),
         new_ip=dict(required=False),
         gateway=dict(required=False),
         netmask=dict(required=False),

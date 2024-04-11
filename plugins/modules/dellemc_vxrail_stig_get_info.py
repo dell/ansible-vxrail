@@ -13,10 +13,6 @@ module: dellemc_vxrail_stig_get_info
 
 short_description: Retrieve information related to STIG regulations.
 
-# If this is part of a collection, you need to use semantic versioning,
-# i.e. the version is of the form "2.5.0" and not "2.4".
-version_added: "1.6.0"
-
 description:
 - This module will retrieve information related to STIG regulations.
 options:

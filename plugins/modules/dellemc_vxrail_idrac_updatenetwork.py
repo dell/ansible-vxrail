@@ -13,10 +13,6 @@ module: dellemc_vxrail_idrac_updatenetwork
 
 short_description: Update the iDRAC network settings on the specified host.
 
-# If this is part of a collection, you need to use semantic versioning,
-# i.e. the version is of the form "2.5.0" and not "2.4".
-version_added: "1.5.0"
-
 description:
 - This module will update the iDRAC network settings on the specified host.
 options:
@@ -259,7 +255,7 @@ class VxRailCluster():
                 idrac_network_ipv4_info["dhcp_enabled"] = self.dhcp_enabled
             if self.ipv6_address:
                 idrac_network_ipv6_info["ip_address"] = self.ipv6_address
-                idrac_network_ipv6_info["ipv6_prefix_length"] = self.ipv6_prefix_length
+                idrac_network_ipv6_info["prefix_length"] = self.ipv6_prefix_length
                 idrac_network_ipv6_info["gateway"] = self.ipv6_gateway
                 idrac_network_ipv6_info["auto_config_enabled"] = self.ipv6_auto_config_enabled
             if len(idrac_network_ipv4_info) > 0:

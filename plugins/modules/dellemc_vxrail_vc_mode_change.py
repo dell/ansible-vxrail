@@ -14,10 +14,6 @@ module: dellemc_vxrail_vc_mode_change
 
 short_description: Change the VxRail vCenter or Platform Services Controller (PSC) mode
 
-# If this is part of a collection, you need to use semantic versioning,
-# i.e. the version is of the form "2.5.0" and not "2.4".
-version_added: "1.6.0"
-
 description:
 - This module will change the VxRail vCenter or Platform Services Controller (PSC) mode between embedded mode and external mode.
 options:

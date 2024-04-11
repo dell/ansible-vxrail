@@ -13,10 +13,6 @@ module: dellemc_vxrail_system_get_internet_mode
 
 short_description: Retrieve VxRail Internet Mode
 
-# If this is part of a collection, you need to use semantic versioning,
-# i.e. the version is of the form "2.5.0" and not "2.4".
-version_added: "1.4.0"
-
 description:
 - This module will retrieve the system's Internet Mode Information.
 options:

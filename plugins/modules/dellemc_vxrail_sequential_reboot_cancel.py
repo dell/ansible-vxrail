@@ -14,10 +14,6 @@ module: dellemc_vxrail_sequential_reboot_cancel
 
 short_description: VxRail Hosts Sequential Reboot
 
-# If this is part of a collection, you need to use semantic versioning,
-# i.e. the version is of the form "2.5.0" and not "2.4".
-version_added: "2.3.0"
-
 description:
 - This module will reboot vxrail hosts sequentially
 options:

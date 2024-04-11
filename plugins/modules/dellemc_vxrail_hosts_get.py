@@ -12,11 +12,6 @@ module: dellemc_vxrail_hosts_get
 
 short_description: Retrieve VxRail hosts and their associated subcomponent information.
 
-# If this is part of a collection, you need to use semantic versioning,
-# i.e. the version is of the form "2.5.0" and not "2.4".
-# Displays information up to version 8 (v8). Check the log for full API response from highest version.
-version_added: "1.4.0"
-
 description:
 - This module will get information of all hosts in the cluster with /hosts api or one host specified by serial number with /hosts/{sn}.
 options:

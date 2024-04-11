@@ -13,10 +13,6 @@ module: dellemc_vxrail_satellite_node_expansion
 
 short_description: Add a satellite node to an existing VxRail Cluster
 
-# If this is part of a collection, you need to use semantic versioning,
-# i.e. the version is of the form "2.5.0" and not "2.4".
-version_added: "1.4.0"
-
 description:
 - This module will perform a satellite node expansion
   based on the provided expansion specification and query status.

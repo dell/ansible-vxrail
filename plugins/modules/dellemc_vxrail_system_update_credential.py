@@ -14,10 +14,6 @@ module: dellemc_vxrail_system_update_credential
 
 short_description: Update the management user passwords
 
-# If this is part of a collection, you need to use semantic versioning,
-# i.e. the version is of the form "2.5.0" and not "2.4".
-version_added: "1.4.0"
-
 description:
 - This module will update the management user passwords that are stored in VxRail Manager for the vCenter and ESXi hosts.
 options:
@@ -42,7 +38,7 @@ options:
 
   component:
     description:
-      The type of component to be updated. Values are vc and esxi.
+      The type of component to be updated. Values are vc/esxi for v1/v2 API and VC/ESXI with uppercase for v3 API.
     required: True
     type: str
 
@@ -60,7 +56,19 @@ options:
 
   password:
     description:
-      The password for the management account to be stored in VxRail Manager
+      The password for the management account to be stored in VxRail Manager, for v1/v2 API.
+    required: True
+    type: str
+
+  current_password:
+    description:
+      The current password for the management account stored in VxRail Manager, only for v3 API.
+    required: True
+    type: str
+
+  new_password:
+    description:
+      The new password for the management account to be stored in VxRail Manager, only for v3 API.
     required: True
     type: str
 
@@ -129,7 +137,11 @@ class VxRailCluster():
         self.hostname = module.params.get('hostname')
         self.username = module.params.get('username')
         self.password = module.params.get('password')
+        self.current_password = module.params.get('current_password')
+        self.new_password = module.params.get('new_password')
         self.api_version_number = module.params.get('api_version_number')
+        if self.api_version_number is None:
+            self.api_version_number = 3
         self.system_url = VxrailClusterUrls(self.vxm_ip)
         # Configure HTTP basic authorization: basicAuth
         self.configuration = vxrail_ansible_utility.Configuration()
@@ -137,47 +149,43 @@ class VxRailCluster():
         self.configuration.password = self.vc_password
         self.configuration.verify_ssl = False
         self.configuration.host = self.system_url.set_host()
-        # Added for auto-version detection
-        self.api_version_string = "v?"
 
-    # Obtains the response for the given module path with specified api_version_number or highest found version
-    def get_versioned_response(self, api_instance, module_path):
-        # Set api version string and version number if undefined
-        if self.api_version_number is None:
-            self.api_version_string = utils.get_highest_api_version_string(self.vxm_ip, module_path, LOGGER)
-            self.api_version_number = int(self.api_version_string.split('v')[1])
-        else:
-            self.api_version_string = utils.get_api_version_string(self.vxm_ip, self.api_version_number, module_path, LOGGER)
-
-        # Calls versioned method as attribute (ex: v1_system_update_credential_post)
-        call_string = self.api_version_string + '_system_update_credential_post'
-        LOGGER.info("Using utility method: %s\n", call_string)
-        api_system_update_credential_post = getattr(api_instance, call_string)
-        credential, credential_dict = [], {}
-        credential_dict['component'] = self.component
-        credential_dict['hostname'] = self.hostname
-        credential_dict['username'] = self.username
-        credential_dict['password'] = self.password
-        credential.append(credential_dict)
-        return api_system_update_credential_post(credential)
-
-    def post_system_update_credential(self):
+    def update_system_credential(self):
         # create an instance of the API class
         api_instance = vxrail_ansible_utility.SystemCredentialsApi(
             vxrail_ansible_utility.ApiClient(self.configuration))
         try:
-            # post system updated credential
-            response = self.get_versioned_response(api_instance, "Post /system/update-credential")
+            if self.api_version_number >= 3:
+                # Use PUT for v3 API
+                call_string = 'v3_system_update_credential_put'
+                credential_dict = {
+                    'component': self.component,
+                    'hostname': self.hostname,
+                    'username': self.username,
+                    'current_password': self.current_password,
+                    'new_password': self.new_password
+                }
+            else:
+                # Use POST for v1/v2 API
+                call_string = 'v' + str(self.api_version_number) + '_system_update_credential_post'
+                credential_dict = {
+                    'component': self.component,
+                    'hostname': self.hostname,
+                    'username': self.username,
+                    'password': self.password
+                }
+            LOGGER.info("Using utility method: %s", call_string)
+            api_call = getattr(api_instance, call_string)
+            response = api_call([credential_dict])
         except ApiException as e:
-            LOGGER.error("Exception when calling SystemCredentialsApi->%s_system_update_credential_post: %s\n", self.api_version_string, e)
+            LOGGER.error("Exception when calling SystemCredentialsApi->%s: %s", call_string, e)
             return 'error'
-        LOGGER.info("Call %s/system/update-credential POST api response: %s\n", self.api_version_string, response)
+        LOGGER.info("Call %s api response: %s", call_string, response)
         return response
 
 
 def main():
     ''' Entry point into execution flow '''
-    result = ''
     global module
     # define available arguments/parameters a user can pass to the module
     module_args = dict(
@@ -187,7 +195,9 @@ def main():
         component=dict(required=True),
         hostname=dict(required=True),
         username=dict(required=True),
-        password=dict(required=True, no_log=True),
+        password=dict(required=False, no_log=True),
+        current_password=dict(required=False, no_log=True),
+        new_password=dict(required=False, no_log=True),
         api_version_number=dict(type='int'),
         timeout=dict(type='int', default=60)
 
@@ -196,9 +206,16 @@ def main():
         argument_spec=module_args,
         supports_check_mode=True,
     )
-    result = VxRailCluster().post_system_update_credential()
+    api_version = module.params['api_version_number']
+    if api_version >= 3:
+        if not module.params['current_password'] or not module.params['new_password']:
+            module.fail_json(msg="current_password and new_password are required for API version 3 and above.")
+    else:
+        if not module.params['password']:
+            module.fail_json(msg="password is required for API versions less than 3.")
+    result = VxRailCluster().update_system_credential()
     if result == 'error':
-        module.fail_json(msg="Call POST /system/update-credential API failed,please see log file "
+        module.fail_json(msg="Call update credential API failed, please see log file "
                              "/tmp/vxrail_ansible_system_update_credential.log for more error details.")
     vx_facts = {'msg': "The management user password is updated successfully"}
     vx_facts_result = dict(changed=True, System_Update_Credential_API=vx_facts)

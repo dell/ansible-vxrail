@@ -13,11 +13,6 @@ DOCUMENTATION = r'''
 module: dellemc_vxrail_lcm_vlcm_image
 short_description: Retrieve vLCM image informations
 
-# If this is part of a collection, you need to use semantic versioning,
-# i.e. the version is of the form "2.5.0" and not "2.4".
-
-version_added: "1.6.0"
-
 description:
 - This module will retrieve vLCM image informations
 options:
