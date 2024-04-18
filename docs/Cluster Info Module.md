@@ -129,7 +129,7 @@ Examples
 
 ``` yaml+jinja
   - name: Retrieves VxRail Cluster Information
-    dellemc_vxrail_clusterinfo:
+    dellemc_vxrail_getclusterinfo:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
