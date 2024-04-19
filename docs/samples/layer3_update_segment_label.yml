@@ -10,7 +10,7 @@
 
   tasks:
     - name: Update Cluster Layer3 Segment Label
-      dellemc_vxrail_cluster_layer3_update_segment_label:
+      dellemc.vxrail.dellemc_vxrail_cluster_layer3_update_segment_label:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
