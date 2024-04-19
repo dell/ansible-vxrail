@@ -9,7 +9,7 @@
 
   tasks:
     - name: Change bandwidth throttling
-      dellemc_vxrail_bandwidth_throttling_change:
+      dellemc.vxrail.dellemc_vxrail_bandwidth_throttling_change:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
