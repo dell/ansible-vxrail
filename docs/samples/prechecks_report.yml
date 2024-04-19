@@ -8,7 +8,7 @@
 
   tasks:
     - name: Get prechecks report
-      dellemc_vxrail_system_getprechecksreport:
+      dellemc.vxrail.dellemc_vxrail_system_getprechecksreport:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
