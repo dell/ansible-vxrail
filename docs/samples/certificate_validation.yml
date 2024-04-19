@@ -12,7 +12,7 @@
 
   tasks:
     - name: Verify the VxRail Manager certificate
-      dellemc_vxrail_certificate_validate:
+      dellemc.vxrail.dellemc_vxrail_certificate_validate:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
