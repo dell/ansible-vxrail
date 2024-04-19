@@ -14,7 +14,7 @@
 
   tasks:
     - name: Start host folders upgrade
-      dellemc_vxrail_host_folder_upgrade:
+      dellemc.vxrail.dellemc_vxrail_host_folder_upgrade:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
