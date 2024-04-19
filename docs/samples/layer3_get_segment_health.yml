@@ -9,7 +9,7 @@
 
   tasks:
     - name: Get Cluster Layer3 Segment Health
-      dellemc_vxrail_cluster_layer3_get_segment_health:
+      dellemc.vxrail.dellemc_vxrail_cluster_layer3_get_segment_health:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
