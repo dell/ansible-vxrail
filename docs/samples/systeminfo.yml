@@ -8,7 +8,7 @@
 
   tasks:
     - name: Get VxRail System Information
-      dellemc_vxrail_getsysteminfo:
+      dellemc.vxrail.dellemc_vxrail_getsysteminfo:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
