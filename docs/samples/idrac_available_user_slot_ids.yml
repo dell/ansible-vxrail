@@ -9,7 +9,7 @@
 
   tasks:
     - name: Retrieve available iDRAC user slot IDs
-      dellemc_vxrail_idrac_getavailableuserids:
+      dellemc.vxrail.dellemc_vxrail_idrac_getavailableuserids:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
