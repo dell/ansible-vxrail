@@ -8,7 +8,7 @@
 
   tasks:
     - name: Get automated renewal status
-      dellemc_vxrail_certificates_get_scep_status:
+      dellemc.vxrail.dellemc_vxrail_certificates_get_scep_status:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
