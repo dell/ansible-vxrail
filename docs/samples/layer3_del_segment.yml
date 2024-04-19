@@ -9,7 +9,7 @@
 
   tasks:
     - name: Remove Cluster Layer3 Segment
-      dellemc_vxrail_cluster_layer3_remove_segment:
+      dellemc.vxrail.dellemc_vxrail_cluster_layer3_remove_segment:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
