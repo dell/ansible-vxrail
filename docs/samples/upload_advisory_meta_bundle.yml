@@ -9,7 +9,7 @@
 
   tasks:
     - name: Start to upload advisory meta bundle
-      dellemc_vxrail_lcm_advisory_meta_bundle:
+      dellemc.vxrail.dellemc_vxrail_lcm_advisory_meta_bundle:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
