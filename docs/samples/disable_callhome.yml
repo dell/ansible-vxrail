@@ -8,7 +8,7 @@
 
   tasks:
     - name: Disable call home servers
-      dellemc_vxrail_callhome_disable:
+      dellemc.vxrail.dellemc_vxrail_callhome_disable:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
