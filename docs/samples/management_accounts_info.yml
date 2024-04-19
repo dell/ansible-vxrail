@@ -8,7 +8,7 @@
 
   tasks:
     - name: Retrieve VxRail Management Account Info (VC Only)
-      dellemc_vxrail_system_get_management_accounts:
+      dellemc.vxrail.dellemc_vxrail_system_get_management_accounts:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
