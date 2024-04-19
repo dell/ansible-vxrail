@@ -14,7 +14,7 @@
 
   tasks:
     - name: Update iDRAC user account information
-      dellemc_vxrail_idrac_update_useraccount:
+      dellemc.vxrail.dellemc_vxrail_idrac_update_useraccount:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
