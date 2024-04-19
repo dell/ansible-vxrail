@@ -8,7 +8,7 @@
 
   tasks:
     - name: Get Support account information
-      dellemc_vxrail_support_getaccount:
+      dellemc.vxrail.dellemc_vxrail_support_getaccount:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
