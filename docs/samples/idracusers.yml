@@ -9,7 +9,7 @@
 
   tasks:
     - name: Get iDRAC Users
-      dellemc_vxrail_idrac_getusers:
+      dellemc.vxrail.dellemc_vxrail_idrac_getusers:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
