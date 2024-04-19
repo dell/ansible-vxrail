@@ -9,7 +9,7 @@
 
   tasks:
     - name: Get iDRAC Network Settings
-      dellemc_vxrail_idrac_getnetwork:
+      dellemc.vxrail.dellemc_vxrail_idrac_getnetwork:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
