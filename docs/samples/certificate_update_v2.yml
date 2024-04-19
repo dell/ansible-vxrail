@@ -12,7 +12,7 @@
 
   tasks:
     - name: Update the VxRail Manager certificate
-      dellemc_vxrail_certificate_update:
+      dellemc.vxrail.dellemc_vxrail_certificate_update:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
