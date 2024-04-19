@@ -8,7 +8,7 @@
 
   tasks:
     - name: Cancel the failed cluster expansion
-      dellemc_vxrail_cluster_expansion_cancel:
+      dellemc.vxrail.dellemc_vxrail_cluster_expansion_cancel:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
