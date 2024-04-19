@@ -12,7 +12,7 @@
     scep_days_before_expire: "{{ scep_days_before_expire }}"
   tasks:
     - name: Update automated renewal configurations
-      dellemc_vxrail_certificates_update_scep_config:
+      dellemc.vxrail.dellemc_vxrail_certificates_update_scep_config:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
