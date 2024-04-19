@@ -9,7 +9,7 @@
 
   tasks:
     - name: Perform Host Shutdown
-      dellemc_vxrail_host_shutdown:
+      dellemc.vxrail.dellemc_vxrail_host_shutdown:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
