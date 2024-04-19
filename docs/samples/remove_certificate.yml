@@ -9,7 +9,7 @@
 
   tasks:
     - name: Remove the certificate according to the fingerprint
-      dellemc_vxrail_certificates_removecertificate:
+      dellemc.vxrail.dellemc_vxrail_certificates_removecertificate:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
