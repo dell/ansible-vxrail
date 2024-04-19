@@ -8,7 +8,7 @@
 
   tasks:
     - name: Get bandwidth throttling Information
-      dellemc_vxrail_bandwidth_throttling_info:
+      dellemc.vxrail.dellemc_vxrail_bandwidth_throttling_info:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
