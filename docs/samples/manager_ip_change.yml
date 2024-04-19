@@ -13,7 +13,7 @@
 
   tasks:
     - name: Configure the VxRail Manager IP address
-      dellemc_vxrail_network_manager_configure:
+      dellemc.vxrail.dellemc_vxrail_network_manager_configure:
         vxmip: "{{ vxmip }}"
         new_ip: "{{ new_ip }}"
         gateway: "{{ gateway }}"
