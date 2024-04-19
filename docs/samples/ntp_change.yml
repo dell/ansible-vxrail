@@ -9,7 +9,7 @@
 
   tasks:
     - name: Change NTP Settings
-      dellemc_vxrail_system_ntp_change:
+      dellemc.vxrail.dellemc_vxrail_system_ntp_change:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
