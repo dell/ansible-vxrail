@@ -8,7 +8,7 @@
 
   tasks:
     - name: VxRail Hosts Sequential Reboot
-      dellemc_vxrail_sequential_reboot:
+      dellemc.vxrail.dellemc_vxrail_sequential_reboot:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
