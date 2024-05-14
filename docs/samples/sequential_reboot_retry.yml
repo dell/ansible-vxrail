@@ -9,7 +9,7 @@
 
   tasks:
     - name: VxRail Hosts Sequential Reboot Retry
-      dellemc_vxrail_sequential_reboot_retry:
+      dellemc.vxrail.dellemc_vxrail_sequential_reboot_retry:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"

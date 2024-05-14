@@ -8,7 +8,7 @@
 
   tasks:
     - name: Return a fingerprint list
-      dellemc_vxrail_certificates_getfingerprints:
+      dellemc.vxrail.dellemc_vxrail_certificates_getfingerprints:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"

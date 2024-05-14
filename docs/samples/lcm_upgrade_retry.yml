@@ -14,7 +14,7 @@
 
   tasks:
     - name: Retry the LCM Upgrade
-      dellemc_vxrail_lcm_retry:
+      dellemc.vxrail.dellemc_vxrail_lcm_retry:
         vxmip: "{{ vxmip_var }}"
         vcadmin: "{{ vcadmin_var }}"
         vcpasswd: "{{ vcpasswd_var}}"

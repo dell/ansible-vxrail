@@ -8,7 +8,7 @@
 
   tasks:
     - name: Change DNS Settings
-      dellemc_vxrail_system_dns_change:
+      dellemc.vxrail.dellemc_vxrail_system_dns_change:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"

@@ -13,7 +13,7 @@
 
   tasks:
     - name: Set VxRail System Proxy Information
-      dellemc_vxrail_system_set_proxy:
+      dellemc.vxrail.dellemc_vxrail_system_set_proxy:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"

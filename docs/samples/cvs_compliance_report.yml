@@ -8,7 +8,7 @@
 
   tasks:
     - name: Start to generate cvs compliance report
-      dellemc_vxrail_cvs_compliance_report:
+      dellemc.vxrail.dellemc_vxrail_cvs_compliance_report:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"

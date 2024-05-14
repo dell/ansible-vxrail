@@ -8,7 +8,7 @@
 
   tasks:
     - name: Get System Precheck Profiles Information
-      dellemc_vxrail_system_getprecheckprofiles:
+      dellemc.vxrail.dellemc_vxrail_system_getprecheckprofiles:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"

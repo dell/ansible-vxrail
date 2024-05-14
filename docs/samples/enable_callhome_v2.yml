@@ -23,7 +23,7 @@
 
   tasks:
     - name: Enable call home functionality
-      dellemc_vxrail_callhome_enable:
+      dellemc.vxrail.dellemc_vxrail_callhome_enable:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"

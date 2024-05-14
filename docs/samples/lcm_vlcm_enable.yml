@@ -11,7 +11,7 @@
 
   tasks:
     - name: Start to trigger vLCM enablement
-      dellemc_vxrail_lcm_vlcm_enable:
+      dellemc.vxrail.dellemc_vxrail_lcm_vlcm_enable:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"

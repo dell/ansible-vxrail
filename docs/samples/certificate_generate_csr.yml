@@ -16,7 +16,7 @@
 
   tasks:
     - name: Generate a Certificate Signing Request
-      dellemc_vxrail_certificate_generate_csr:
+      dellemc.vxrail.dellemc_vxrail_certificate_generate_csr:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"

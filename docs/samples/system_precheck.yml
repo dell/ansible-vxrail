@@ -27,7 +27,7 @@
 
   tasks:
     - name: Perform system precheck
-      dellemc_vxrail_system_precheck:
+      dellemc.vxrail.dellemc_vxrail_system_precheck:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"

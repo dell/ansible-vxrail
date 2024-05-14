@@ -9,7 +9,7 @@
 
   tasks:
     - name: Change Telemetry Tier
-      dellemc_vxrail_telemetry_tier_change:
+      dellemc.vxrail.dellemc_vxrail_telemetry_tier_change:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"

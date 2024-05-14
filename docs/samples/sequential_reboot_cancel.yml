@@ -9,7 +9,7 @@
 
   tasks:
     - name: VxRail Hosts Sequential Reboot Cancel
-      dellemc_vxrail_sequential_reboot_cancel:
+      dellemc.vxrail.dellemc_vxrail_sequential_reboot_cancel:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"

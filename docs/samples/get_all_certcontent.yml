@@ -8,7 +8,7 @@
 
   tasks:
     - name: Return all certificate content that stored in VXM trust store
-      dellemc_vxrail_certificates_get_all_info:
+      dellemc.vxrail.dellemc_vxrail_certificates_get_all_info:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"

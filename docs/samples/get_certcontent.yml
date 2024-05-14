@@ -9,7 +9,7 @@
 
   tasks:
     - name: Return a certificate content
-      dellemc_vxrail_certificates_getcontent:
+      dellemc.vxrail.dellemc_vxrail_certificates_getcontent:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"

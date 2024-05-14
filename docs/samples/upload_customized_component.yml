@@ -12,7 +12,7 @@
 
   tasks:
     - name: Start to upload customized component
-      dellemc_vxrail_lcm_customized_component:
+      dellemc.vxrail.dellemc_vxrail_lcm_customized_component:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"

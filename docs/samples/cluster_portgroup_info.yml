@@ -9,7 +9,7 @@
 
   tasks:
     - name: Get Node's Cluster Portgroup Information
-      dellemc_vxrail_system_cluster_portgroups:
+      dellemc.vxrail.dellemc_vxrail_system_cluster_portgroups:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"

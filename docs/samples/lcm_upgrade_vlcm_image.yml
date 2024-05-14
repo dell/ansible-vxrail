@@ -11,7 +11,7 @@
 
   tasks:
     - name: Start to retrieve vLCM image information from the provided LCM bundle
-      dellemc_vxrail_lcm_vlcm_image:
+      dellemc.vxrail.dellemc_vxrail_lcm_vlcm_image:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"

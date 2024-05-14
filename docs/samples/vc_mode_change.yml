@@ -10,7 +10,7 @@
 
   tasks:
     - name: Start to change the VxRail vCenter mode
-      dellemc_vxrail_vc_mode_change:
+      dellemc.vxrail.dellemc_vxrail_vc_mode_change:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"

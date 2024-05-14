@@ -8,7 +8,7 @@
 
   tasks:
     - name: Get information related to STIG regulations
-      dellemc_vxrail_stig_get_info:
+      dellemc.vxrail.dellemc_vxrail_stig_get_info:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"

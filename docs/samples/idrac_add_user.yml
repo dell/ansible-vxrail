@@ -12,7 +12,7 @@
 
   tasks:
     - name: Add iDRAC User
-      dellemc_vxrail_idrac_adduser:
+      dellemc.vxrail.dellemc_vxrail_idrac_adduser:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"

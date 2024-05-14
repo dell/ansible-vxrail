@@ -6,7 +6,7 @@
     day1json_file: "{{ day1json_file }}"
   tasks:
     - name: Configure and deploy a new VxRail cluster
-      dellemc_vxrail_day1:
+      dellemc.vxrail.dellemc_vxrail_day1:
         vxmip: "{{ vxmip }}"
         day1json_file: "{{ day1json_file }}"
         api_version_number: "{{ api_version_number | default(omit) }}"

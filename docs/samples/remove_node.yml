@@ -11,7 +11,7 @@
 
   tasks:
     - name: Start to remove node
-      dellemc_vxrail_cluster_rmhost:
+      dellemc.vxrail.dellemc_vxrail_cluster_rmhost:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"

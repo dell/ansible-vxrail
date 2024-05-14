@@ -8,7 +8,7 @@
 
   tasks:
     - name: Get System Available Hosts Information
-      dellemc_vxrail_system_getavailablehosts:
+      dellemc.vxrail.dellemc_vxrail_system_getavailablehosts:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"

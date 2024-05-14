@@ -9,7 +9,7 @@
 
   tasks:
     - name: Return the API status code
-      dellemc_vxrail_certificates_importcertsintotruststore:
+      dellemc.vxrail.dellemc_vxrail_certificates_importcertsintotruststore:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"

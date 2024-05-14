@@ -9,7 +9,7 @@
 
   tasks:
     - name: Get Cluster Layer3 Segment By Label
-      dellemc_vxrail_cluster_layer3_get_segment_bylabel:
+      dellemc.vxrail.dellemc_vxrail_cluster_layer3_get_segment_bylabel:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"

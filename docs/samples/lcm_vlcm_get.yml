@@ -8,7 +8,7 @@
 
   tasks:
     - name: Start to retrieve cluster vLCM information
-      dellemc_vxrail_lcm_vlcm_get:
+      dellemc.vxrail.dellemc_vxrail_lcm_vlcm_get:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"

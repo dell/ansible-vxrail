@@ -8,7 +8,7 @@
 
   tasks:
     - name: Get automated renewal configurations
-      dellemc_vxrail_certificates_get_scep_config:
+      dellemc.vxrail.dellemc_vxrail_certificates_get_scep_config:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"

@@ -9,7 +9,7 @@
 
   tasks:
     - name: Perform Cluster Shutdown
-      dellemc_vxrail_cluster_shutdown:
+      dellemc.vxrail.dellemc_vxrail_cluster_shutdown:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"

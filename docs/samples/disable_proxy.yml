@@ -8,7 +8,7 @@
 
   tasks:
     - name: Disable the VxRail System's Proxy Configuration
-      dellemc_vxrail_system_disable_proxy:
+      dellemc.vxrail.dellemc_vxrail_system_disable_proxy:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"

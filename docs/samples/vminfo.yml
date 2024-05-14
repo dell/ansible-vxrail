@@ -8,7 +8,7 @@
 
   tasks:
     - name: Get System VM Information
-      dellemc_vxrail_cluster_getvm:
+      dellemc.vxrail.dellemc_vxrail_cluster_getvm:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"

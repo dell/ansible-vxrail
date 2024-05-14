@@ -34,7 +34,7 @@
 
   tasks:
     - name: Add Cluster Layer3 Segment
-      dellemc_vxrail_cluster_layer3_add_segment:
+      dellemc.vxrail.dellemc_vxrail_cluster_layer3_add_segment:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"

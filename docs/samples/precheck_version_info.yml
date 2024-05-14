@@ -8,7 +8,7 @@
 
   tasks:
     - name: Get precheck service version information
-      dellemc_vxrail_system_getprecheckversion:
+      dellemc.vxrail.dellemc_vxrail_system_getprecheckversion:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"

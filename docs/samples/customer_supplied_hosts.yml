@@ -7,7 +7,7 @@
 
   tasks:
     - name: Return Nodes by Customer Supplied Management IP
-      dellemc_vxrail_customer_supplied_hosts:
+      dellemc.vxrail.dellemc_vxrail_customer_supplied_hosts:
         vxmip: "{{ vxmip }}"
         hosts: "{{ hosts }}"
         api_version_number: "{{ api_version_number | default(omit) }}"

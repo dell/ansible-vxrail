@@ -9,7 +9,7 @@
 
   tasks:
     - name: Change Internet Mode Information
-      dellemc_vxrail_system_internet_mode_change:
+      dellemc.vxrail.dellemc_vxrail_system_internet_mode_change:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"

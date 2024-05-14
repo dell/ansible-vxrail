@@ -40,7 +40,7 @@
 
   tasks:
     - name: Start to upgrade with v5
-      dellemc_vxrail_lcm:
+      dellemc.vxrail.dellemc_vxrail_lcm:
         vxmip: "{{ vxmip_var }}"
         vcadmin: "{{ vcadmin_var }}"
         vcpasswd: "{{ vcpasswd_var}}"

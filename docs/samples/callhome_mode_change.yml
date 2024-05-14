@@ -9,7 +9,7 @@
 
   tasks:
     - name: Change Call home Mode
-      dellemc_vxrail_callhome_change_mode:
+      dellemc.vxrail.dellemc_vxrail_callhome_change_mode:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"

@@ -9,7 +9,7 @@
 
   tasks:
     - name: Update the host location information
-      dellemc_vxrail_hosts_update:
+      dellemc.vxrail.dellemc_vxrail_hosts_update:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
