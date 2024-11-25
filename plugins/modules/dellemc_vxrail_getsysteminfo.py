@@ -189,7 +189,7 @@ class VxRailSystem():
         if self.api_version_number == 1:
             call_string = 'v1_query_vx_rail_manager_system_information'
         else:
-            call_string = 'query_vx_rail_manager_system_information_' + self.api_version_string
+            call_string = self.api_version_string + '_query_vx_rail_manager_system_information_get'
         LOGGER.info("Using utility method: %s\n", call_string)
         api_system_get = getattr(api_instance, call_string)
         return api_system_get()

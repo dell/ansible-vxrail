@@ -1,5 +1,5 @@
 ---
-- name: Retrieve VxRail System Information with GET /system APIs
+- name: Commit vLCM draft api
   hosts: localhost
   vars:
     vxmip: "{{ vxmip }}"
@@ -7,15 +7,14 @@
     vcpasswd: "{{ vcpasswd }}"
 
   tasks:
-    - name: Get VxRail System Information
-      dellemc.vxrail.dellemc_vxrail_getsysteminfo:
+    - name: Start to commit vLCM draft
+      dellemc.vxrail.dellemc_vxrail_lcm_vlcm_commit_draft:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
-        timeout: "{{ timeout  | default(omit) }}"
         api_version_number: "{{ api_version_number | default(omit) }}"
-      register: system_info
+      register: job_result
 
-    - name: Display System Information
+    - name: Display vLCM commit draft result
       debug:
-        msg:  "{{system_info}}"
+        msg: "{{ job_result }}"

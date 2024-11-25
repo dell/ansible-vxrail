@@ -40,4 +40,3 @@
     - name: Display if iDRAC user account information has been updated
       debug:
         msg:  "{{ job_result }}"
-        

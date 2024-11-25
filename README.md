@@ -15,7 +15,7 @@ This table provides information about the software prerequisites for the Ansible
 
 | **Ansible Modules** | **VxRail version** | **Python version** | **Python library (VxRail Ansible Utility) version** | **Ansible Version** |
 |---------------------|----------------|--------------------|----------------------------|-------------|
-| v2.4.1 | 8.0.210 | 3.7, 3.8 | 2.4.1 | 2.9 and 2.10 |
+| v2.6.0 | 8.0.300 | 2.6.0 | 2.6.0 | 2.9 and 2.10 |
 
   * Please follow VxRail Ansible Utility installation instructions on [VxRail Ansible Utility Documentation](https://github.com/dell/ansible-vxrail-utility)
 
@@ -76,6 +76,9 @@ The modules are written in such a way that all requests are idempotent and hence
   * [LCM VLCM Image Info module](./docs/LCM%20VLCM%20Image%20Info%20Module.md)
   * [LCM VLCM Info module](./docs/LCM%20VLCM%20Info%20Module.md)
   * [LCM VLCM Enable module](./docs/LCM%20VLCM%20Enable%20Module.md)
+  * [LCM VLCM Generate Draft module](./docs/LCM%20VLCM%20Generate%20Draft%20Module.md)
+  * [LCM VLCM Commit Draft module](./docs/LCM%20VLCM%20Commit%20Draft%20Module.md)
+  * [LCM VLCM Delete Draft module](./docs/LCM%20VLCM%20Delete%20Draft%20Module.md)
   * [Host Folder LCM](./docs/Host%20Folder%20LCM.md)
   * [LCM Precheck module](./docs/LCM%20Precheck%20Module.md)
   * [Network throttling Change module](./docs/Bandwidth%20Throttling%20Change%20Module.md)

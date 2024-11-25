@@ -220,10 +220,24 @@ class VxRailHostFolder():
         api_instance = vxrail_ansible_utility.RequestStatusApi(vxrail_ansible_utility.ApiClient(self.configuration))
         try:
             response = api_instance.v1_request_id_get(request_id)
+            if isinstance(response, dict):
+                response = self.dict_to_obj(response)
         except ApiException as e:
             LOGGER.error("Exception when calling v1_requests_id_get: %s\n", e)
             return 'error'
         return response
+
+    def dict_to_obj(self, d):
+        if isinstance(d, list):
+            d = [self.dict_to_obj(x) for x in d]
+        if not isinstance(d, dict):
+            return d
+        class C:
+            pass
+        o = C()
+        for k in d:
+            o.__dict__[k] = self.dict_to_obj(d[k])
+        return o
 
     def get_request_info(self, response):
         statusInfo = {}
@@ -284,6 +298,9 @@ def main():
     upgrade_status = 0
     while upgrade_status not in ('COMPLETED', 'FAILED') and time_out < initial_timeout:
         upgrade_response = VxRailHostFolder().get_request_status(request_id)
+        if upgrade_response == 'error':
+            module.fail_json(
+                msg="Failed to get the request status. Please see the /tmp/vxrail_ansible_host_folder_upgrade.log for more details")
         upgrade_status = upgrade_response.state
         upgrade_result = VxRailHostFolder().get_request_info(upgrade_response)
         LOGGER.info('Upgrade_Task: status: %s.', upgrade_status)

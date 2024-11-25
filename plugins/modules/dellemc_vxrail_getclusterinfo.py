@@ -212,7 +212,7 @@ class VxRailCluster():
             chassisInfos['generation'] = chassis_data[i].generation
             chassisInfos['health'] = chassis_data[i].health
             chassisInfos['missing'] = chassis_data[i].missing
-        chassisInfolist.append(dict(chassisInfos.items()))
+            chassisInfolist.append(dict(chassisInfos.items()))
         return chassisInfolist
 
 

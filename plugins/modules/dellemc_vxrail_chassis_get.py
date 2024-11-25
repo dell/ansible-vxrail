@@ -398,6 +398,9 @@ class VxRailHosts():
         return host_info
 
     def _generate_witness_info_from_response_data(self, data):
+        if isinstance(data, list):
+            LOGGER.error("Expected data to be an object, but got list: %s", data)
+            return None
         witness_info = {}
         witness_info['sn'] = data.sn
         witness_info['psnt'] = data.psnt

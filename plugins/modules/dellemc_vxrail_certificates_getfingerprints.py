@@ -13,10 +13,6 @@ module: dellemc_vxrail_certificates_getfingerprints
 
 short_description: Return a fingerprint list of the certificates that stored in VXM trust store.
 
-# If this is part of a collection, you need to use semantic versioning,
-# i.e. the version is of the form "2.5.0" and not "2.4".
-version_added: "1.4.0"
-
 description:
 - This module will return a fingerprint list.
 options:
@@ -129,8 +125,8 @@ class VxRailSystem():
         else:
             self.api_version_string = utils.get_api_version_string(self.vxm_ip, self.api_version_number, module_path, LOGGER)
 
-        # Calls versioned method as attribute (ex: v1_trust_store_certificates_get)
-        call_string = self.api_version_string + '_trust_store_certificates_get'
+        # Calls versioned method as attribute (ex: v1_trust_store_certificates_fingerprints_get)
+        call_string = self.api_version_string + '_trust_store_certificates_fingerprints_get'
         LOGGER.info("Using utility method: %s\n", call_string)
         trust_store_certificates_get = getattr(api_instance, call_string)
         return trust_store_certificates_get()
@@ -142,7 +138,7 @@ class VxRailSystem():
             # Invoke api
             response = self.get_versioned_response(api_instance, "GET /trust-store/certificates/fingerprints")
         except ApiException as e:
-            LOGGER.error("Exception when calling CertificatesApi->%s_trust_store_certificates_get: %s\n", str(self.api_version_string), e)
+            LOGGER.error("Exception when calling CertificatesApi->%_trust_store_certificates_fingerprints_get: %s\n", str(self.api_version_string), e)
             return 'error'
         information = (f"{API} api response: %s\n", response)
         LOGGER.info(information)

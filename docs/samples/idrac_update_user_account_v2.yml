@@ -10,6 +10,7 @@
     name: "{{ name }}"
     current_password: "{{ current_password }}"
     new_password: "{{ new_password }}"
+    # Privilege for the iDRAC user account (limited to 'ADMIN' in V2 API)
     privilege: "{{ privilege }}"
 
   tasks:
@@ -26,4 +27,3 @@
         new_password: "{{ new_password }}"
         timeout: "{{ timeout | default(omit) }}"
         api_version_number: "{{ api_version_number | default(omit) }}"
-        

@@ -56,7 +56,7 @@ options:
   id:
     description:
       The iDRAC user slot ID
-    required: False
+    required: True
     type: int
 
   name:
@@ -203,7 +203,7 @@ def main():
         timeout=dict(type='int', default=300),
         api_version_number=dict(type='int'),
         sn=dict(required=True),
-        id=dict(type='int'),
+        id=dict(type='int', required=True),
         name=dict(required=True),
         password=dict(required=True, no_log=True),
         privilege=dict(required=True)

@@ -13,10 +13,6 @@ module: dellemc_vxrail_certificates_get_all_info
 
 short_description: Get the information of all the certificates in the trust store.
 
-# If this is part of a collection, you need to use semantic versioning,
-# i.e. the version is of the form "2.5.0" and not "2.4".
-version_added: "1.4.0"
-
 description:
 - This module will return the information of all the certificates in the trust store.
 options:

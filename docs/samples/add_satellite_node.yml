@@ -56,7 +56,7 @@
       register: expansion_status
 
     - name: Check if satellite node expansion job is completed...The node addition is still ongoing.
-      ansible.builtin.async_status:
+      async_status:
         jid: "{{ expansion_status.ansible_job_id }}"
       register: job_result
       until: job_result.finished
@@ -64,9 +64,9 @@
       delay: 30
 
     - name: Display added satellite node hostname
-      ansible.builtin.debug:
+      debug:
         var: hostname
 
     - name: Get satellite node Expansion Result
-      ansible.builtin.debug:
+      debug:
         msg:  "{{job_result}}"
