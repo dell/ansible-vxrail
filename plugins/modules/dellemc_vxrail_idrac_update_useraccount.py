@@ -277,6 +277,19 @@ def main():
         argument_spec=module_args,
         supports_check_mode=True,
     )
+    vxrail_cluster = VxRailCluster()
+    vxrail_cluster.vxm_ip = module.params.get('vxmip')
+    vxrail_cluster.api_version_number = module.params.get('api_version_number')
+    if vxrail_cluster.api_version_number is None:
+        vxrail_cluster.api_version_string = utils.get_highest_api_version_string(vxrail_cluster.vxm_ip, "PUT /hosts/{sn}/idrac/users/{userId}", LOGGER)
+        vxrail_cluster.api_version_number = int(vxrail_cluster.api_version_string.split('v')[1])
+    privilege = module.params.get('privilege')
+    if vxrail_cluster.api_version_number >= 2:
+        if privilege != 'ADMIN':
+            module.fail_json(msg="In V2 API, privilege is limited to 'ADMIN'")
+    else:
+        if privilege not in ['ADMIN', 'OPER', 'READONLY']:
+            module.fail_json(msg="In V1 API, privilege must be one of 'ADMIN', 'OPER', or 'READONLY'")
     response = VxRailCluster().put_idrac_userid()
     if module.params.get('password') is not None:
       # v1 API Response

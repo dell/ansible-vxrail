@@ -392,7 +392,7 @@ class VxRailCluster():
         api_instance = vxrail_ansible_utility.HostInformationApi(vxrail_ansible_utility.ApiClient(self.configuration))
         try:
             # get nic mapping
-            response = api_instance.v1_query_vx_rail_manager_cluster_host_pnics_get()
+            response = api_instance.v1_system_cluster_hosts_pnics_get()
         except ApiException as e:
             LOGGER.error("Exception when calling ClusterExpansionApi->query_cluster_configured_host_info: %s\n", e)
             return 'error'

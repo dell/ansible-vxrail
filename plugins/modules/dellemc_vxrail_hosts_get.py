@@ -123,9 +123,10 @@ Hosts_Information:
                 "disks": [
                     {
                         "capacity": "400.0GB",
-                        "disk_claim_type": "vSAN",
+                        "disk_claim_type": "VSAN",
                         "disk_state": "OK",
                         "disk_type": "HDD",
+                        "disk_tier": "CAPACITY",
                         "enclosure": 0,
                         "firmware_revision": "DSLA",
                         "id": "V010104DVSN00",
@@ -143,9 +144,10 @@ Hosts_Information:
                     },
                     {
                         "capacity": "40.0GB",
-                        "disk_claim_type": "vSAN",
+                        "disk_claim_type": "VSAN",
                         "disk_state": "OK",
                         "disk_type": "SSD",
+                        "disk_tier": "CACHE",
                         "enclosure": 0,
                         "firmware_revision": "AS10",
                         "id": "V010104DVSN01",
@@ -163,9 +165,10 @@ Hosts_Information:
                     },
                     {
                         "capacity": "400.0GB",
-                        "disk_claim_type": "vSAN",
+                        "disk_claim_type": "VSAN",
                         "disk_state": "OK",
                         "disk_type": "HDD",
+                        "disk_tier": "CAPACITY",
                         "enclosure": 0,
                         "firmware_revision": "DSLA",
                         "id": "V010104DVSN02",
@@ -183,9 +186,10 @@ Hosts_Information:
                     },
                     {
                         "capacity": "40.0GB",
-                        "disk_claim_type": "vSAN",
+                        "disk_claim_type": "VSAN",
                         "disk_state": "OK",
                         "disk_type": "SSD",
+                        "disk_tier": "CACHE",
                         "enclosure": 0,
                         "firmware_revision": "AS10",
                         "id": "V010104DVSN03",
@@ -547,6 +551,7 @@ class VxRailHosts():
         disk_info['missing'] = data.missing
         disk_info['capacity'] = data.capacity
 
+        disk_info['disk_tier'] = data.disk_tier if hasattr(data, 'disk_tier') else utils.field_not_found(16)
         # Only found in v3+
         if self.api_version_number >= 3:
             disk_info['manufacturer'] = data.manufacturer

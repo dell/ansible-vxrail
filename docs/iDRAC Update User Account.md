@@ -189,7 +189,7 @@ Parameters
                                                                                                                                                         </td>
                                                             <td>
                                         <div></div>
-                                        <div>The permissions (privilege) of the iDRAC user. Allowed values 'ADMIN', 'OPER', and 'READONLY'.</div>
+                                        <div>The permissions (privilege) of the iDRAC user. In the V2 API, it is limited to 'ADMIN'. Allowed values in the previous version were 'ADMIN', 'OPER', and 'READONLY'.</div>
                                                     </td>
         </tr>                                        
 <tr>

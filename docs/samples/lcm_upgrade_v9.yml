@@ -1,5 +1,5 @@
 ---
-- name: LCM upgrade v8. Supported in VxRail versions 8.0.210+.
+- name: LCM upgrade v9. Supported in VxRail versions 8.0.300+.
   hosts: localhost
   vars:
     ### Required ###
@@ -33,17 +33,18 @@
     ecosystem_check_components_var: "{{ ecosystem_check_components | default(omit) }}"
     ecosystem_check_continue_with_incompatible_var: "{{ ecosystem_check_continue_with_incompatible | default(omit) }}"
     ### Optional for script, specify the API version to perform the upgrade. If not specified, the default value is the highest available version. ###
-    api_version_number_var: "8"
+    api_version_number_var: "9"
     ### Optional for script, specify the timeout for the upgrade. If not specified, the default value is 6 hours. ###
     timeout_var: "{{ timeout | default(omit) }}"
     ### vLCM parameter ###
     enable_quick_boot_var: "{{ enable_quick_boot | default(omit) }}"
     parallel_remediation_enable_var: "{{ parallel_remediation_enable | default(omit) }}"
     parallel_remediation_max_var: "{{ parallel_remediation_max | default(omit) }}"
+    enforce_quick_patch_var: "{{ enforce_quick_patch | default(omit) }}"
 
 
   tasks:
-    - name: Start to upgrade with v8
+    - name: Start to upgrade with v9
       dellemc_vxrail_lcm:
         vxmip: "{{ vxmip_var }}"
         vcadmin: "{{ vcadmin_var }}"
@@ -76,6 +77,7 @@
         enable_quick_boot: "{{ enable_quick_boot_var }}"
         parallel_remediation_enable: "{{ parallel_remediation_enable_var }}"
         parallel_remediation_max: "{{ parallel_remediation_max_var }}"
+        enforce_quick_patch: "{{ enforce_quick_patch_var }}"
       async: 25200
       poll: 0
       register: lcm_status

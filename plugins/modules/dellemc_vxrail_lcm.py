@@ -235,6 +235,12 @@ options:
     required: false
     type: str
 
+  enforce_quick_patch:
+    description:
+      Enable quick patch to apply patches without VM evacuation or host reboot.
+    required: false
+    type: str
+
 author:
     - VxRail Development Team(@VxRailDevTeam) <ansible.team@dell.com>
 
@@ -259,6 +265,7 @@ EXAMPLES = r'''
     enable_quick_boot: "{{ enable_quick_boot }}"
     parallel_remediation_enable: "{{ parallel_remediation_enable }}"
     parallel_remediation_max: "{{ parallel_remediation_max }}"
+    enforce_quick_patch: "{{ enforce_quick_patch }}"
 '''
 RETURN = r'''
 changed:
@@ -344,6 +351,7 @@ class VxRailLCM():
         self.enable_quick_boot = module.params.get('enable_quick_boot')
         self.parallel_remediation_enable = module.params.get('parallel_remediation_enable')
         self.parallel_remediation_max = module.params.get('parallel_remediation_max')
+        self.enforce_quick_patch = module.params.get('enforce_quick_patch')
         self.vxm_url = VxrailVXMUrls(self.vxm_ip)
         self.api_version_number = module.params.get('api_version_number')
         # Configure HTTP basic authorization: basicAuth
@@ -440,11 +448,12 @@ class VxRailLCM():
             vcenter_dict['vc_mgmt_user'] = {'username': self.vc_mgmt_account, 'password': self.vc_mgmt_passwd}
         else:
             vcenter_dict['vc_mgmt_user'] = utils.field_not_found(6)
-
+        
         # for api v8
         if self.api_version_number >= 8:
             vlcm_parameters = {}
             parallel_remediation = {}
+            enforce_quick_patch = {}
 
             if self.enable_quick_boot is not None:
                 vlcm_parameters['enable_quick_boot'] = self.enable_quick_boot
@@ -453,6 +462,10 @@ class VxRailLCM():
                 parallel_remediation['enabled'] = self.parallel_remediation_enable
                 parallel_remediation['max_hosts'] = self.parallel_remediation_max
                 vlcm_parameters['parallel_remediation_action'] = parallel_remediation
+
+            if self.enforce_quick_patch is not None:
+                enforce_quick_patch['enabled'] = self.enforce_quick_patch
+                vlcm_parameters['enforce_quick_patch'] = enforce_quick_patch
 
             lcm_json['vlcm_parameters'] = vlcm_parameters
 
@@ -570,7 +583,10 @@ def main():
         parallel_remediation_enable=dict(type='bool'),
         parallel_remediation_max=dict(type='str')
     )
-    module_args = dict(**common_module_args, **v2_module_args, **v4_module_args, **v5_module_args, **v6_module_args, **v8_module_args)
+    v9_module_args = dict(
+        enforce_quick_patch=dict(type='bool')
+    )
+    module_args = dict(**common_module_args, **v2_module_args, **v4_module_args, **v5_module_args, **v6_module_args, **v8_module_args, **v9_module_args)
     module = AnsibleModule(
         argument_spec=module_args,
         supports_check_mode=True,

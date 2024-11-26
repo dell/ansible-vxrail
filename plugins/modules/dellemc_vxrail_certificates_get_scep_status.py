@@ -12,11 +12,6 @@ module: dellemc_vxrail_certificates_get_scep_status
 
 short_description: Get automated renewal status of the certificate.
 
-# If this is part of a collection, you need to use semantic versioning,
-# i.e. the version is of the form "2.5.0" and not "2.4".
-# Displays information up to version 4 (v4). Check the log for full API response from highest version.
-version_added: "1.4.0"
-
 description:
 - This module will call /cluster/certificates/scep/status api to get automated renewal status of the VxRail Manager TLS certificate
 options:

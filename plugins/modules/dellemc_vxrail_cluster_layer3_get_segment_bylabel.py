@@ -85,7 +85,7 @@ Cluster_Layer3_Get_Segment_By_Label_Information:
         "vsan_netmask"                  : "255.255.0.0"
         "vsan_gateway_ipv6"             : "fc00::20:17:1:167"
         "vsan_init_gateway_ipv6"        : "fc00::20:18:1:167"
-        "vsan_prefix_legnth_ipv6"       : 96
+        "vsan_prefix_length_ipv6"       : 96
         "vsan_vlan"                     : 0
         "vmotion_gateway"               : "172.19.1.167"
         "vmotion_init_gateway"          : "172.18.1.167"
@@ -193,7 +193,7 @@ class VxRailCluster():
             segment_info['management_prefix_length_ipv6'] = data.management_prefix_length_ipv6
             segment_info['vsan_gateway_ipv6'] = data.vsan_gateway_ipv6
             segment_info['vsan_init_gateway_ipv6'] = data.vsan_init_gateway_ipv6
-            segment_info['vsan_prefix_legnth_ipv6'] = data.vsan_prefix_legnth_ipv6
+            segment_info['vsan_prefix_length_ipv6'] = data.vsan_prefix_length_ipv6
             segment_info['vmotion_gateway_ipv6'] = data.vmotion_gateway_ipv6
             segment_info['vmotion_init_gateway_ipv6'] = data.vmotion_init_gateway_ipv6
             segment_info['vmotion_prefix_length_ipv6'] = data.vmotion_prefix_length_ipv6

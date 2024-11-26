@@ -1,0 +1,27 @@
+---
+- name: Generate vLCM draft api
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+    vc_root_account: "{{ vc_root_account }}"
+    vc_root_passwd: "{{ vc_root_passwd }}"
+    customized_components: "{{customized_components}}"
+
+  tasks:
+    - name: Start to generate vLCM draft
+      dellemc.vxrail.dellemc_vxrail_lcm_vlcm_generate_draft:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        vc_root_account: "{{ vc_root_account }}"
+        vc_root_passwd: "{{ vc_root_passwd }}"
+        customized_components: "{{ customized_components }}"
+        timeout: "{{ timeout | default(omit) }}"
+        api_version_number: "{{ api_version_number | default(omit) }}"
+      register: job_result
+
+    - name: Display vLCM generate draft result
+      debug:
+        msg: "{{ job_result }}"

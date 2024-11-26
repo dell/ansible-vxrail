@@ -98,6 +98,7 @@ Parameters
                 <div style="font-size: small">
                     <span style="color: purple">type=string</span>
                     <br>
+                    <span style="color: red">required=true</span>
                                     </div>
                                                     </td>
                             <td>
@@ -115,7 +116,8 @@ Parameters
                 <div style="font-size: small">
                     <span style="color: purple">type=string</span>
                     <br>
-                    <span style="color: red">required=true</span>                    </div>
+                    <span style="color: red">required=true</span>
+                                    </div>
                                                     </td>
                             <td>
                                                                                                                                                         </td>
