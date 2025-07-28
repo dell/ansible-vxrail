@@ -200,7 +200,7 @@ Examples
 
 ``` yaml+jinja
   - name: Create VxRail iDRAC User Account. Version specified by api_version_number 
-    dellemc_vxrail_idrac_createuser:
+    dellemc_vxrail_idrac_adduser:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"

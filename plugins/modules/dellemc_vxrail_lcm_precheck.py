@@ -1,8 +1,6 @@
 #!/usr/bin/python
 # Copyright 2021 Dell Inc. or its subsidiaries. All Rights Reserved
 
-# Copyright: (c) 2018, Terry Jones <terry.jones@example.org>
-# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 from __future__ import (absolute_import, division, print_function)
 
 __metaclass__ = type
@@ -71,6 +69,36 @@ options:
     type: str
     default: LCM_PRECHECK
 
+  enable_quick_boot:
+    description:
+      Enable quick boot to reduce reboot time.
+    required: false
+    type: bool
+
+  parallel_remediation_enable:
+    description:
+      Enable parallel remediation. For Dynamic Node only
+    required: false
+    type: bool
+
+  parallel_remediation_max:
+    description:
+      Assign the maximum number of hosts to enter maintenance mode at a time and perform remediation.
+    required: false
+    type: str
+
+  enforce_quick_patch:
+    description:
+      Enable quick patch to apply patches without VM evacuation or host reboot.
+    required: false
+    type: bool
+    
+  retry_as_standard:
+    description:
+      Enable retry as standard to disable live patch and retry upgrade automatically.
+    required: false
+    type: bool
+
   api_version_number:
     description:
       A specific version number to use for the API call. If not included, will use the highest version by default
@@ -100,6 +128,11 @@ EXAMPLES = r'''
     vc_root_passwd: "{{ vc_root_passwd }}"
     vxm_root_account: "{{ vxm_root_account }}"
     vxm_root_passwd: "{{ vxm_root_passwd }}"
+    enable_quick_boot: "{{ enable_quick_boot }}"
+    parallel_remediation_enable: "{{ parallel_remediation_enable }}"
+    parallel_remediation_max: "{{ parallel_remediation_max }}"
+    enforce_quick_patch: "{{ enforce_quick_patch }}"
+    retry_as_standard: "{{ retry_as_standard }}"
     timeout : "{{ timeout }}"
     api_version_number: "{{ api_version_number }}"
 '''
@@ -160,6 +193,11 @@ class VxRailLCMPRCHECK():
         self.vxm_root_account = module.params.get('vxm_root_account')
         self.vxm_root_passwd = module.params.get('vxm_root_passwd')
         self.health_precheck_type = module.params.get('health_precheck_type')
+        self.enable_quick_boot = module.params.get('enable_quick_boot')
+        self.parallel_remediation_enable = module.params.get('parallel_remediation_enable')
+        self.parallel_remediation_max = module.params.get('parallel_remediation_max')
+        self.enforce_quick_patch = module.params.get('enforce_quick_patch')
+        self.retry_as_standard = module.params.get('retry_as_standard')
         self.api_version_number = module.params.get('api_version_number')
         self.vxm_url = VxrailVXMUrls(self.vxm_ip)
         # Configure HTTP basic authorization: basicAuth
@@ -199,6 +237,29 @@ class VxRailLCMPRCHECK():
         vxrail_dict = {}
         vxrail_dict['vxm_root_user'] = {'username': self.vxm_root_account, 'password': self.vxm_root_passwd}
         lcm_precheck_json['vxrail'] = vxrail_dict
+
+        # for api v2
+        if self.api_version_number >= 2:
+            vlcm_parameters = {}
+            parallel_remediation = {}
+            enforce_quick_patch = {}
+
+            if self.enable_quick_boot is not None:
+                vlcm_parameters['enable_quick_boot'] = self.enable_quick_boot
+
+            if self.parallel_remediation_enable is not None:
+                parallel_remediation['enabled'] = self.parallel_remediation_enable
+                parallel_remediation['max_hosts'] = self.parallel_remediation_max
+                vlcm_parameters['parallel_remediation_action'] = parallel_remediation
+
+            if self.enforce_quick_patch is not None:
+                enforce_quick_patch['enabled'] = self.enforce_quick_patch
+                
+            if self.retry_as_standard is not None:
+                enforce_quick_patch['retry_as_standard'] = self.retry_as_standard
+            vlcm_parameters['enforce_quick_patch'] = enforce_quick_patch
+
+            lcm_precheck_json['vlcm_parameters'] = vlcm_parameters
 
         return lcm_precheck_json
 
@@ -247,7 +308,7 @@ def main():
     ''' Entry point into execution flow '''
     global module
     # define available arguments/parameters a user can pass to the module
-    module_args = dict(
+    common_module_args = dict(
         vxmip=dict(required=True),
         bundle_file_locator=dict(required=True),
         vcadmin=dict(required=True),
@@ -260,6 +321,14 @@ def main():
         api_version_number=dict(type='int'),
         timeout=dict(type='int', default=MAX_CHECK_COUNT * CHECK_STATUS_INTERVAL)
     )
+    v2_module_args = dict(
+        enable_quick_boot=dict(type='bool'),
+        parallel_remediation_enable=dict(type='bool'),
+        parallel_remediation_max=dict(type='str'),
+        enforce_quick_patch=dict(type='bool'),
+        retry_as_standard=dict(type='bool')
+    )
+    module_args = dict(**common_module_args, **v2_module_args)
     module = AnsibleModule(
         argument_spec=module_args,
         supports_check_mode=True,

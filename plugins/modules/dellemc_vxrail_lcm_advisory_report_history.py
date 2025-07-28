@@ -2,20 +2,18 @@
 # Copyright 2021 Dell Inc. or its subsidiaries. All Rights Reserved
 
 
-# Copyright: (c) 2018, Terry Jones <terry.jones@example.org>
-# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 from __future__ import (absolute_import, division, print_function)
 
 __metaclass__ = type
 
 DOCUMENTATION = r'''
 ---
-module: dellemc_vxrail_support_getaccount
+module: dellemc_vxrail_lcm_advisory_report_history
 
-short_description: Retrieve VxRail support account
+short_description: Get the list of advisory report history
 
 description:
-- This module will get the current support account set in VxRail.
+- This module will get the list of advisory report history that contains information about all online and local lifecycle management updates.
 options:
 
   vxmip:
@@ -44,10 +42,10 @@ options:
 
   timeout:
     description:
-      Time out value for getting telemetry information, the default value is 60 seconds
+      Time out value for cancelling the host shutdown, the default value is 60 seconds
     required: false
     type: int
-    default: 60
+    default: 1800
 
 author:
     - VxRail Development Team(@VxRailDevTeam) <ansible.team@dell.com>
@@ -55,23 +53,28 @@ author:
 '''
 
 EXAMPLES = r'''
-  - name: Retrieve VxRail support account Information
-    dellemc_vxrail_support_getaccount:
+    - name: Start to get lcm advisory report history
+      dellemc_vxrail_lcm_advisory_report_history:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
-        timeout : "{{ timeout }}"
+        timeout: "{{ timeout }}"
         api_version_number: "{{ api_version_number }}"
 '''
 
 RETURN = r'''
-Support_account:
-  description: the current support account set in VxRail
+LCM_Advisory_Report_History:
+  description: Returns the request ID and whether the operation was successful.
   returned: always
   type: dict
   sample: >-
         {
-            "username": "vxrailtest3@example.com"
+            "history": [
+              {
+                "id": "00000000-0134-b23f-0000-00000134b23f"
+                "report": ...
+              }
+            ]
         }
 '''
 
@@ -80,11 +83,18 @@ import urllib3
 from ansible.module_utils.basic import AnsibleModule
 import vxrail_ansible_utility
 from vxrail_ansible_utility.rest import ApiException
+import time
 from ansible_collections.dellemc.vxrail.plugins.module_utils import dellemc_vxrail_ansible_utils as utils
 
-LOGGER = utils.get_logger("dellemc_vxrail_support_getaccount", "/tmp/vxrail_ansible_support_account.log",
-                          log_devel=logging.DEBUG)
+# Defining global variables
+API = "/cvs/report/history"
+MODULE = "dellemc_vxrail_lcm_advisory_report_history"
+LOG_FILE_PATH = "/tmp/vxrail_ansible_lcm_advisory_report_history.log"
+
+LOGGER = utils.get_logger(MODULE, LOG_FILE_PATH, log_devel=logging.DEBUG)
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+CHECK_STATUS_INTERVAL = 30
+MAX_CHECK_COUNT = 60
 
 
 class VxrailClusterUrls():
@@ -97,7 +107,7 @@ class VxrailClusterUrls():
         return VxrailClusterUrls.cluster_url.format(self.vxm_ip)
 
 
-class VxRailSupport():
+class VxRailCluster():
     def __init__(self):
         self.vxm_ip = module.params.get('vxmip')
         self.timeout = module.params.get('timeout')
@@ -116,61 +126,54 @@ class VxRailSupport():
 
     # Obtains the response for the given module path with specified api_version_number or highest found version
     def get_versioned_response(self, api_instance, module_path):
-        # Set api version string and version number if not defined
+        # Set api version string and version number if undefined
         if self.api_version_number is None:
             self.api_version_string = utils.get_highest_api_version_string(self.vxm_ip, module_path, LOGGER)
             self.api_version_number = int(self.api_version_string.split('v')[1])
         else:
-            self.api_version_string = utils.get_api_version_string(self.vxm_ip, self.api_version_number,
-                                                                   module_path, LOGGER)
-        # Calls versioned method as attribute (ex: v1_support_account_get)
-        call_string = self.api_version_string + '_support_account_get'
-        LOGGER.info("Using utility method: %s\n", call_string)
-        api_support_account_get = getattr(api_instance, call_string)
-        return api_support_account_get()
+            self.api_version_string = utils.get_api_version_string(self.vxm_ip, self.api_version_number, module_path, LOGGER)
 
-    def get_support_account(self):
-        supportInfo = {}
+        # Calls versioned method as attribute (ex: v1_cvs_advisory_report_history)
+        call_string = self.api_version_string + '_cvs_advisory_report_history'
+        # call_string = 'cvs_advisory_report_history'
+        LOGGER.info("Using utility method: %s\n", call_string)
+        api_cvs_advisory_report_history = getattr(api_instance, call_string)
+        return api_cvs_advisory_report_history()
+
+    def get_lcm_advisory_report_history(self):
         # create an instance of the API class
-        api_instance = vxrail_ansible_utility.SupportAccountApi(vxrail_ansible_utility.ApiClient(self.configuration))
+        api_instance = vxrail_ansible_utility.CVSPublicApi(vxrail_ansible_utility.ApiClient(self.configuration))
         try:
-            # query v1 support account
-            response = self.get_versioned_response(api_instance, 'Get /support/account')
+            # generate advisory report
+            response = self.get_versioned_response(api_instance, "Get /cvs/report/history")
         except ApiException as e:
-            LOGGER.error("Exception when calling SupportAccountApi->%s_support_account_get: %s\n",
-                         self.api_version_string, e)
+            LOGGER.error("Exception when calling CVSPublicApi->%s_cvs_advisory_report_history: %s\n", self.api_version_string, e)
             return 'error'
-        LOGGER.info("Call %s/support/account api response: %s\n", self.api_version_string, response)
-        data = response
-        if data is not None:
-            supportInfo['username'] = data.username
-            return dict(supportInfo.items())
-        else:
-            return ("No support Account is configured.")
+        return response
 
 
 def main():
     ''' Entry point into execution flow '''
-    result = ''
     global module
     # define available arguments/parameters a user can pass to the module
     module_args = dict(
         vxmip=dict(required=True),
         vcadmin=dict(required=True),
         vcpasswd=dict(required=True, no_log=True),
-        api_version_number=dict(type='int'),
-        timeout=dict(type='int', default=60)
+        api_version_number=dict(type='int', required=False),
+        timeout=dict(type='int', default=1800)
     )
     module = AnsibleModule(
         argument_spec=module_args,
         supports_check_mode=True,
     )
-    result = VxRailSupport().get_support_account()
-    if result == 'error':
-        module.fail_json(
-            msg="Call /support/account API failed,please see log file /tmp/vxrail_ansible_support_account.log for more error details.")
-    vx_facts = {'Support_Account': result}
-    vx_facts_result = dict(changed=False, Support_Account_API=vx_facts)
+    LOGGER.info('----Start to get lcm advisory report history: ----')
+    result = VxRailCluster().get_lcm_advisory_report_history()
+    LOGGER.info('LCM: Advisory report hisory: %s.', result)
+    history = [report.to_dict() for report in result]
+    vx_lcm_advisory_report_history = {'history': history}
+    vx_facts_result = dict(changed=True, LCM_Advisory_Report_History=vx_lcm_advisory_report_history,
+                           msg=f"Get LCM advisory report history successfully. Please see the {LOG_FILE_PATH} for more details")
     module.exit_json(**vx_facts_result)
 
 

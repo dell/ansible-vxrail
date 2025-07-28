@@ -1,0 +1,21 @@
+---
+- name: Get LCM Advisory report history
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+
+  tasks:
+    - name: Start to get lcm advisory report history
+      dellemc.vxrail.dellemc_vxrail_lcm_advisory_report_history:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        timeout: "{{ timeout | default(omit) }}"
+        api_version_number: "{{ api_version_number | default(omit) }}"
+      register: lcm_advisory_report_history
+      
+    - name: Get advisor report history
+      debug:
+        msg:  "{{lcm_advisory_report_history}}"

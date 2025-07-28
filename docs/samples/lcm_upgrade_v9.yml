@@ -41,6 +41,7 @@
     parallel_remediation_enable_var: "{{ parallel_remediation_enable | default(omit) }}"
     parallel_remediation_max_var: "{{ parallel_remediation_max | default(omit) }}"
     enforce_quick_patch_var: "{{ enforce_quick_patch | default(omit) }}"
+    retry_as_standard_var: "{{ retry_as_standard | default(omit) }}"
 
 
   tasks:
@@ -78,6 +79,7 @@
         parallel_remediation_enable: "{{ parallel_remediation_enable_var }}"
         parallel_remediation_max: "{{ parallel_remediation_max_var }}"
         enforce_quick_patch: "{{ enforce_quick_patch_var }}"
+        retry_as_standard: "{{ retry_as_standard_var }}"
       async: 25200
       poll: 0
       register: lcm_status

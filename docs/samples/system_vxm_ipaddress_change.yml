@@ -1,0 +1,37 @@
+---
+- name: Change VxRail Manager IP Address
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+    vcroot: "{{ vcroot }}"
+    vcroot_passwd: "{{ vcroot_passwd }}"
+    ip: "{{ ip }}"
+    gateway: "{{ gateway }}"
+    netmask: "{{ netmask }}"
+    ipv6: "{{ ipv6 }}"
+    gateway_ipv6: "{{ gateway_ipv6 }}"
+    prefix_length_ipv6: "{{ prefix_length_ipv6 }}"
+
+  tasks:
+    - name: Change VxRail Manager IP Address
+      dellemc.vxrail.dellemc_vxrail_system_vxmipaddress_change:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        api_version_number: "{{ api_version_number | default(omit) }}"
+        vcroot: "{{ vcroot }}"
+        vcroot_passwd: "{{ vcroot_passwd }}"
+        ip: "{{ ip }}"
+        gateway: "{{ gateway }}"
+        netmask: "{{ netmask }}"
+        ipv6: "{{ ipv6 }}"
+        gateway_ipv6: "{{ gateway_ipv6 }}"
+        prefix_length_ipv6: "{{ prefix_length_ipv6 }}"
+        timeout: "{{ timeout | default(omit) }}"
+      register: vxmip_change_info
+
+    - name: Display VxRail Manager Server IP address change
+      debug:
+        msg:  "{{ vxmip_change_info }}"

@@ -1,8 +1,6 @@
 #!/usr/bin/python
 # Copyright 2021 Dell Inc. or its subsidiaries. All Rights Reserved
 
-# Copyright: (c) 2018, Terry Jones <terry.jones@example.org>
-# GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 from __future__ import (absolute_import, division, print_function)
 
 __metaclass__ = type
@@ -239,7 +237,13 @@ options:
     description:
       Enable quick patch to apply patches without VM evacuation or host reboot.
     required: false
-    type: str
+    type: bool
+    
+  retry_as_standard:
+    description:
+      Enable retry as standard to disable live patch and retry upgrade automatically.
+    required: false
+    type: bool
 
 author:
     - VxRail Development Team(@VxRailDevTeam) <ansible.team@dell.com>
@@ -266,6 +270,7 @@ EXAMPLES = r'''
     parallel_remediation_enable: "{{ parallel_remediation_enable }}"
     parallel_remediation_max: "{{ parallel_remediation_max }}"
     enforce_quick_patch: "{{ enforce_quick_patch }}"
+    retry_as_standard: "{{ retry_as_standard }}"
 '''
 RETURN = r'''
 changed:
@@ -352,6 +357,7 @@ class VxRailLCM():
         self.parallel_remediation_enable = module.params.get('parallel_remediation_enable')
         self.parallel_remediation_max = module.params.get('parallel_remediation_max')
         self.enforce_quick_patch = module.params.get('enforce_quick_patch')
+        self.retry_as_standard = module.params.get('retry_as_standard')
         self.vxm_url = VxrailVXMUrls(self.vxm_ip)
         self.api_version_number = module.params.get('api_version_number')
         # Configure HTTP basic authorization: basicAuth
@@ -465,7 +471,10 @@ class VxRailLCM():
 
             if self.enforce_quick_patch is not None:
                 enforce_quick_patch['enabled'] = self.enforce_quick_patch
-                vlcm_parameters['enforce_quick_patch'] = enforce_quick_patch
+                
+            if self.retry_as_standard is not None:
+                enforce_quick_patch['retry_as_standard'] = self.retry_as_standard
+            vlcm_parameters['enforce_quick_patch'] = enforce_quick_patch
 
             lcm_json['vlcm_parameters'] = vlcm_parameters
 
@@ -584,7 +593,8 @@ def main():
         parallel_remediation_max=dict(type='str')
     )
     v9_module_args = dict(
-        enforce_quick_patch=dict(type='bool')
+        enforce_quick_patch=dict(type='bool'),
+        retry_as_standard=dict(type='bool')
     )
     module_args = dict(**common_module_args, **v2_module_args, **v4_module_args, **v5_module_args, **v6_module_args, **v8_module_args, **v9_module_args)
     module = AnsibleModule(

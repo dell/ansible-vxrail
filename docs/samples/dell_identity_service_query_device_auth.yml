@@ -1,0 +1,21 @@
+---
+- name: Dell Identity Service query device authentication
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+
+  tasks:
+    - name: Query device authentication via Dell Identity Service
+      dellemc.vxrail.dellemc_vxrail_dell_identity_service_query_device_auth:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        timeout: "{{ timeout | default(omit) }}"
+        api_version_number: "{{ api_version_number | default(omit) }}"
+      register: dell_identity_service_query_device_auth
+
+    - name: Get dell identity service response result
+      debug:
+        msg: "{{dell_identity_service_query_device_auth}}"

@@ -1,0 +1,22 @@
+---
+- name: Change VxRail cluster EVC mode
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+    evc_mode: "{{ evc_mode }}"
+
+  tasks:
+    - name: Change VxRail cluster EVC mode
+      dellemc.vxrail.dellemc_vxrail_cluster_evc_change:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        evc_mode: "{{ evc_mode }}"
+        api_version_number: "{{ api_version_number | default(omit) }}"
+      register: dellemc_vxrail_cluster_evc_change
+
+    - name: Change VxRail cluster EVC mode Result
+      debug:
+        msg: "{{  dellemc_vxrail_cluster_evc_change  }}"

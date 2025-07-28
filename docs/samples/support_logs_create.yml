@@ -1,0 +1,24 @@
+---
+- name: Create Support Logs
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+
+  tasks:
+    - name: Start to Create Support Logs
+      dellemc.vxrail.dellemc_vxrail_support_logs:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        types: "{{ types }}"
+        nodes: "{{ nodes }}"
+        autoclean: "{{ autoclean }}"
+        timeout: "{{ timeout | default(omit) }}"
+        api_version_number: "{{ api_version_number | default(omit) }}"
+      register: support_logs
+
+    - name: Display Result
+      debug:
+        msg:  "{{support_logs}}"

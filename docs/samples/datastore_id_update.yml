@@ -1,0 +1,23 @@
+---
+- name: VxRail Datastore ID Update
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+    datastore_name: "{{ datastore_name }}"
+
+  tasks:
+    - name: VxRail Datastore ID Update
+      dellemc_vxrail_system_datastore_update:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        datastore_name: "{{ datastore_name }}"
+        api_version_number: "1"
+        timeout: "{{ timeout | default(omit) }}"
+      register: datastore_id_update_info
+
+    - name: VxRail Datastore ID Update
+      debug:
+        msg:  "{{datastore_id_update_info}}"

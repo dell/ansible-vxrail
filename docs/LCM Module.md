@@ -5144,6 +5144,26 @@ Parameters
          <td colspan="1">
             <div class="ansibleOptionAnchor"
                id="parameter-state"/>
+            <b>retry_as_standard_var</b>
+            <a class="ansibleOptionLink"
+               href="#parameter-state"
+               title="Permalink to this option"/>
+            <div style="font-size: small">
+               <span style="color: purple">type=str</span>
+               <br>
+               <span style="color: red"/>
+            </div>
+         </td>
+         <td>
+         </td>
+         <td>
+            <div>Enable retry as standard when set to true.</div>
+         </td>
+      </tr>
+      <tr>
+         <td colspan="1">
+            <div class="ansibleOptionAnchor"
+               id="parameter-state"/>
             <b>api_version_number</b>
             <a class="ansibleOptionLink"
                href="#parameter-state"
@@ -5340,6 +5360,7 @@ Examples
         parallel_remediation_enable_var: "{{ parallel_remediation_enable_var | default(omit) }}"
         parallel_remediation_max_var: "{{ parallel_remediation_max_var | default(omit) }}"
         enforce_quick_patch_var: "{{ enforce_quick_patch_var | default(omit) }}"
+        retry_as_standard_var: "{{ retry_as_standard_var | default(omit) }}"
 ```
 
 Return Values
