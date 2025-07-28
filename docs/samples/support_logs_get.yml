@@ -1,0 +1,21 @@
+---
+- name: Retrieve Support Logs Information
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+
+  tasks:
+    - name: Get Support Logs Information
+      dellemc.vxrail.dellemc_vxrail_support_logs_get:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        timeout: "{{ timeout | default(omit) }}"
+        api_version_number: "{{ api_version_number | default(omit) }}"
+      register: support_logs
+
+    - name: Display Support Logs Information
+      debug:
+        msg:  "{{support_logs}}"

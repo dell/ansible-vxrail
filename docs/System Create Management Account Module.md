@@ -1,5 +1,5 @@
-**Callhome Module for Dell EMC VxRail**
-=========================================
+System Create Management Accounts Module for Dell EMC VxRail
+=================
 ### Product Guide
 
 > © 2021 Dell Inc. or its subsidiaries. All rights reserved. Dell 
@@ -8,13 +8,12 @@
 
 Synopsis
 --------
-This module will get the current support account set in VxRail.
-  
+This module will create the vCenter management account
+
 Supported Endpoints
 --------
 
-* GET /support/account
-  
+* POST /system/accounts/management
 
 Parameters
 ----------
@@ -76,6 +75,7 @@ Parameters
                                         <div>The password for the administrator account provided in vcadmin</div>
                                                     </td>
         </tr>
+
 <tr>
                                                             <td colspan="1">
                 <div class="ansibleOptionAnchor" id="parameter-state"></div>
@@ -93,7 +93,7 @@ Parameters
                                                                         </td>
                                                             <td>
                                         <div></div>
-                                        <div>Time out value for getting system infomation, the default value is 60 seconds</div>
+                                        <div>Time out value for getting system management account, the default value is 60 seconds</div>
                                         <div></div>
                                                     </td>
         </tr>
@@ -108,10 +108,72 @@ Parameters
                     <span style="color: red"></span>                    </div>
                                                     </td>
                             <td>
+                                                                                                                        <ul style="margin: 0; padding: 0"><b></b>
+                                                                                </ul>
                                                                         </td>
                                                             <td>
                                         <div></div>
-                                        <div>The version of API to call. If omitted, will use highest version on the system.</div>
+                                        <div>The version of API to call. If omitted, will use highest version on the system</div>
+                                        <div></div>
+                                                    </td>
+        </tr>
+<tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-state"></div>
+                <b>component</b>
+                <a class="ansibleOptionLink" href="#parameter-state" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                    <br>
+                    <span style="color: red"><span style="color: red">required=true</span></span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                        <ul style="margin: 0; padding: 0"><b></b>
+                                                                                </ul>
+                                                                        </td>
+                                                            <td>
+                                        <div></div>
+                                        <div>The type of component (VC Only)</div>
+                                        <div></div>
+                                                    </td>
+        </tr>
+<tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-state"></div>
+                <b>new_username</b>
+                <a class="ansibleOptionLink" href="#parameter-state" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                    <br>
+                    <span style="color: red"><span style="color: red">required=true</span></span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                        <ul style="margin: 0; padding: 0"><b></b>
+                                                                                </ul>
+                                                                        </td>
+                                                            <td>
+                                        <div></div>
+                                        <div>New username to be created</div>
+                                        <div></div>
+                                                    </td>
+        </tr>
+<tr>
+                                                            <td colspan="1">
+                <div class="ansibleOptionAnchor" id="parameter-state"></div>
+                <b>new_password</b>
+                <a class="ansibleOptionLink" href="#parameter-state" title="Permalink to this option"></a>
+                <div style="font-size: small">
+                    <span style="color: purple">type=string</span>
+                    <br>
+                    <span style="color: red"><span style="color: red">required=true</span></span>                    </div>
+                                                    </td>
+                            <td>
+                                                                                                                        <ul style="margin: 0; padding: 0"><b></b>
+                                                                                </ul>
+                                                                        </td>
+                                                            <td>
+                                        <div></div>
+                                        <div>The password required to create the management account</div>
                                         <div></div>
                                                     </td>
         </tr>
@@ -120,22 +182,28 @@ Parameters
 Notes
 -----
 - Make sure your VxRail environment supports the API that you use
-- Module dellemc_vxrail_support_getaccount.py calls any existing version of Post /support/account API
-- Details on execution of module dellemc_vxrail_support_getaccount.py can be checked in the logs /tmp/vxrail_ansible_support_account.log
+- The current version only supports create the VC (vCenter) management account. 
+- Module dellemc_vxrail_system_create_management_accounts.py can call any existing version of /system/accounts/management API
+- Details on execution of module dellemc_vxrail_system_create_management_accounts.py can be checked in the logs /tmp/vxrail_ansible_system_create_management_accounts.log
 
 
 Examples
 --------
 
 ``` yaml+jinja
- - name: Retrieve VxRail support account Information, version specified by api_version_number
-    dellemc_vxrail_support_getaccount_v1:
+  - name: Create a vCenter Management Account
+    dellemc_vxrail_system_create_management_accounts:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
-        timeout : "{{ timeout }}"
         api_version_number: "{{ api_version_number }}"
+        timeout : "{{ timeout }}"
+        component : "{{ component }}"
+        new_username : "{{ new_username }}"
+        new_password : "{{ new_password }}"
+
 ```
+
 Return Values
 -------------
 
@@ -145,6 +213,7 @@ The following are the fields unique to this module:
     <tr>
         <th colspan="3">Key</th>
         <th>Returned</th>
+        <th>Minimum API Version</th>
         <th width="100%">Description</th>
     </tr>
                 <tr>
@@ -157,6 +226,7 @@ The following are the fields unique to this module:
                                       </div>
                                 </td>
             <td>always</td>
+            <td>all</td>
             <td>
                                         <div>Whether or not the resource has changed.</div>
                                     <br/>
@@ -165,36 +235,20 @@ The following are the fields unique to this module:
                             <tr>
                             <td colspan="3">
                 <div class="ansibleOptionAnchor" id="return-hostgroup_details"></div>
-                <b>support_account</b>
+                <b>Create_Management_Accounts_Info</b>
                 <a class="ansibleOptionLink" href="#return-hostgroup_details" title="Permalink to this return value"></a>
                 <div style="font-size: small">
                   <span style="color: purple">complex</span>
                                       </div>
                                 </td>
-            <td>When cluster exists.</td>
+            <td>When account creation completes</td>
+            <td>v1</td>
             <td>
-                                        <div>The support account set in Vxrail</div>
+                                        <div>Result of account creation.</div>
                                     <br/>
                                 </td>
         </tr>
-
-<tr>
-                                <td class="elbow-placeholder">&nbsp;</td>
-                            <td colspan="2">
-                <div class="ansibleOptionAnchor" id="return-hostgroup_details/num_of_initiators"></div>
-                <b>username</b>
-                <a class="ansibleOptionLink" href="#return-hostgroup_details/num_of_initiators" title="Permalink to this return value"></a>
-                <div style="font-size: small">
-                  <span style="color: purple">type=string</span>
-                                 </div>
-                                </td>
-            <td>success</td>
-            <td>
-                                        <div>The current support account of the system.</div>
-                                    <br/>
-                                </td>
-        </tr>
-                    </table>
+</table>
 
 Authors
 -------

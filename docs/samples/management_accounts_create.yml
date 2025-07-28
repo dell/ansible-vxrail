@@ -1,0 +1,27 @@
+---
+- name: Create a vCenter Management Account
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+    component: "{{ component }}"
+    new_username: "{{ new_username }}"
+    new_password: "{{ new_password }}"
+
+  tasks:
+    - name: Create a vCenter Management Account
+      dellemc.vxrail.dellemc_vxrail_system_create_management_accounts:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        api_version_number: "{{ api_version_number | default(omit) }}"
+        timeout: "{{ timeout | default(omit) }}"
+        component: "{{ component }}"
+        new_username: "{{ new_username }}"
+        new_password: "{{ new_password }}"
+      register: create_accounts_info
+
+    - name: Display account created result
+      debug:
+        msg:  "{{create_accounts_info}}"

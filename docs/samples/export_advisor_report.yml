@@ -1,0 +1,27 @@
+---
+- name: Export advisor report
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+    format: "{{ format }}"
+    report_id: "{{ report_id }}"
+    output_file_path: "{{ output_file_path }}"
+
+  tasks:
+    - name: Start to export advisor report
+      dellemc.vxrail.dellemc_vxrail_export_advisor_report:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        format: "{{ format | default(omit) }}"
+        report_id: "{{ report_id | default(omit) }}"
+        output_file_path: "{{ output_file_path }}"
+        timeout: "{{ timeout | default(omit) }}"
+        api_version_number: "{{ api_version_number | default(omit) }}"
+      register: export_advisor_report
+   
+    - name: Get advisor report result
+      debug:
+        msg:  "{{export_advisor_report}}"

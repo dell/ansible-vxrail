@@ -1,0 +1,25 @@
+---
+- name: Delete a vCenter Management Account
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+    component: "{{ component }}"
+    username: "{{ username }}"
+
+  tasks:
+    - name: Delete a vCenter Management Account
+      dellemc.vxrail.dellemc_vxrail_system_delete_management_accounts:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        api_version_number: "{{ api_version_number | default(omit) }}"
+        timeout: "{{ timeout | default(omit) }}"
+        component: "{{ component }}"
+        username: "{{ username }}"
+      register: delete_accounts_info
+
+    - name: Display account deleted result
+      debug:
+        msg:  "{{delete_accounts_info}}"

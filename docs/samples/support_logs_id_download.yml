@@ -1,5 +1,5 @@
 ---
-- name: Retrieve VxRail support account Information
+- name: Download Support Logs
   hosts: localhost
   vars:
     vxmip: "{{ vxmip }}"
@@ -7,15 +7,17 @@
     vcpasswd: "{{ vcpasswd }}"
 
   tasks:
-    - name: Get Support account information
-      dellemc.vxrail.dellemc_vxrail_support_getaccount:
+    - name: Start to Download Support Logs
+      dellemc.vxrail.dellemc_vxrail_support_logs_id_download:
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
+        log_id: "{{ log_id }}"
+        output_file_path: "{{ output_file_path }}"
         timeout: "{{ timeout | default(omit) }}"
         api_version_number: "{{ api_version_number | default(omit) }}"
-      register: support_account_info
+      register: support_logs
 
-    - name: Display Support account information
+    - name: Display Result
       debug:
-        msg:  "{{support_account_info}}"
+        msg:  "{{support_logs}}"
