@@ -1,0 +1,29 @@
+---
+- name: VxRail Zero Day Express Patch
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+    component_bundle: "{{ component_bundle }}"
+    witness_user_name_var: "{{ witness_user_name | default(omit) }}"
+    witness_user_password_var: "{{ witness_user_password | default(omit) }}"
+    auto_witness_upgrade_var: "{{ auto_witness_upgrade | default(omit) }}"
+
+  tasks:
+    - name: Execute VxRail Zero Day Express Patch
+      dellemc.vxrail.dellemc_vxrail_lcm_zero_day_express_patch:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        component_bundle: "{{ component_bundle }}"
+        witness_user_name: "{{ witness_user_name_var | default(omit) }}"
+        witness_user_password: "{{ witness_user_password_var | default(omit) }}"
+        auto_witness_upgrade: "{{ auto_witness_upgrade_var | default(omit) }}"
+        timeout: "{{ timeout | default(omit) }}"
+        api_version_number: "{{ api_version_number | default(omit) }}"
+      register: execute_0day_express_patch
+
+    - name: Display execute the VxRail Zero day express patch result
+      debug:
+        msg: "{{ execute_0day_express_patch }}"

@@ -35,8 +35,14 @@ options:
 
   serial_number:
     description:
-      The node serial number for ESE enablement
-    required: True
+      The node serial number for ESE enablement of both v1 and v2 API version
+    required: False
+    type: str
+  
+  appliance_id:
+    description:
+      The node appliance ID for ESE enablement of v3 API version
+    required: False
     type: str
 
   connection_type:
@@ -171,7 +177,7 @@ EXAMPLES = r'''
         vxmip: "{{ vxmip }}"
         vcadmin: "{{ vcadmin }}"
         vcpasswd: "{{ vcpasswd }}"
-        serial_number: "{{ serial_number }}"
+        appliance_id: "{{ appliance_id }}"
         connection_type: "{{ connection_type }}"
         pin: "{{ pin }}"
         access_key: "{{ access_key }}"
@@ -233,7 +239,6 @@ class VxRailCluster():
         self.timeout = module.params.get('timeout')
         self.vc_admin = module.params.get('vcadmin')
         self.vc_password = module.params.get('vcpasswd')
-        self.serial_number = module.params.get('serial_number')
         self.connection_type = module.params.get('connection_type')
         self.pin = module.params.get('pin')
         self.access_key = module.params.get('access_key')
@@ -278,7 +283,27 @@ class VxRailCluster():
         return api_callhome_enable_post(callhome_info)
 
     def create_callhome_json(self):
-        callhome_info = {'serial_number': self.serial_number, 'connection_type': self.connection_type}
+        self.serial_number = module.params.get('serial_number', None)
+        self.appliance_id = module.params.get('appliance_id', None)
+        
+        # Validation: Only one of serial_number or appliance_id must be provided
+        if bool(self.serial_number) == bool(self.appliance_id):
+            raise ValueError("You must provide either 'serial_number' or 'appliance_id'.")
+        if self.api_version_number <= 2 and self.serial_number is None:
+            raise ValueError("Serial number is required for API version less than 2.")
+        if self.api_version_number > 2 and self.appliance_id is None:
+            raise ValueError("Appliance ID is required for API version greater than 2.")
+
+        callhome_info = {
+            'connection_type': self.connection_type
+        }
+
+        # Include only the one that was provided
+        if self.serial_number:
+            callhome_info['serial_number'] = self.serial_number
+        else:
+            callhome_info['appliance_id'] = self.appliance_id
+
         # Add optional params if found
         if self.pin is not None:
             callhome_info['pin'] = self.pin
@@ -343,7 +368,8 @@ def main():
         vxmip=dict(required=True),
         vcadmin=dict(type='str', required=True),
         vcpasswd=dict(type='str', required=True, no_log=True),
-        serial_number=dict(type='str', required=True),
+        serial_number=dict(type='str', required=False),
+        appliance_id=dict(type='str', required=False),
         connection_type=dict(type='str', required=True),
         pin=dict(type='str', required=False),
         access_key=dict(type='str', required=False),

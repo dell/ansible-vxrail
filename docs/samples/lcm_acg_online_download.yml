@@ -1,0 +1,21 @@
+---
+- name: Available online updates from ACG server
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+
+  tasks:
+    - name: Get available online updates packages
+      dellemc.vxrail.dellemc_vxrail_lcm_acg_available_online_download:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        timeout: "{{ timeout | default(omit) }}"
+        api_version_number: "{{ api_version_number | default(omit) }}"
+      register: download_acg_available_packages
+
+    - name: Display download ACG available packages result
+      debug:
+        msg: "{{ download_acg_available_packages }}"

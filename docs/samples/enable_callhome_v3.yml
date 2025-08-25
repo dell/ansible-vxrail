@@ -1,0 +1,55 @@
+---
+- name: Enable call home functionality
+  hosts: localhost
+  vars:
+    vxmip: "{{ vxmip }}"
+    vcadmin: "{{ vcadmin }}"
+    vcpasswd: "{{ vcpasswd }}"
+    appliance_id: "{{ appliance_id }}"
+    connection_type: "{{ connection_type }}"
+    ip_version: "{{ ip_version | default(omit) }}"
+    api_version_number: "{{ api_version_number | default(omit) }}"
+    #Optional, based on your enablement ways.
+    pin_var: "{{ pin  | default(omit)  }}"
+    access_key_var: "{{ access_key  | default(omit)  }}"
+    proxy_type_var: "{{ proxy_type  | default(omit)  }}"
+    proxy_address_var: "{{ proxy_address  | default(omit)  }}"
+    proxy_protocol_var: "{{ proxy_protocol  | default(omit)  }}"
+    proxy_port_var: "{{ proxy_port  | default(omit)  }}"
+    gateways_host_var: "{{ gateways_host  | default(omit)  }}"
+    gateways_port_var: "{{ gateways_port  | default(omit)  }}"
+    customer_contact_order_var: "{{ customer_contact_order  | default(omit)  }}"
+
+
+  tasks:
+    - name: Enable call home functionality
+      dellemc.vxrail.dellemc_vxrail_callhome_enable:
+        vxmip: "{{ vxmip }}"
+        vcadmin: "{{ vcadmin }}"
+        vcpasswd: "{{ vcpasswd }}"
+        appliance_id: "{{ appliance_id }}"
+        connection_type: "{{ connection_type }}"
+        pin: "{{ pin_var }}"
+        access_key: "{{ access_key_var }}"
+        proxy_type: "{{ proxy_type_var }}"
+        proxy_protocol: "{{ proxy_protocol_var }}"
+        proxy_address: "{{ proxy_address_var }}"
+        proxy_port: "{{ proxy_port_var }}"
+        proxy_user: "{{ proxy_user | default(omit) }}"
+        proxy_passwd: "{{ proxy_passwd | default(omit) }}"
+        gateways_host: "{{ gateways_host_var }}"
+        gateways_port: "{{ gateways_port_var }}"
+        customer_contact_order: "{{ customer_contact_order_var }}"
+        customer_first_name: "{{ customer_first_name | default(omit) }}"
+        customer_last_name: "{{ customer_last_name | default(omit) }}"
+        customer_phone_number: "{{ customer_phone_number | default(omit) }}"
+        customer_email_address: "{{ customer_email_address | default(omit) }}"
+        customer_pref_language: "{{ customer_pref_language | default(omit) }}"
+        timeout: "{{ timeout | default(omit) }}"
+        ip_version: "{{ ip_version | default(omit) }}"
+        api_version_number: "{{ api_version_number | default(omit) }}"
+      register: Result
+
+    - name: Display Enable call home functionality result
+      debug:
+        msg:  "{{Result}}"

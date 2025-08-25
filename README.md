@@ -15,7 +15,7 @@ This table provides information about the software prerequisites for the Ansible
 
 | **Ansible Modules** | **VxRail version** | **Python version** | **Python library (VxRail Ansible Utility) version** | **Ansible Version** |
 |---------------------|----------------|--------------------|----------------------------|-------------|
-| v2.7.0 | 8.0.320 | 2.7.0 | 2.7.0 | 2.9 and 2.10 |
+| v2.9.0 | 8.0.360 | 2.9.0 | 2.9.0 | 2.9 and 2.10 |
 
   * Please follow VxRail Ansible Utility installation instructions on [VxRail Ansible Utility Documentation](https://github.com/dell/ansible-vxrail-utility)
 
@@ -57,6 +57,9 @@ The modules are written in such a way that all requests are idempotent and hence
   * [Customer Supplied Hosts module](./docs/Customer%20Supplied%20Hosts%20Module.md)
   * [CVS Compliance Report module](./docs/CVS%20Compliance%20Report%20Module.md)
   * [Day1 Initialization module](./docs/Day1%20Initialization%20Module.md)
+  * [Dell Identity Service Start Device Auth](./docs/Dell%20Identity%20Service%20Start%20Device%20Auth.md)
+  * [Dell Identity Service Logout Device Auth](./docs/Dell%20Identity%20Service%20Logout%20Device%20Auth.md)
+  * [Dell Identity Service Query Device Auth](./docs/Dell%20Identity%20Service%20Query%20Device%20Auth.md)
   * [Disks Information module](./docs/Disks%20Information%20Module.md)
   * [Export CVS Compliance Report module](./docs/Export%20CVS%20Compliance%20Report%20Module.md)
   * [Hosts module](./docs/Hosts%20Module.md)
@@ -79,8 +82,10 @@ The modules are written in such a way that all requests are idempotent and hence
   * [LCM VLCM Generate Draft module](./docs/LCM%20VLCM%20Generate%20Draft%20Module.md)
   * [LCM VLCM Commit Draft module](./docs/LCM%20VLCM%20Commit%20Draft%20Module.md)
   * [LCM VLCM Delete Draft module](./docs/LCM%20VLCM%20Delete%20Draft%20Module.md)
+  * [LCM Download Available Bundle module](./docs/LCM%20Download%20bundle%20from%20ACG.md)
   * [Host Folder LCM](./docs/Host%20Folder%20LCM.md)
   * [LCM Precheck module](./docs/LCM%20Precheck%20Module.md)
+  * [LCM Zero Day Express Patch Module](./docs/LCM%20Zero%20Day%20Express%20Patch%20Module)
   * [Network throttling Change module](./docs/Bandwidth%20Throttling%20Change%20Module.md)
   * [Network throttling Info module](./docs/Bandwidth%20Throttling%20Information%20Module.md)
   * [Prechecks Report Module](./docs/Prechecks%20Report%20Module.md)
@@ -91,7 +96,6 @@ The modules are written in such a way that all requests are idempotent and hence
   * [Sequential Reboot Module](./docs/Sequential%20Reboot%20Module.md)
   * [Sequential Reboot Retry Module](./docs/Sequential%20Reboot%20Retry%20Module.md)
   * [Stig Information module](./docs/Stig%20Information%20Module.md)
-  * [Support Account module](./docs/Support%20Account%20Module.md)
   * [System Available Hosts module](./docs/System%20Available%20Hosts%20Module.md)
   * [System Cluster Hosts module](./docs/System%20Cluster%20Hosts%20Module.md)
   * [System Disable Proxy module](./docs/System%20Disable%20Proxy%20Module.md)

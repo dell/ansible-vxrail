@@ -212,8 +212,10 @@ Hosts_Information:
                     "bmc_revision": "4.40.40.00",
                     "boss_version": "2.5.13.3024",
                     "cpld_version": "1.0.2",
+                    "fpga_version": "1.0.2",
                     "dcpm_version": null,
                     "expander_bpf_version": "2.52",
+                    "passive_bpf_version": "1.72",
                     "hba_version": "16.17.01.00",
                     "nonexpander_bpf_version": null
                 },
@@ -602,6 +604,14 @@ class VxRailHosts():
             firmware_info['dcpm_version'] = data.dcpm_version
         else:
             firmware_info['dcpm_version'] = utils.field_not_found(3)
+
+        # Only found in v4+
+        if self.api_version_number >= 17:
+            firmware_info['fpga_version'] = data.fpga_version
+            firmware_info['passive_bpf_version'] = data.passive_bpf_version
+        else:
+            firmware_info['fpga_version'] = utils.field_not_found(17)
+            firmware_info['passive_bpf_version'] = utils.field_not_found(17)
 
         return firmware_info
 
